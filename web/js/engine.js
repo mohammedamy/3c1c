@@ -1,0 +1,1284 @@
+/* ==========================================================================
+   3c1c · Client-Side Mathematical Canvas & Mobject Animation Engine
+   Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
+   ========================================================================== */
+
+import { FUNCTIONS } from './presets.js';
+
+export const STAGE_PALETTES = {
+  dark: {
+    bg: '#0A0D14',
+    bgGrad: '#101624',
+    panel: 'rgba(20, 26, 40, 0.90)',
+    panelBorder: '#26324B',
+    gridMajor: 'rgba(148, 163, 184, 0.12)',
+    gridMinor: 'rgba(148, 163, 184, 0.05)',
+    axis: '#8292AA',
+    ink: '#EEF2F6',
+    inkSub: '#CBD5E1',
+    muted: '#94A3B8',
+    indigo: '#7DA4E8',
+    indigoBright: '#93B8FA',
+    indigoFill: 'rgba(125, 164, 232, 0.18)',
+    amber: '#F59E0B',
+    amberBright: '#FBBF24',
+    amberFill: 'rgba(245, 158, 11, 0.24)',
+    teal: '#2DD4BF',
+    tealFill: 'rgba(45, 212, 191, 0.20)',
+    rose: '#F46474',
+    ok: '#34D399',
+  },
+  paper: {
+    bg: '#FAF7F2',
+    bgGrad: '#F2ECE1',
+    panel: 'rgba(255, 255, 255, 0.93)',
+    panelBorder: '#D5CBB9',
+    gridMajor: 'rgba(19, 39, 70, 0.09)',
+    gridMinor: 'rgba(19, 39, 70, 0.04)',
+    axis: '#4B5668',
+    ink: '#111622',
+    inkSub: '#283244',
+    muted: '#4B5668',
+    indigo: '#132746',
+    indigoBright: '#1E3E70',
+    indigoFill: 'rgba(19, 39, 70, 0.14)',
+    amber: '#9E6515',
+    amberBright: '#B8781B',
+    amberFill: 'rgba(158, 101, 21, 0.20)',
+    teal: '#0C7A6F',
+    tealFill: 'rgba(12, 122, 111, 0.16)',
+    rose: '#C83747',
+    ok: '#19633E',
+  },
+};
+
+export function clamp01(v) {
+  return Math.max(0, Math.min(1, v));
+}
+
+export function smooth(t) {
+  const x = clamp01(t);
+  return x * x * (3 - 2 * x);
+}
+
+export function spanEase(time, start, end) {
+  if (end <= start) return time >= end ? 1 : 0;
+  return smooth((time - start) / (end - start));
+}
+
+export class Engine3c1c {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.markImg = new Image();
+    this.markLoaded = false;
+    this.markImg.onload = () => {
+      this.markLoaded = true;
+    };
+    this.markImg.src = 'web/assets/clipsat-mark.png';
+    this.lastPlotMapper = null;
+  }
+
+  getDimensions(aspect) {
+    if (aspect === '9:16') return { width: 1080, height: 1920 };
+    if (aspect === '1:1') return { width: 1080, height: 1080 };
+    return { width: 1920, height: 1080 };
+  }
+
+  syncCanvasSize(aspect) {
+    const { width, height } = this.getDimensions(aspect);
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+    return { width, height };
+  }
+
+  renderFrame(state) {
+    const { presetId, params, time, duration, stageTheme, aspect, watermark } = state;
+    const { width, height } = this.syncCanvasSize(aspect);
+    const ctx = this.ctx;
+    const pal = STAGE_PALETTES[stageTheme] || STAGE_PALETTES.dark;
+    const scale = Math.min(width, height) / 1080;
+
+    ctx.save();
+    // 1. Editorial Stage Background
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    bgGrad.addColorStop(0, pal.bg);
+    bgGrad.addColorStop(1, pal.bgGrad);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // 2. Subtle Background Coordinate Mesh
+    const cell = Math.round(60 * scale);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = pal.gridMinor;
+    ctx.beginPath();
+    for (let x = cell; x < width; x += cell) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+    }
+    for (let y = cell; y < height; y += cell) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+    }
+    ctx.stroke();
+
+    // 3. Stage Safe Margins & Header Banner
+    const padX = Math.round(width * 0.062);
+    const headerTop = Math.round(height * 0.052);
+    const plotTop = Math.round(height * 0.165);
+    const plotBot = Math.round(height * 0.105);
+    const plotW = width - padX * 2;
+    const plotH = height - plotTop - plotBot;
+
+    const headerAlpha = spanEase(time, 0, 0.55);
+    ctx.save();
+    ctx.globalAlpha = Math.max(0.25, headerAlpha);
+    ctx.font = `700 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = pal.amber;
+    ctx.fillText((params.track || 'CLIPSAT MATHEMATICS').toUpperCase(), padX, headerTop);
+
+    ctx.font = `600 ${Math.round(38 * scale)}px "Newsreader", Georgia, serif`;
+    ctx.fillStyle = pal.ink;
+    ctx.fillText(params.title || '', padX, headerTop + Math.round(42 * scale));
+
+    ctx.strokeStyle = pal.panelBorder;
+    ctx.lineWidth = Math.max(1.5, 2 * scale);
+    ctx.beginPath();
+    ctx.moveTo(padX, headerTop + Math.round(62 * scale));
+    ctx.lineTo(padX + plotW * clamp01(time / 0.8 + 0.15), headerTop + Math.round(62 * scale));
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Dispatch Scene-Specific Mobjects
+    const bounds = { padX, plotTop, plotW, plotH, width, height, scale };
+    let telemetry = { readouts: [], tableHeaders: [], tableRows: [] };
+
+    if (presetId === 'derivative') {
+      telemetry = this.drawDerivativeScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'riemann') {
+      telemetry = this.drawRiemannScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'square') {
+      telemetry = this.drawSquareScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'unitcircle') {
+      telemetry = this.drawUnitCircleScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'linalg') {
+      telemetry = this.drawLinAlgScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'qudrat') {
+      telemetry = this.drawQudratScene(ctx, pal, bounds, params, time, duration);
+    }
+
+    // 5. ClipSAT · 3c1c Corner Watermark
+    if (watermark) {
+      this.drawWatermark(ctx, pal, width, height, padX, scale);
+    }
+
+    ctx.restore();
+    return telemetry;
+  }
+
+  createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, axisAlpha = 1, widthFrac = 0.62) {
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const areaW = isTall ? plotW : Math.round(plotW * widthFrac);
+    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+    const areaX = padX;
+    const areaY = plotTop;
+
+    const toPx = (x, y) => ({
+      x: areaX + ((x - xMin) / (xMax - xMin)) * areaW,
+      y: areaY + (1 - (y - yMin) / (yMax - yMin)) * areaH,
+    });
+
+    const toMath = (px, py) => ({
+      x: xMin + ((px - areaX) / areaW) * (xMax - xMin),
+      y: yMin + (1 - (py - areaY) / areaH) * (yMax - yMin),
+    });
+
+    this.lastPlotMapper = { toPx, toMath, areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax };
+
+    ctx.save();
+    ctx.globalAlpha = axisAlpha;
+
+    // Grid lines
+    ctx.lineWidth = 1 * scale;
+    ctx.strokeStyle = pal.gridMajor;
+    for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      const p = toPx(gx, 0);
+      ctx.beginPath();
+      ctx.moveTo(p.x, areaY);
+      ctx.lineTo(p.x, areaY + areaH);
+      ctx.stroke();
+    }
+    const yStep = yMax - yMin > 12 ? 4 : 2;
+    for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= Math.floor(yMax); gy += yStep) {
+      const p = toPx(0, gy);
+      ctx.beginPath();
+      ctx.moveTo(areaX, p.y);
+      ctx.lineTo(areaX + areaW, p.y);
+      ctx.stroke();
+    }
+
+    // Main Axes
+    ctx.strokeStyle = pal.axis;
+    ctx.lineWidth = 2.2 * scale;
+    const x0 = toPx(xMin, 0);
+    const x1 = toPx(xMax, 0);
+    ctx.beginPath();
+    ctx.moveTo(x0.x, x0.y);
+    ctx.lineTo(x1.x, x1.y);
+    ctx.stroke();
+
+    const y0 = toPx(0, yMin);
+    const y1 = toPx(0, yMax);
+    ctx.beginPath();
+    ctx.moveTo(y0.x, y0.y);
+    ctx.lineTo(y1.x, y1.y);
+    ctx.stroke();
+
+    // Tick labels
+    ctx.fillStyle = pal.muted;
+    ctx.font = `500 ${Math.round(16 * scale)}px "JetBrains Mono", monospace`;
+    for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+      if (gx === 0) continue;
+      const p = toPx(gx, 0);
+      ctx.fillText(String(gx), p.x - 6 * scale, p.y + 22 * scale);
+    }
+
+    ctx.restore();
+    return { toPx, toMath, areaX, areaY, areaW, areaH, isTall };
+  }
+
+  drawCalloutCard(ctx, pal, x, y, w, h, scale, lines, accentColor) {
+    ctx.save();
+    ctx.fillStyle = pal.panel;
+    ctx.strokeStyle = accentColor || pal.panelBorder;
+    ctx.lineWidth = 2 * scale;
+    this.roundRect(ctx, x, y, w, h, 14 * scale);
+    ctx.fill();
+    ctx.stroke();
+
+    let curY = y + 34 * scale;
+    for (const item of lines) {
+      ctx.font = item.font || `500 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`;
+      ctx.fillStyle = item.color || pal.ink;
+      ctx.fillText(item.text, x + 22 * scale, curY);
+      curY += item.gap || 34 * scale;
+    }
+    ctx.restore();
+  }
+
+  drawDerivativeScene(ctx, pal, bounds, params, time, duration) {
+    const fnObj = FUNCTIONS[params.fn || 'quad'] || FUNCTIONS.quad;
+    const xMin = -2.0;
+    const xMax = 3.8;
+    const yMin = -3.0;
+    const yMax = 9.5;
+
+    const axisProg = spanEase(time, 0, 0.8);
+    const plot = this.createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, axisProg, 0.60);
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
+
+    // 1. ShowCreation of primary Indigo function curve
+    const curveProg = spanEase(time, 0.2, 1.4);
+    if (curveProg > 0) {
+      const steps = Math.max(4, Math.floor(200 * curveProg));
+      ctx.save();
+      ctx.strokeStyle = pal.indigo;
+      ctx.lineWidth = 4.5 * scale;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const x = xMin + ((xMax - xMin) * (i / 200));
+        const p = toPx(x, fnObj.eval(x));
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 2. Animated secant offset h(t) converging toward 0
+    const a = Number(params.a ?? 1.2);
+    const hInit = Number(params.h ?? 1.4);
+    const limitProg = spanEase(time, 2.4, 5.0);
+    const hNow = Math.abs(hInit) < 0.02 ? hInit : hInit * (1 - 0.985 * limitProg);
+    const fa = fnObj.eval(a);
+    const fah = fnObj.eval(a + hNow);
+    const exactSlope = fnObj.deriv(a);
+    const secantSlope = Math.abs(hNow) > 1e-3 ? (fah - fa) / hNow : exactSlope;
+    const isConverged = Math.abs(hNow) < 0.06;
+
+    const secantAlpha = spanEase(time, 1.1, 1.8);
+    if (secantAlpha > 0) {
+      ctx.save();
+      ctx.globalAlpha = secantAlpha;
+
+      // Exact tangent reference (dashed Indigo)
+      ctx.save();
+      ctx.setLineDash([8 * scale, 6 * scale]);
+      ctx.strokeStyle = pal.indigoBright;
+      ctx.lineWidth = 2.2 * scale;
+      const t0 = toPx(xMin, fa + exactSlope * (xMin - a));
+      const t1 = toPx(xMax, fa + exactSlope * (xMax - a));
+      ctx.beginPath();
+      ctx.moveTo(t0.x, t0.y);
+      ctx.lineTo(t1.x, t1.y);
+      ctx.stroke();
+      ctx.restore();
+
+      // Rise / Run triangle
+      const pa = toPx(a, fa);
+      const pah = toPx(a + hNow, fah);
+      const pCorner = toPx(a + hNow, fa);
+
+      if (Math.abs(hNow) > 0.05) {
+        ctx.fillStyle = pal.amberFill;
+        ctx.beginPath();
+        ctx.moveTo(pa.x, pa.y);
+        ctx.lineTo(pCorner.x, pCorner.y);
+        ctx.lineTo(pah.x, pah.y);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.setLineDash([5 * scale, 4 * scale]);
+        ctx.strokeStyle = pal.amber;
+        ctx.lineWidth = 2 * scale;
+        ctx.beginPath();
+        ctx.moveTo(pa.x, pa.y);
+        ctx.lineTo(pCorner.x, pCorner.y);
+        ctx.lineTo(pah.x, pah.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Active Secant Line (Amber -> Teal on convergence)
+      const lineCol = isConverged ? pal.teal : pal.amber;
+      const s0 = toPx(xMin, fa + secantSlope * (xMin - a));
+      const s1 = toPx(xMax, fa + secantSlope * (xMax - a));
+      ctx.strokeStyle = lineCol;
+      ctx.lineWidth = 3.8 * scale;
+      ctx.beginPath();
+      ctx.moveTo(s0.x, s0.y);
+      ctx.lineTo(s1.x, s1.y);
+      ctx.stroke();
+
+      // Points a and a+h
+      this.drawDot(ctx, pa.x, pa.y, 8.5 * scale, pal.indigo, pal.bg);
+      this.drawDot(ctx, pah.x, pah.y, 8.5 * scale, lineCol, pal.bg);
+
+      ctx.font = `600 ${Math.round(20 * scale)}px "Newsreader", Georgia, serif`;
+      ctx.fillStyle = pal.ink;
+      ctx.fillText(`a = ${a.toFixed(2)}`, pa.x - 30 * scale, pa.y + 30 * scale);
+      ctx.restore();
+    }
+
+    // 3. Rigor & Symbolic Readout Card on Stage
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(290 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'DIFFERENCE QUOTIENT → DERIVATIVE',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Function: ${fnObj.label}`,
+          font: `600 ${Math.round(25 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 38 * scale,
+        },
+        {
+          text: `Point a = ${a.toFixed(2)}   |   Offset h = ${hNow.toFixed(3)}`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.muted,
+          gap: 36 * scale,
+        },
+        {
+          text: `Secant m = Δf/h = ${secantSlope.toFixed(3)}`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: isConverged ? pal.teal : pal.amber,
+          gap: 36 * scale,
+        },
+        {
+          text: `Exact Derivative f'(a) = ${exactSlope.toFixed(3)}`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Tangent: y = ${fa.toFixed(2)} + ${exactSlope.toFixed(2)}(x − ${a.toFixed(2)})`,
+          font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 26 * scale,
+        },
+      ],
+      isConverged ? pal.teal : pal.panelBorder
+    );
+
+    // Sampled table for Accessible View as Data
+    const sampleXs = [-1.0, -0.25, 0.5, 1.2, 1.8, 2.4, 3.0];
+    const tableRows = sampleXs.map((sx) => [
+      sx.toFixed(2),
+      fnObj.eval(sx).toFixed(3),
+      (fa + exactSlope * (sx - a)).toFixed(3),
+      (fa + secantSlope * (sx - a)).toFixed(3),
+    ]);
+
+    return {
+      readouts: [
+        { key: 'f(a)', val: fa.toFixed(3) },
+        { key: 'Offset h(t)', val: hNow.toFixed(3) },
+        { key: 'Secant Slope', val: secantSlope.toFixed(3) },
+        { key: "Exact f'(a)", val: exactSlope.toFixed(3) },
+      ],
+      tableHeaders: ['x', 'f(x)', 'Tangent y', 'Secant y'],
+      tableRows,
+    };
+  }
+
+  drawRiemannScene(ctx, pal, bounds, params, time, duration) {
+    const fnObj = FUNCTIONS[params.fn || 'quad'] || FUNCTIONS.quad;
+    const xMin = -0.5;
+    const xMax = 3.6;
+    const yMin = -2.5;
+    const yMax = 9.0;
+
+    const plot = this.createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, spanEase(time, 0, 0.7), 0.60);
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
+
+    const a = 0.0;
+    const b = Number(params.b ?? 3.0);
+    const targetN = Math.max(2, Math.round(Number(params.n ?? 24)));
+    const rule = params.rule || 'left';
+
+    const refProg = spanEase(time, 1.4, 4.6);
+    const activeN = Math.max(2, Math.round(4 + (targetN - 4) * refProg));
+    const dx = (b - a) / activeN;
+
+    let approxSum = 0;
+    const tableRows = [];
+    const rectAlpha = spanEase(time, 0.9, 1.6);
+
+    if (rectAlpha > 0) {
+      ctx.save();
+      ctx.globalAlpha = rectAlpha;
+      for (let i = 0; i < activeN; i++) {
+        const x0 = a + i * dx;
+        const x1 = x0 + dx;
+        let sampleX = x0;
+        if (rule === 'right') sampleX = x1;
+        else if (rule === 'midpoint') sampleX = 0.5 * (x0 + x1);
+
+        const hVal =
+          rule === 'trapezoid' ? 0.5 * (fnObj.eval(x0) + fnObj.eval(x1)) : fnObj.eval(sampleX);
+        const area = hVal * dx;
+        approxSum += area;
+
+        if (i < 10) {
+          tableRows.push([
+            String(i + 1),
+            `[${x0.toFixed(2)}, ${x1.toFixed(2)}]`,
+            sampleX.toFixed(2),
+            hVal.toFixed(3),
+            area.toFixed(3),
+          ]);
+        }
+
+        const pTopLeft = toPx(x0, Math.max(0, hVal));
+        const pBotRight = toPx(x1, Math.min(0, hVal));
+        ctx.fillStyle = hVal >= 0 ? pal.amberFill : pal.indigoFill;
+        ctx.strokeStyle = hVal >= 0 ? pal.amber : pal.indigo;
+        ctx.lineWidth = 1.4 * scale;
+
+        if (rule === 'trapezoid') {
+          const p0Base = toPx(x0, 0);
+          const p0Top = toPx(x0, fnObj.eval(x0));
+          const p1Top = toPx(x1, fnObj.eval(x1));
+          const p1Base = toPx(x1, 0);
+          ctx.beginPath();
+          ctx.moveTo(p0Base.x, p0Base.y);
+          ctx.lineTo(p0Top.x, p0Top.y);
+          ctx.lineTo(p1Top.x, p1Top.y);
+          ctx.lineTo(p1Base.x, p1Base.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        } else {
+          ctx.fillRect(
+            pTopLeft.x,
+            pTopLeft.y,
+            pBotRight.x - pTopLeft.x,
+            pBotRight.y - pTopLeft.y
+          );
+          ctx.strokeRect(
+            pTopLeft.x,
+            pTopLeft.y,
+            pBotRight.x - pTopLeft.x,
+            pBotRight.y - pTopLeft.y
+          );
+        }
+      }
+      ctx.restore();
+    }
+
+    // Curve on top
+    ctx.save();
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 4.5 * scale;
+    ctx.beginPath();
+    for (let i = 0; i <= 180; i++) {
+      const x = xMin + ((xMax - xMin) * i) / 180;
+      const p = toPx(x, fnObj.eval(x));
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    const exactVal = fnObj.anti(b) - fnObj.anti(a);
+    const errVal = Math.abs(exactVal - approxSum);
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(285 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: `RIEMANN PARTITION · ${rule.toUpperCase()} RULE`,
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Interval [0.00, ${b.toFixed(2)}]  ·  n = ${activeN}`,
+          font: `600 ${Math.round(24 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 36 * scale,
+        },
+        {
+          text: `Subinterval width Δx = ${dx.toFixed(4)}`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.muted,
+          gap: 36 * scale,
+        },
+        {
+          text: `Riemann Sum ≈ ${approxSum.toFixed(4)}`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 36 * scale,
+        },
+        {
+          text: `Exact ∫ f(x)dx = ${exactVal.toFixed(4)}`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Absolute Error |E_n| = ${errVal.toFixed(4)}`,
+          font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
+          color: errVal < 0.15 ? pal.teal : pal.inkSub,
+          gap: 26 * scale,
+        },
+      ],
+      errVal < 0.15 ? pal.teal : pal.panelBorder
+    );
+
+    return {
+      readouts: [
+        { key: 'Partitions n', val: String(activeN) },
+        { key: 'Width Δx', val: dx.toFixed(3) },
+        { key: 'Riemann Sum', val: approxSum.toFixed(3) },
+        { key: 'Exact ∫f(x)dx', val: exactVal.toFixed(3) },
+      ],
+      tableHeaders: ['i', '[x, x+Δx]', 'x*', 'f(x*)', 'Area'],
+      tableRows,
+    };
+  }
+
+  drawSquareScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const xVal = Number(params.xVal ?? 2.2);
+    const bVal = Number(params.bVal ?? 1.6);
+    const bHalf = bVal / 2;
+
+    const unitPx = Math.min(plotW * (isTall ? 0.65 : 0.42), plotH * 0.68) / (xVal + bHalf + 0.8);
+    const xPx = xVal * unitPx;
+    const bHalfPx = bHalf * unitPx;
+
+    const splitProg = spanEase(time, 1.3, 2.8);
+    const gapPx = (1 - splitProg) * 28 * scale + 6 * scale;
+    const cornerProg = spanEase(time, 3.1, 4.4);
+
+    const originX = padX + Math.round(plotW * (isTall ? 0.18 : 0.08));
+    const originY = plotTop + Math.round(plotH * 0.14);
+
+    // 1. x^2 Indigo Square
+    const x2Alpha = spanEase(time, 0, 1.0);
+    ctx.save();
+    ctx.globalAlpha = x2Alpha;
+    ctx.fillStyle = pal.indigoFill;
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 3.5 * scale;
+    this.roundRect(ctx, originX, originY, xPx, xPx, 8 * scale);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = pal.ink;
+    ctx.font = `600 ${Math.round(32 * scale)}px "Newsreader", Georgia, serif`;
+    ctx.fillText('x²', originX + xPx * 0.43, originY + xPx * 0.54);
+    ctx.font = `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = pal.muted;
+    ctx.fillText(`=${(xVal * xVal).toFixed(2)}`, originX + xPx * 0.36, originY + xPx * 0.68);
+    ctx.restore();
+
+    // 2. Two Teal (b/2)x rectangles
+    const stripAlpha = spanEase(time, 1.1, 2.2);
+    if (stripAlpha > 0) {
+      ctx.save();
+      ctx.globalAlpha = stripAlpha;
+      ctx.fillStyle = pal.tealFill;
+      ctx.strokeStyle = pal.teal;
+      ctx.lineWidth = 3 * scale;
+
+      // Right strip
+      this.roundRect(ctx, originX + xPx + gapPx, originY, bHalfPx, xPx, 6 * scale);
+      ctx.fill();
+      ctx.stroke();
+
+      // Bottom strip
+      this.roundRect(ctx, originX, originY + xPx + gapPx, xPx, bHalfPx, 6 * scale);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = pal.ink;
+      ctx.font = `600 ${Math.round(20 * scale)}px "Newsreader", Georgia, serif`;
+      ctx.fillText('(b/2)x', originX + xPx + gapPx + bHalfPx * 0.14, originY + xPx * 0.52);
+      ctx.fillText('(b/2)x', originX + xPx * 0.40, originY + xPx + gapPx + bHalfPx * 0.62);
+      ctx.restore();
+    }
+
+    // 3. Completing the Amber (b/2)^2 corner square
+    if (cornerProg > 0) {
+      ctx.save();
+      ctx.globalAlpha = cornerProg;
+      ctx.fillStyle = pal.amberFill;
+      ctx.strokeStyle = pal.amber;
+      ctx.lineWidth = 3.5 * scale;
+      this.roundRect(
+        ctx,
+        originX + xPx + gapPx,
+        originY + xPx + gapPx,
+        bHalfPx,
+        bHalfPx,
+        6 * scale
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = pal.amber;
+      ctx.font = `700 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`;
+      ctx.fillText(
+        '(b/2)²',
+        originX + xPx + gapPx + bHalfPx * 0.12,
+        originY + xPx + gapPx + bHalfPx * 0.58
+      );
+      ctx.restore();
+    }
+
+    const totalSquare = Math.pow(xVal + bHalf, 2);
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : originY;
+    const cardW = isTall ? plotW : Math.round(plotW * 0.46);
+    const cardH = Math.round(285 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'DIGITAL SAT · ALGEBRAIC STRUCTURE',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: 'x² + bx + (b/2)² = (x + b/2)²',
+          font: `600 ${Math.round(26 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 38 * scale,
+        },
+        {
+          text: `x = ${xVal.toFixed(2)}   |   b = ${bVal.toFixed(2)}   |   b/2 = ${bHalf.toFixed(2)}`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.muted,
+          gap: 36 * scale,
+        },
+        {
+          text: `Indigo x² Area = ${(xVal * xVal).toFixed(3)}`,
+          font: `500 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Two Teal Strips 2·(b/2)x = ${(bVal * xVal).toFixed(3)}`,
+          font: `500 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `Amber Corner (b/2)² = ${(bHalf * bHalf).toFixed(3)} → Total = ${totalSquare.toFixed(3)}`,
+          font: `600 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 28 * scale,
+        },
+      ],
+      cornerProg > 0.8 ? pal.amber : pal.panelBorder
+    );
+
+    return {
+      readouts: [
+        { key: 'Core x²', val: (xVal * xVal).toFixed(2) },
+        { key: 'Linear bx', val: (bVal * xVal).toFixed(2) },
+        { key: 'Corner (b/2)²', val: (bHalf * bHalf).toFixed(2) },
+        { key: '(x + b/2)²', val: totalSquare.toFixed(2) },
+      ],
+      tableHeaders: ['Region', 'Symbolic', 'Dimensions', 'Area'],
+      tableRows: [
+        ['Core Square', 'x²', `${xVal.toFixed(2)} × ${xVal.toFixed(2)}`, (xVal * xVal).toFixed(3)],
+        ['Right Strip', '(b/2)x', `${bHalf.toFixed(2)} × ${xVal.toFixed(2)}`, (bHalf * xVal).toFixed(3)],
+        ['Bottom Strip', '(b/2)x', `${xVal.toFixed(2)} × ${bHalf.toFixed(2)}`, (bHalf * xVal).toFixed(3)],
+        ['Missing Corner', '(b/2)²', `${bHalf.toFixed(2)} × ${bHalf.toFixed(2)}`, (bHalf * bHalf).toFixed(3)],
+        ['Completed Square', '(x+b/2)²', `${(xVal + bHalf).toFixed(2)}²`, totalSquare.toFixed(3)],
+      ],
+    };
+  }
+
+  drawUnitCircleScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const baseDeg = Number(params.thetaDeg ?? 60);
+    const sweepProg = spanEase(time, 1.6, 4.8);
+    const degNow = baseDeg + sweepProg * 120;
+    const rad = (degNow * Math.PI) / 180;
+    const cosV = Math.cos(rad);
+    const sinV = Math.sin(rad);
+
+    const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.25));
+    const cy = plotTop + Math.round(plotH * (isTall ? 0.34 : 0.50));
+    const radius = Math.round(Math.min(plotW * 0.22, plotH * 0.38));
+
+    this.lastPlotMapper = {
+      unitCircle: { cx, cy, radius },
+    };
+
+    // Axes & Unit Circle
+    ctx.save();
+    ctx.strokeStyle = pal.axis;
+    ctx.lineWidth = 2 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx - radius * 1.25, cy);
+    ctx.lineTo(cx + radius * 1.25, cy);
+    ctx.moveTo(cx, cy - radius * 1.25);
+    ctx.lineTo(cx, cy + radius * 1.25);
+    ctx.stroke();
+
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 3.8 * scale;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const px = cx + radius * cosV;
+    const py = cy - radius * sinV;
+
+    // Reference triangle
+    ctx.fillStyle = pal.amberFill;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, cy);
+    ctx.lineTo(px, py);
+    ctx.closePath();
+    ctx.fill();
+
+    // cos (Teal) & sin (Amber) & radius (Indigo)
+    ctx.strokeStyle = pal.teal;
+    ctx.lineWidth = 4.5 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, cy);
+    ctx.stroke();
+
+    ctx.strokeStyle = pal.amber;
+    ctx.beginPath();
+    ctx.moveTo(px, cy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+
+    ctx.strokeStyle = pal.indigoBright;
+    ctx.lineWidth = 3.5 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+
+    this.drawDot(ctx, px, py, 8.5 * scale, pal.amber, pal.bg);
+    ctx.restore();
+
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : plotTop + Math.round(24 * scale);
+    const cardW = isTall ? plotW : Math.round(plotW * 0.46);
+    const cardH = Math.round(285 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'UNIT CIRCLE · PYTHAGOREAN IDENTITY',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Angle θ = ${degNow.toFixed(1)}°  (${(rad / Math.PI).toFixed(2)}π rad)`,
+          font: `600 ${Math.round(25 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 38 * scale,
+        },
+        {
+          text: `cos θ (Teal horizontal) = ${cosV.toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 35 * scale,
+        },
+        {
+          text: `sin θ (Amber vertical)  = ${sinV.toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 35 * scale,
+        },
+        {
+          text: `tan θ = sin θ / cos θ   = ${(Math.abs(cosV) > 1e-3 ? sinV / cosV : Infinity).toFixed(4)}`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.muted,
+          gap: 35 * scale,
+        },
+        {
+          text: `cos²θ + sin²θ = ${(cosV * cosV + sinV * sinV).toFixed(4)} ✓`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 28 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const specialAngles = [0, 30, 45, 60, 90, 120, 180];
+    const tableRows = specialAngles.map((deg) => {
+      const r = (deg * Math.PI) / 180;
+      return [
+        `${deg}°`,
+        Math.cos(r).toFixed(3),
+        Math.sin(r).toFixed(3),
+        (Math.pow(Math.cos(r), 2) + Math.pow(Math.sin(r), 2)).toFixed(3),
+      ];
+    });
+
+    return {
+      readouts: [
+        { key: 'Angle θ', val: `${degNow.toFixed(1)}°` },
+        { key: 'cos θ', val: cosV.toFixed(3) },
+        { key: 'sin θ', val: sinV.toFixed(3) },
+        { key: 'cos²θ + sin²θ', val: '1.000' },
+      ],
+      tableHeaders: ['Angle θ', 'cos θ', 'sin θ', 'cos²θ + sin²θ'],
+      tableRows,
+    };
+  }
+
+  drawLinAlgScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const warpProg = spanEase(time, 1.0, 4.2);
+
+    const m11 = 1 + warpProg * (Number(params.m11 ?? 1.8) - 1);
+    const m12 = warpProg * Number(params.m12 ?? 0.6);
+    const m21 = warpProg * Number(params.m21 ?? 0.4);
+    const m22 = 1 + warpProg * (Number(params.m22 ?? 1.4) - 1);
+    const det = m11 * m22 - m12 * m21;
+
+    const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.30));
+    const cy = plotTop + Math.round(plotH * (isTall ? 0.34 : 0.52));
+    const unit = Math.min(plotW, plotH) * 0.105;
+
+    const mapVec = (x, y) => ({
+      x: cx + (m11 * x + m12 * y) * unit,
+      y: cy - (m21 * x + m22 * y) * unit,
+    });
+
+    // Transformed coordinate lattice
+    ctx.save();
+    ctx.strokeStyle = pal.indigoFill;
+    ctx.lineWidth = 2 * scale;
+    for (let k = -3; k <= 3; k++) {
+      const a0 = mapVec(k, -3);
+      const a1 = mapVec(k, 3);
+      ctx.beginPath();
+      ctx.moveTo(a0.x, a0.y);
+      ctx.lineTo(a1.x, a1.y);
+      ctx.stroke();
+
+      const b0 = mapVec(-3, k);
+      const b1 = mapVec(3, k);
+      ctx.beginPath();
+      ctx.moveTo(b0.x, b0.y);
+      ctx.lineTo(b1.x, b1.y);
+      ctx.stroke();
+    }
+
+    // Determinant parallelogram for unit square
+    const p00 = mapVec(0, 0);
+    const p10 = mapVec(1, 0);
+    const p11 = mapVec(1, 1);
+    const p01 = mapVec(0, 1);
+    ctx.fillStyle = pal.amberFill;
+    ctx.strokeStyle = pal.amber;
+    ctx.lineWidth = 2.5 * scale;
+    ctx.beginPath();
+    ctx.moveTo(p00.x, p00.y);
+    ctx.lineTo(p10.x, p10.y);
+    ctx.lineTo(p11.x, p11.y);
+    ctx.lineTo(p01.x, p01.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Basis vectors e1 (Teal) and e2 (Amber)
+    this.drawArrow(ctx, p00.x, p00.y, p10.x, p10.y, pal.teal, 4.5 * scale);
+    this.drawArrow(ctx, p00.x, p00.y, p01.x, p01.y, pal.amber, 4.5 * scale);
+    ctx.restore();
+
+    const trace = m11 + m22;
+    const disc = trace * trace - 4 * det;
+    const eigText =
+      disc >= 0
+        ? `λ₁ = ${((trace + Math.sqrt(disc)) / 2).toFixed(2)},  λ₂ = ${((trace - Math.sqrt(disc)) / 2).toFixed(2)}`
+        : 'Complex eigenvalues (rotation)';
+
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.56);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : plotTop + Math.round(24 * scale);
+    const cardW = isTall ? plotW : Math.round(plotW * 0.44);
+    const cardH = Math.round(285 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'LINEAR ALGEBRA · MATRIX WARP',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `A(t) = [ [${m11.toFixed(2)}, ${m12.toFixed(2)}], [${m21.toFixed(2)}, ${m22.toFixed(2)}] ]`,
+          font: `600 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.ink,
+          gap: 38 * scale,
+        },
+        {
+          text: `î → (${m11.toFixed(2)}, ${m21.toFixed(2)})  [Teal Basis]`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `ĵ → (${m12.toFixed(2)}, ${m22.toFixed(2)})  [Amber Basis]`,
+          font: `500 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 36 * scale,
+        },
+        {
+          text: `Area Scale det(A) = ${det.toFixed(3)}`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Spectrum: ${eigText}`,
+          font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 28 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const sampleVecs = [
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [-1, 1],
+      [2, -1],
+    ];
+    const tableRows = sampleVecs.map(([vx, vy]) => [
+      `(${vx}, ${vy})`,
+      `(${(m11 * vx + m12 * vy).toFixed(2)}, ${(m21 * vx + m22 * vy).toFixed(2)})`,
+      Math.hypot(vx, vy).toFixed(2),
+      Math.hypot(m11 * vx + m12 * vy, m21 * vx + m22 * vy).toFixed(2),
+    ]);
+
+    return {
+      readouts: [
+        { key: 'det(A)', val: det.toFixed(3) },
+        { key: 'trace(A)', val: trace.toFixed(3) },
+        { key: 'Image of î', val: `(${m11.toFixed(1)}, ${m21.toFixed(1)})` },
+        { key: 'Image of ĵ', val: `(${m12.toFixed(1)}, ${m22.toFixed(1)})` },
+      ],
+      tableHeaders: ['Vector v', 'Image Av', '||v||', '||Av||'],
+      tableRows,
+    };
+  }
+
+  drawQudratScene(ctx, pal, bounds, params, time, duration) {
+    const xMin = -1.5;
+    const xMax = 4.6;
+    const yMin = -1.0;
+    const yMax = 22.0;
+
+    const plot = this.createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, spanEase(time, 0, 0.7), 0.60);
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
+
+    const fnA = (x) => Math.pow(2, x);
+    const fnB = (x) => x * x + 2;
+
+    // Curve A: 2^x (Indigo)
+    const progA = spanEase(time, 0.2, 1.5);
+    ctx.save();
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 4.5 * scale;
+    ctx.beginPath();
+    for (let i = 0; i <= Math.floor(180 * progA); i++) {
+      const x = xMin + ((xMax - xMin) * i) / 180;
+      const p = toPx(x, fnA(x));
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+
+    // Curve B: x^2 + 2 (Amber)
+    const progB = spanEase(time, 1.2, 2.5);
+    if (progB > 0) {
+      ctx.strokeStyle = pal.amber;
+      ctx.beginPath();
+      for (let i = 0; i <= Math.floor(180 * progB); i++) {
+        const x = xMin + ((xMax - xMin) * i) / 180;
+        const p = toPx(x, fnB(x));
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    const xProbe = Number(params.xProbe ?? 3.2);
+    const valA = fnA(xProbe);
+    const valB = fnB(xProbe);
+    const pA = toPx(xProbe, valA);
+    const pB = toPx(xProbe, valB);
+
+    if (time > 2.2) {
+      ctx.save();
+      ctx.setLineDash([6 * scale, 5 * scale]);
+      ctx.strokeStyle = pal.teal;
+      ctx.lineWidth = 2.5 * scale;
+      ctx.beginPath();
+      ctx.moveTo(pA.x, pA.y);
+      ctx.lineTo(pB.x, pB.y);
+      ctx.stroke();
+      ctx.restore();
+
+      this.drawDot(ctx, pA.x, pA.y, 8 * scale, pal.indigo, pal.bg);
+      this.drawDot(ctx, pB.x, pB.y, 8 * scale, pal.amber, pal.bg);
+    }
+
+    const verdict =
+      Math.abs(valA - valB) < 0.05
+        ? 'Choice C (Equal at x₀)'
+        : valA > valB
+        ? 'Column A > Column B at x₀'
+        : 'Column B > Column A at x₀';
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(285 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'QIYAS GAT QUDRAT · قارن بين القيمتين',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Test Probe x₀ = ${xProbe.toFixed(2)}`,
+          font: `600 ${Math.round(25 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 38 * scale,
+        },
+        {
+          text: `Column A (2ˣ)     = ${valA.toFixed(3)}`,
+          font: `600 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 35 * scale,
+        },
+        {
+          text: `Column B (x² + 2) = ${valB.toFixed(3)}`,
+          font: `600 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 35 * scale,
+        },
+        {
+          text: `At x₀: ${verdict}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: 'Global on ℝ: Choice D (crosses near x ≈ 4.26)',
+          font: `500 ${Math.round(17 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 26 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const probes = [0, 1, 2, 3, 4, 4.26, 4.5];
+    const tableRows = probes.map((px) => {
+      const a = fnA(px);
+      const b = fnB(px);
+      return [px.toFixed(2), a.toFixed(2), b.toFixed(2), a > b ? 'A > B' : a < b ? 'B > A' : 'A = B'];
+    });
+
+    return {
+      readouts: [
+        { key: 'Probe x₀', val: xProbe.toFixed(2) },
+        { key: 'Column A (2ˣ)', val: valA.toFixed(2) },
+        { key: 'Column B (x²+2)', val: valB.toFixed(2) },
+        { key: 'Global Answer', val: 'Choice D' },
+      ],
+      tableHeaders: ['x', 'Col A: 2ˣ', 'Col B: x²+2', 'Comparison'],
+      tableRows,
+    };
+  }
+
+  drawWatermark(ctx, pal, width, height, padX, scale) {
+    ctx.save();
+    const wmY = height - Math.round(height * 0.042);
+    const text = 'ClipSAT · 3c1c   |   clipsat.org';
+    ctx.font = `600 ${Math.round(17 * scale)}px "Plus Jakarta Sans", sans-serif`;
+    const metrics = ctx.measureText(text);
+    const textX = width - padX - metrics.width;
+
+    if (this.markLoaded) {
+      const iconSize = Math.round(26 * scale);
+      ctx.drawImage(this.markImg, textX - iconSize - 10 * scale, wmY - iconSize + 5 * scale, iconSize, iconSize);
+    } else {
+      this.drawDot(ctx, textX - 22 * scale, wmY - 6 * scale, 5 * scale, pal.indigo, pal.bg);
+      this.drawDot(ctx, textX - 10 * scale, wmY - 6 * scale, 5 * scale, pal.amber, pal.bg);
+    }
+
+    ctx.fillStyle = pal.muted;
+    ctx.fillText(text, textX, wmY);
+    ctx.restore();
+  }
+
+  drawDot(ctx, x, y, r, fill, stroke) {
+    ctx.save();
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = Math.max(2, r * 0.28);
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawArrow(ctx, x0, y0, x1, y1, color, width) {
+    const headLen = width * 3.1;
+    const angle = Math.atan2(y1 - y0, x1 - x0);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - headLen * Math.cos(angle - Math.PI / 6), y1 - headLen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(x1 - headLen * Math.cos(angle + Math.PI / 6), y1 - headLen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  }
+}

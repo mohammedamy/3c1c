@@ -96,6 +96,21 @@ def parse_cli():
             help="Render at a 4k",
         )
         parser.add_argument(
+            "--short",
+            action="store_true",
+            help="Render vertical 9:16 short clip (1080x1920)",
+        )
+        parser.add_argument(
+            "--square",
+            action="store_true",
+            help="Render square 1:1 exam card (1080x1080)",
+        )
+        parser.add_argument(
+            "--paper",
+            action="store_true",
+            help="Render on ClipSAT editorial Paper (#FAF7F2) background with dark ink",
+        )
+        parser.add_argument(
             "-f", "--full_screen",
             action="store_true",
             help="Show window in full screen",
@@ -207,7 +222,7 @@ def parse_cli():
         parser.add_argument(
             "-v", "--version",
             action="store_true",
-            help="Display the version of manimgl"
+            help="Display the version of 3c1c / manimgl"
         )
         parser.add_argument(
             "--log-level",
@@ -224,7 +239,12 @@ def parse_cli():
             help="Automatically reload Python modules to pick up code changes " +
                  "across different files",
         )
-        args = parser.parse_args()
+        prog_name = os.path.basename(sys.argv[0]) if sys.argv else ""
+        cli_entrypoints = {"3c1c", "clipsat-manim", "manimgl", "manim-render", "__main__.py"}
+        if prog_name in cli_entrypoints or os.environ.get("MANIM_PARSE_CLI") == "1":
+            args = parser.parse_args()
+        else:
+            args = parser.parse_args([])
         args.write_file = any([args.write_file, args.open, args.finder])
         return args
     except argparse.ArgumentError as err:
@@ -254,6 +274,13 @@ def update_camera_config(config: Dict, args: Namespace):
     camera_config.resolution = arg_resolution or literal_eval(camera_config.resolution)
     if args.fps:
         camera_config.fps = args.fps
+    if getattr(args, "paper", False) and not args.color:
+        camera_config.background_color = colour.Color(config.colors.clipsat_paper)
+        config.mobject.default_mobject_color = config.colors.clipsat_ink
+        config.mobject.default_light_color = "#4B5668"
+        config.vmobject.default_stroke_color = config.colors.clipsat_ink
+        if "clipsat" in config:
+            config.clipsat.theme = "paper"
     if args.color:
         try:
             camera_config.background_color = colour.Color(args.color)
@@ -350,6 +377,10 @@ def get_manim_dir():
 def get_resolution_from_args(args: Optional[Namespace], resolution_options: dict) -> Optional[tuple[int, int]]:
     if args.resolution:
         return tuple(map(int, args.resolution.split("x")))
+    if getattr(args, "short", False):
+        return literal_eval(resolution_options["short"])
+    if getattr(args, "square", False):
+        return literal_eval(resolution_options["square"])
     if args.low_quality:
         return literal_eval(resolution_options["low"])
     if args.medium_quality:

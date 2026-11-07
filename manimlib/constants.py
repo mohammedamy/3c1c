@@ -134,6 +134,33 @@ PURE_RED: ManimColor = manim_config.colors.pure_red
 PURE_GREEN: ManimColor = manim_config.colors.pure_green
 PURE_BLUE: ManimColor = manim_config.colors.pure_blue
 
+# ClipSAT Design System Tokens (Paper & Dark Slate + Indigo & Amber)
+CLIPSAT_PAPER: ManimColor = manim_config.colors.clipsat_paper
+CLIPSAT_PAPER_2: ManimColor = manim_config.colors.clipsat_paper_2
+CLIPSAT_INK: ManimColor = manim_config.colors.clipsat_ink
+CLIPSAT_DARK: ManimColor = manim_config.colors.clipsat_dark
+CLIPSAT_PANEL: ManimColor = manim_config.colors.clipsat_panel
+
+CLIPSAT_INDIGO_E: ManimColor = manim_config.colors.clipsat_indigo_e
+CLIPSAT_INDIGO_D: ManimColor = manim_config.colors.clipsat_indigo_d
+CLIPSAT_INDIGO_C: ManimColor = manim_config.colors.clipsat_indigo_c
+CLIPSAT_INDIGO_B: ManimColor = manim_config.colors.clipsat_indigo_b
+CLIPSAT_INDIGO_A: ManimColor = manim_config.colors.clipsat_indigo_a
+CLIPSAT_INDIGO: ManimColor = CLIPSAT_INDIGO_B
+
+CLIPSAT_AMBER_E: ManimColor = manim_config.colors.clipsat_amber_e
+CLIPSAT_AMBER_D: ManimColor = manim_config.colors.clipsat_amber_d
+CLIPSAT_AMBER_C: ManimColor = manim_config.colors.clipsat_amber_c
+CLIPSAT_AMBER_B: ManimColor = manim_config.colors.clipsat_amber_b
+CLIPSAT_AMBER_A: ManimColor = manim_config.colors.clipsat_amber_a
+CLIPSAT_AMBER: ManimColor = CLIPSAT_AMBER_B
+
+CLIPSAT_TEAL: ManimColor = manim_config.colors.clipsat_teal
+CLIPSAT_TEAL_BRIGHT: ManimColor = manim_config.colors.clipsat_teal_bright
+CLIPSAT_OK: ManimColor = manim_config.colors.clipsat_ok
+CLIPSAT_OK_BRIGHT: ManimColor = manim_config.colors.clipsat_ok_bright
+CLIPSAT_ROSE: ManimColor = manim_config.colors.clipsat_rose
+
 MANIM_COLORS: List[ManimColor] = list(manim_config.colors.values())
 
 # Abbreviated names for the "median" colors
@@ -148,6 +175,12 @@ PURPLE: ManimColor = PURPLE_C
 GREY: ManimColor = GREY_C
 
 COLORMAP_3B1B: List[ManimColor] = [BLUE_E, GREEN, YELLOW, RED]
+COLORMAP_CLIPSAT: List[ManimColor] = [
+    CLIPSAT_INDIGO_C,
+    CLIPSAT_TEAL_BRIGHT,
+    CLIPSAT_AMBER_B,
+    CLIPSAT_ROSE,
+]
 
 # Default mobject colors should be configurable just like background color
 # DEFAULT_MOBJECT_COLOR is mainly for text, tex, line, etc... mobjects. Default is WHITE

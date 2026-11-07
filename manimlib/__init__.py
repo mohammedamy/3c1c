@@ -4,9 +4,12 @@ except ImportError:  # For Python <3.8 fallback
     from importlib_metadata import version, PackageNotFoundError  # type: ignore
 
 try:
-    __version__ = version("manimgl")
+    __version__ = version("3c1c")
 except PackageNotFoundError:
-    __version__ = "unknown"
+    try:
+        __version__ = version("manimgl")
+    except PackageNotFoundError:
+        __version__ = "1.8.0-clipsat"
 
 
 from manimlib.config import manim_config
@@ -90,3 +93,5 @@ from manimlib.utils.sounds import *
 from manimlib.utils.space_ops import *
 from manimlib.utils.svg_export import *
 from manimlib.utils.tex import *
+
+from manimlib.clipsat import *

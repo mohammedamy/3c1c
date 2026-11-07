@@ -48,9 +48,9 @@ def run_scenes():
 
 def main():
     """
-    Main entry point for ManimGL.
+    Main entry point for 3c1c (ClipSAT ManimGL).
     """
-    print(f"ManimGL \033[32mv{__version__}\033[0m")
+    print(f"3c1c · ClipSAT Manim Engine \033[36mv{__version__}\033[0m")
 
     args = parse_cli()
     if args.version and args.file is None:

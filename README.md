@@ -1,188 +1,63 @@
+# 3c1c · ClipSAT Mathematical Animation Engine & Web Studio
+
 <p align="center">
-    <a href="https://github.com/3b1b/manim">
-        <img src="https://raw.githubusercontent.com/3b1b/manim/master/logo/cropped.png">
-    </a>
+  <img src="web/assets/clipsat-mark.png" alt="ClipSAT 3c1c Emblem" width="84" />
 </p>
 
-[![pypi version](https://img.shields.io/pypi/v/manimgl?logo=pypi)](https://pypi.org/project/manimgl/)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://choosealicense.com/licenses/mit/)
-[![Manim Subreddit](https://img.shields.io/reddit/subreddit-subscribers/manim.svg?color=ff4301&label=reddit&logo=reddit)](https://www.reddit.com/r/manim/)
-[![Manim Discord](https://img.shields.io/discord/581738731934056449.svg?label=discord&logo=discord)](https://discord.com/invite/bYCyhM9Kz2)
-[![docs](https://github.com/3b1b/manim/workflows/docs/badge.svg)](https://3b1b.github.io/manim/)
+**3c1c** is **[ClipSAT](https://clipsat.org)**'s mathematical animation engine and hybrid web studio, customized from Grant Sanderson's [`3b1b/manim`](https://github.com/3b1b/manim) (`manimgl`) for **Mr. Mohamed Abdallah's** international and national exam curricula (**AP Calculus AB/BC, Digital SAT, Cambridge IGCSE & A-Level, IB Mathematics, University Linear Algebra, and Saudi GAT Qudrat / SAAT Tahsili**).
 
-Manim is an engine for precise programmatic animations, designed for creating explanatory math videos.
+---
 
-Note, there are two versions of manim.  This repository began as a personal project by the author of [3Blue1Brown](https://www.3blue1brown.com/) for the purpose of animating those videos, with video-specific code available [here](https://github.com/3b1b/videos).  In 2020 a group of developers forked it into what is now the [community edition](https://github.com/ManimCommunity/manim/), with a goal of being more stable, better tested, quicker to respond to community contributions, and all around friendlier to get started with. See [this page](https://docs.manim.community/en/stable/faq/installation.html#different-versions) for more details.
+## ✨ What's Customized for ClipSAT (`3c1c`)
 
-## Installation
-> [!Warning]
-> **WARNING:** These instructions are for ManimGL _only_. Trying to use these instructions to install [Manim Community/manim](https://github.com/ManimCommunity/manim) or instructions there to install this version will cause problems. You should first decide which version you wish to install, then only follow the instructions for your desired version.
+1. **Hybrid Web Studio ([`index.html`](index.html), [`web/`](web/), [`server/app.py`](server/app.py))**:
+   - **Zero-Install Browser Engine ([`web/js/engine.js`](web/js/engine.js))**: 60 FPS high-DPI HTML5 Canvas mathematical animation studio with interactive point dragging, timeline keyframe scrubbing, KaTeX rigor cards, accessible *"View as Data"* numerical tables, client-side **PNG** & **WebM** clip recording, and 100% static GitHub Pages compatibility.
+   - **Python FastAPI Render Backend ([`server/app.py`](server/app.py), [`server/headless_renderer.py`](server/headless_renderer.py))**: Discovers `ClipSATScene` classes, AST-validates custom Python scene scripts, and renders downloadable **H.264 `.mp4`** clips (using native `manimlib` WebGPU/Vulkan when available or the built-in CPU/FFmpeg headless renderer).
+2. **ClipSAT Design System & Visual Grammar ([`manimlib/default_config.yml`](manimlib/default_config.yml), [`manimlib/constants.py`](manimlib/constants.py), [`manimlib/clipsat.py`](manimlib/clipsat.py))**:
+   - **Dual Editorial Themes**: **Dark Slate (`#0A0D14`)** and **Editorial Paper (`#FAF7F2`)** (`--paper` CLI flag or one-click toggle in the studio).
+   - **ClipSAT Color Tokens**: `CLIPSAT_INDIGO` (`#132746` / `#7DA4E8` for primary curves & derivatives), `CLIPSAT_AMBER` (`#9E6515` / `#F59E0B` for integrals, Riemann partitions & secants), `CLIPSAT_TEAL` (`#0C7A6F` / `#2DD4BF` for exact convergence & basis vectors), and `COLORMAP_CLIPSAT`.
+   - **Multi-Format Aspect Presets**: `16:9` Lesson (`1920×1080`), `9:16` Vertical Short (`--short`, `1080×1920`), and `1:1` Exam Card (`--square`, `1080×1080`).
+   - **`ClipSATScene` Base Class ([`manimlib/clipsat.py`](manimlib/clipsat.py))**: Built-in `build_exam_header(track, title)`, `build_clipsat_watermark()`, and `highlight_callout(mobject)`.
+3. **Curated Curriculum Scenes ([`clipsat_scenes.py`](clipsat_scenes.py))**:
+   - `DerivativeTangentScene` — Secant line converging to the Indigo derivative tangent $f'(a)$.
+   - `RiemannIntegralScene` — Amber Riemann partition converging to $\int_a^b f(x)\,dx = F(b)-F(a)$.
+   - `CompletingTheSquareScene` — Geometric area decomposition of $x^2 + bx + (b/2)^2 = (x + b/2)^2$.
+   - `UnitCircleExactTrigScene` — Rotating terminal ray $P(\cos\theta, \sin\theta)$ and $\cos^2\theta + \sin^2\theta = 1$.
+   - `EigenLinearTransformScene` — $2\times 2$ linear transformation $A\vec{v} = \lambda\vec{v}$ and determinant scaling.
 
-> [!Note]
-> **Note**: To install manim directly through pip, please pay attention to the name of the installed package. This repository is ManimGL of 3b1b. The package name is `manimgl` instead of `manim` or `manimlib`. Please use `pip install manimgl` to install the version in this repository.
+---
 
-Manim runs on Python 3.10 or higher.
+## 🚀 Quick Start
 
-System requirements are [FFmpeg](https://ffmpeg.org/), [OpenGL](https://www.opengl.org/) and [LaTeX](https://www.latex-project.org) (optional, if you want to use LaTeX).
-For Linux, [Pango](https://pango.org) along with its development headers are required. See instruction [here](https://github.com/ManimCommunity/ManimPango#building).
+### 1. Launch the Hybrid Web Studio (Browser + Python MP4 Backend)
 
-
-### Directly
-
-```sh
-# Install manimgl
-pip install manimgl
-
-# Try it out
-manimgl
+```bash
+python3 -m server.app --host 0.0.0.0 --port 8000
+# Or via uvicorn directly:
+uvicorn server.app:app --host 0.0.0.0 --port 8000
 ```
 
-For more options, take a look at the [Using manim](#using-manim) sections further below.
+Then open `http://localhost:8000` (or open [`index.html`](index.html) directly as a static site / on GitHub Pages).
 
-If you want to hack on manimlib itself, clone this repository and in that directory execute:
+### 2. Render Scenes from the `3c1c` CLI
 
-```sh
-# Install manimgl
-pip install -e .
+```bash
+# Install in editable mode (with optional FastAPI web studio extras)
+pip install -e ".[web]"
 
-# Try it out
-manimgl example_scenes.py OpeningManimExample
-# or
-manim-render example_scenes.py OpeningManimExample
+# Render in ClipSAT Dark Slate (1080p 16:9)
+3c1c clipsat_scenes.py DerivativeTangentScene -w --hd
+
+# Render on ClipSAT Editorial Paper (#FAF7F2)
+3c1c clipsat_scenes.py RiemannIntegralScene -w --paper
+
+# Render a 9:16 vertical short clip (1080x1920)
+3c1c clipsat_scenes.py CompletingTheSquareScene -w --short
 ```
 
-### Linux (Ubuntu/Debian)
+---
 
-1. Install system dependencies.
+## 📄 License & Credits
 
-```sh
-sudo apt update
-
-sudo apt install ffmpeg
-sudo apt install python3-pip
-sudo apt install libpango1.0-dev
-```
-
-2. Install a lightweight LaTeX distribution (optional, for LaTeX rendering).
-
-```sh
-sudo apt install texlive-science texlive-fonts-extra texlive-latex-extra
-```
-
-This lightweight setup is significantly smaller than installing `texlive-full`
-while still supporting most Manim projects.
-
-3. Clone and install ManimGL.
-
-```sh
-git clone https://github.com/3b1b/manim.git
-cd manim
-
-python3 -m pip install -e .
-
-manimgl example_scenes.py OpeningManimExample
-```
-
-<details>
-  <summary>💡 Optional: Using a virtual environment (venv)</summary>
-
-It is recommended to use a virtual environment to avoid conflicts with system packages.
-
-```sh
-sudo apt install python3-venv
-
-python3 -m venv venv
-source venv/bin/activate
-
-python3 -m pip install -e .
-```
-
-If `python3-venv` is unavailable on your system, try installing the version-specific package instead:
-
-```sh
-sudo apt install python3.12-venv
-```
-
-</details>
-
-### Directly (Windows)
-
-1. [Install FFmpeg](https://www.wikihow.com/Install-FFmpeg-on-Windows).
-2. Install a LaTeX distribution. [MiKTeX](https://miktex.org/download) is recommended.
-3. Install the remaining Python packages.
-    ```sh
-    git clone https://github.com/3b1b/manim.git
-    cd manim
-    pip install -e .
-    manimgl example_scenes.py OpeningManimExample
-    ```
-
-### Mac OSX
-
-1. Install FFmpeg, LaTeX in terminal using homebrew.
-    ```sh
-    brew install ffmpeg mactex
-    ```
-    <details>
-      <summary>💡 An alternative to heavyweight MacTeX bundle.</summary>
-
-      > To avoid installing the full MacTeX bundle, which is ~6GB, you can alternatively install the
-      > lightweight [BasicTeX](https://formulae.brew.sh/cask/basictex) and then gradually add
-      > only the LaTeX packages you actually need. A list of packages sufficient to run examples can 
-      > be found [here](https://github.com/3b1b/manim/issues/2133#issuecomment-2414547866).
-      > For an overview of the MacTeX installer bundles, see https://www.tug.org/mactex/.
-    </details>
-
-2. If you are using an ARM-based processor, install Cairo. 
-    ```sh
-    arch -arm64 brew install pkg-config cairo
-    ```
-   
-3. Install latest version of manim using these command.
-    ```sh
-    git clone https://github.com/3b1b/manim.git
-    cd manim
-    pip install -e .
-    manimgl example_scenes.py OpeningManimExample
-    ```
-    If the last command is not found, make sure the directory pip installed `manimgl` into is on your `PATH`.
-
-## Anaconda Install
-
-1. Install LaTeX as above.
-2. Create a conda environment using `conda create -n manim python=3.10`.
-3. Activate the environment using `conda activate manim`.
-4. Install manimgl using `pip install -e .`.
-
-
-## Using manim
-Try running the following:
-```sh
-manimgl example_scenes.py OpeningManimExample
-```
-This should pop up a window playing a simple scene.
-
-Look through the [example scenes](https://3b1b.github.io/manim/getting_started/example_scenes.html) to see examples of the library's syntax, animation types and object types. In the [3b1b/videos](https://github.com/3b1b/videos) repo, you can see all the code for 3blue1brown videos, though code from older videos may not be compatible with the most recent version of manim. The readme of that repo also outlines some details for how to set up a more interactive workflow, as shown in [this manim demo video](https://www.youtube.com/watch?v=rbu7Zu5X1zI) for example.
-
-When running in the CLI, some useful flags include:
-* `-w` to write the scene to a file
-* `-o` to write the scene to a file and open the result
-* `-s` to skip to the end and just show the final frame.
-    * `-so` will save the final frame to an image and show it
-* `-n <number>` to skip ahead to the `n`'th animation of a scene.
-* `-f` to make the playback window fullscreen
-
-Take a look at custom_config.yml for further configuration.  To add your customization, you can either edit this file, or add another file by the same name "custom_config.yml" to whatever directory you are running manim from.  For example [this is the one](https://github.com/3b1b/videos/blob/master/custom_config.yml) for 3blue1brown videos.  There you can specify where videos should be output to, where manim should look for image files and sounds you want to read in, and other defaults regarding style and video quality.
-
-### Documentation
-Documentation is in progress at [3b1b.github.io/manim](https://3b1b.github.io/manim/). And there is also a Chinese version maintained by [**@manim-kindergarten**](https://manim.org.cn): [docs.manim.org.cn](https://docs.manim.org.cn/) (in Chinese).
-
-[manim-kindergarten](https://github.com/manim-kindergarten/) wrote and collected some useful extra classes and some codes of videos in [manim_sandbox repo](https://github.com/manim-kindergarten/manim_sandbox).
-
-
-## Contributing
-Is always welcome.  As mentioned above, the [community edition](https://github.com/ManimCommunity/manim) has the most active ecosystem for contributions, with testing and continuous integration, but pull requests are welcome here too.  Please explain the motivation for a given change and examples of its effect.
-
-
-## License
-This project falls under the MIT license.
+- **ClipSAT Customization & Web Studio (`3c1c`)**: Designed for **[ClipSAT](https://clipsat.org)** by **Mr. Mohamed Abdallah**.
+- **Upstream `manimgl` Engine**: Copyright (c) [3Blue1Brown LLC (Grant Sanderson)](https://github.com/3b1b/manim), MIT License.

@@ -58,7 +58,7 @@ camera:
   # Turning this off draws each on its own, which says the same thing more slowly.
   draw_together: True
   resolution: (1920, 1080)
-  background_color: "#333333"
+  background_color: "#0A0D14"
   fps: 30
   background_opacity: 1.0
 file_writer:
@@ -107,12 +107,14 @@ embed:
   exception_mode: "Verbose"
   autoreload: False
 resolution_options:
-  # When the user passes in -l, -m, --hd or --uhd, these are the corresponding
-  # resolutions
+  # When the user passes in -l, -m, --hd, --uhd, --short, or --square, these are
+  # the corresponding resolutions
   low: (854, 480)
   med: (1280, 720)
   high: (1920, 1080)
   4k: (3840, 2160)
+  short: (1080, 1920)
+  square: (1080, 1080)
 sizes:
   # This determines the scale of the manim coordinate system with respect to
   # the viewing frame
@@ -199,6 +201,33 @@ colors:
   pure_red: "#FF0000"
   pure_green: "#00FF00"
   pure_blue: "#0000FF"
+  # ClipSAT Design System Tokens (Paper & Dark Slate + Indigo & Amber)
+  clipsat_paper: "#FAF7F2"
+  clipsat_paper_2: "#F2ECE1"
+  clipsat_ink: "#111622"
+  clipsat_dark: "#0A0D14"
+  clipsat_panel: "#141A28"
+  clipsat_indigo_e: "#0C1A30"
+  clipsat_indigo_d: "#132746"
+  clipsat_indigo_c: "#1E3E70"
+  clipsat_indigo_b: "#7DA4E8"
+  clipsat_indigo_a: "#93B8FA"
+  clipsat_amber_e: "#73480B"
+  clipsat_amber_d: "#9E6515"
+  clipsat_amber_c: "#B8781B"
+  clipsat_amber_b: "#F59E0B"
+  clipsat_amber_a: "#FBBF24"
+  clipsat_teal: "#0C7A6F"
+  clipsat_teal_bright: "#2DD4BF"
+  clipsat_ok: "#19633E"
+  clipsat_ok_bright: "#34D399"
+  clipsat_rose: "#D94656"
+clipsat:
+  theme: "dark"
+  watermark: True
+  watermark_text: "ClipSAT · 3c1c"
+  educator: "Mr. Mohamed Abdallah"
+  site_url: "clipsat.org"
 # Can be DEBUG / INFO / WARNING / ERROR / CRITICAL
 log_level: "INFO"
 universal_import_line: "from manimlib import *"

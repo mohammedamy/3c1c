@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3c1c · ClipSAT Mathematical Animation Engine &amp; Web Studio</title>
+    <meta
+      name="description"
+      content="3c1c — ClipSAT's mathematical animation engine and interactive web studio, customized from Manim for AP Calculus, Digital SAT, IGCSE, Linear Algebra, and Qudrat."
+    />
+    <link rel="icon" type="image/png" href="web/assets/favicon.png" />
+
+    <!-- Editorial & Mathematical Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- KaTeX Mathematical Typesetting -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="web/styles/studio.css" />
+  </head>
+  <body class="dark">
+    <div class="studio-shell">
+      <!-- Top Studio Header -->
+      <header class="topbar" role="banner">
+        <div class="brand-cluster">
+          <img
+            src="web/assets/clipsat-mark.png"
+            alt="ClipSAT Sigma Paperclip Emblem"
+            class="brand-mark"
+            width="34"
+            height="34"
+          />
+          <div class="brand-titles">
+            <h1 class="brand-heading">
+              <span class="brand-3c1c">3c1c</span>
+              <span class="brand-sep">·</span>
+              <span>ClipSAT Animation Studio</span>
+            </h1>
+            <div class="brand-sub">
+              Math you can see — powered by <a href="https://clipsat.org" target="_blank" rel="noopener">ClipSAT</a> &amp; customized Manim
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar-center" role="group" aria-label="Stage formatting">
+          <div class="segmented" role="group" aria-label="Video aspect ratio">
+            <button type="button" id="aspect-16-9" class="seg-btn active" data-aspect="16:9">
+              16:9 Lesson
+            </button>
+            <button type="button" id="aspect-9-16" class="seg-btn" data-aspect="9:16">
+              9:16 Short
+            </button>
+            <button type="button" id="aspect-1-1" class="seg-btn" data-aspect="1:1">
+              1:1 Card
+            </button>
+          </div>
+
+          <button type="button" id="btn-stage-theme" class="btn btn-toggle">
+            Stage: Dark
+          </button>
+          <button type="button" id="btn-watermark" class="btn btn-toggle is-on">
+            ClipSAT Mark
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <div id="engine-status" class="engine-status" aria-live="polite">
+            <span class="status-dot"></span>
+            <span id="engine-status-text">Checking engine…</span>
+          </div>
+
+          <button type="button" id="btn-ui-theme" class="btn">UI: Dark</button>
+          <button type="button" id="btn-export-png" class="btn">Export PNG</button>
+          <button type="button" id="btn-record-webm" class="btn btn-amber">Record WebM</button>
+          <button type="button" id="btn-render-mp4" class="btn btn-primary">Render MP4</button>
+        </div>
+      </header>
+
+      <!-- Main Three-Zone Studio -->
+      <main class="workspace">
+        <!-- Left Rail: Curriculum Scene Library -->
+        <aside class="rail-left" aria-label="Curriculum scene templates">
+          <div class="rail-section-header">
+            <div class="rail-eyebrow">Curriculum Presets</div>
+            <h2 class="rail-title">Select a Scene</h2>
+          </div>
+
+          <div id="scene-list" class="scene-list"></div>
+
+          <div class="rail-footer-note">
+            <strong>ClipSAT Visual Grammar</strong>
+            <div class="legend-row">
+              <span class="swatch swatch-indigo"></span>
+              <span>Indigo — primary curves &amp; derivatives</span>
+            </div>
+            <div class="legend-row">
+              <span class="swatch swatch-amber"></span>
+              <span>Amber — integrals, areas &amp; secants</span>
+            </div>
+            <div class="legend-row">
+              <span class="swatch swatch-teal"></span>
+              <span>Teal — exact limits &amp; basis projections</span>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Stage & Timeline Scrubber -->
+        <section class="stage-column" aria-label="Animation stage and timeline">
+          <div class="stage-viewport">
+            <div class="canvas-frame">
+              <canvas
+                id="stage-canvas"
+                width="1920"
+                height="1080"
+                aria-label="3c1c interactive mathematical animation canvas"
+              ></canvas>
+              <div id="stage-drag-hint" class="stage-hint-pill">
+                Drag point a directly on the curve or scrub the limit h → 0
+              </div>
+            </div>
+          </div>
+
+          <div class="transport-dock">
+            <div id="beat-strip" class="beat-strip" aria-label="Animation keyframes"></div>
+
+            <div class="timeline-scrub-row">
+              <input
+                id="timeline-scrubber"
+                class="scrubber"
+                type="range"
+                min="0"
+                max="1000"
+                step="1"
+                value="0"
+                aria-label="Animation timeline scrubber"
+              />
+              <div id="timecode-readout" class="timecode">0.00s / 6.00s · F000</div>
+            </div>
+
+            <div class="transport-controls-row">
+              <div class="transport-left">
+                <button type="button" id="btn-play-pause" class="btn btn-primary">Pause</button>
+                <button type="button" id="btn-restart" class="btn">Restart</button>
+                <button type="button" id="btn-step-back" class="btn" aria-label="Previous frame">
+                  ‹ Frame
+                </button>
+                <button type="button" id="btn-step-fwd" class="btn" aria-label="Next frame">
+                  Frame ›
+                </button>
+              </div>
+
+              <div class="transport-right">
+                <button type="button" id="btn-loop" class="btn btn-toggle is-on">Loop</button>
+                <label for="select-speed" class="control-val">Speed</label>
+                <select id="select-speed" class="input-select" style="width: auto">
+                  <option value="0.5">0.5×</option>
+                  <option value="1" selected>1.0×</option>
+                  <option value="1.5">1.5×</option>
+                  <option value="2">2.0×</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Rail: Parameters, 3c1c Python Script, & Accessible Data -->
+        <aside class="rail-right" aria-label="Scene inspector and Python script">
+          <div class="inspector-tabs" role="tablist">
+            <button
+              type="button"
+              id="tab-btn-controls"
+              class="tab-btn active"
+              data-tab="controls"
+              role="tab"
+            >
+              Controls &amp; Math
+            </button>
+            <button
+              type="button"
+              id="tab-btn-python"
+              class="tab-btn"
+              data-tab="python"
+              role="tab"
+            >
+              3c1c Python
+            </button>
+            <button
+              type="button"
+              id="tab-btn-data"
+              class="tab-btn"
+              data-tab="data"
+              role="tab"
+            >
+              View as Data
+            </button>
+          </div>
+
+          <!-- Tab 1: Interactive Parameters & KaTeX Theorem Card -->
+          <div id="panel-controls" class="tab-panel active" role="tabpanel">
+            <div id="dynamic-controls" class="control-group"></div>
+
+            <div id="live-readout-grid" class="readout-grid" aria-live="polite"></div>
+
+            <article class="rigor-card">
+              <div id="rigor-badge" class="rigor-badge">THEOREM</div>
+              <h3 id="rigor-heading" class="rigor-heading">Instantaneous Rate of Change</h3>
+              <div id="rigor-math" class="rigor-math"></div>
+              <p id="rigor-prose" class="rigor-prose"></p>
+            </article>
+          </div>
+
+          <!-- Tab 2: Live 3c1c Python Scene Script -->
+          <div id="panel-python" class="tab-panel" role="tabpanel">
+            <div id="cli-command-banner" class="cli-banner">
+              $ 3c1c clipsat_scenes.py DerivativeTangentScene -w --hd
+            </div>
+
+            <textarea
+              id="python-code-editor"
+              class="code-editor"
+              spellcheck="false"
+              aria-label="3c1c Python scene source code"
+            ></textarea>
+
+            <div id="py-validation-msg" class="validation-msg">
+              Synced with live studio parameters.
+            </div>
+
+            <div class="code-actions">
+              <button type="button" id="btn-validate-py" class="btn">Validate AST</button>
+              <button type="button" id="btn-copy-py" class="btn btn-amber">Copy Python</button>
+              <button type="button" id="btn-download-py" class="btn btn-primary">
+                Download .py
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 3: Accessible Numerical Equivalent (ClipSAT ADR 0038/0039) -->
+          <div id="panel-data" class="tab-panel" role="tabpanel">
+            <div class="rail-eyebrow">Non-Visual Numerical Equivalent</div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead id="data-table-head"></thead>
+                <tbody id="data-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <div id="studio-toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="web/js/app.js"></script>
+  </body>
+</html>
