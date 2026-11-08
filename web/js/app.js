@@ -2,8 +2,8 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=166.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=166.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=167.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=167.0';
 
 const SCENE_CATEGORIES = [
   'All',

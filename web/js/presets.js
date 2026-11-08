@@ -2,8 +2,8 @@
    3c1c · ClipSAT Curriculum Scene Presets & Python Code Generator
    ========================================================================== */
 
-import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=166.0';
-import { SCENES_3D_PRESETS } from './scenes_3d.js?v=166.0';
+import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=167.0';
+import { SCENES_3D_PRESETS } from './scenes_3d.js?v=167.0';
 
 export const FUNCTIONS = {
   quad: {

@@ -759,7 +759,7 @@ export function attachExtendedRenderers(EngineClass) {
    * 3. PARAMETRIC & POLAR CURVES ENGINE (9 Distinct Constructions)
    * ------------------------------------------------------------------------ */
   proto.drawParametricScene = function (sub, ctx, pal, bounds, params, time, duration) {
-    const plot = this.createPlotArea(ctx, pal, bounds, -2.5, 2.5, -2.2, 2.2, spanEase(time, 0, 0.6), 0.60);
+    const plot = this.createPlotArea(ctx, pal, bounds, -2.5, 2.5, -2.2, 2.2, spanEase(time, 0, 0.6), 0.60, true);
     const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
     const { scale, padX, plotW } = bounds;
     const prog = Math.max(0.15, spanEase(time, 0.2, duration * 0.85));
@@ -2102,7 +2102,7 @@ export function attachExtendedRenderers(EngineClass) {
    * 6. CONIC SECTIONS, GRAVITATIONAL LENSING & OPTICS ENGINE (7 Distinct Visuals)
    * ------------------------------------------------------------------------ */
   proto.drawConicScene = function (sub, ctx, pal, bounds, params, time, duration) {
-    const plot = this.createPlotArea(ctx, pal, bounds, -3.2, 3.2, -2.5, 2.5, spanEase(time, 0, 0.6), 0.60);
+    const plot = this.createPlotArea(ctx, pal, bounds, -3.2, 3.2, -2.5, 2.5, spanEase(time, 0, 0.6), 0.60, true);
     const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
     const { scale, padX, plotW } = bounds;
     const prog = spanEase(time, 0.25, duration * 0.85);
@@ -2609,7 +2609,7 @@ export function attachExtendedRenderers(EngineClass) {
    * 7. EUCLIDEAN, TRIANGLE & OLYMPIAD GEOMETRY ENGINE (9 Distinct Constructions)
    * ------------------------------------------------------------------------ */
   proto.drawGeometryScene = function (sub, ctx, pal, bounds, params, time, duration) {
-    const plot = this.createPlotArea(ctx, pal, bounds, -2.6, 2.6, -1.9, 2.5, spanEase(time, 0, 0.5), 0.60);
+    const plot = this.createPlotArea(ctx, pal, bounds, -2.6, 2.6, -1.9, 2.5, spanEase(time, 0, 0.5), 0.60, true);
     const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
     const { scale, padX, plotW } = bounds;
     const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
@@ -3426,7 +3426,7 @@ export function attachExtendedRenderers(EngineClass) {
    * 9. ADVANCED LINEAR ALGEBRA & MATRIX DECOMPOSITIONS ENGINE (8 Distinct Visuals)
    * ------------------------------------------------------------------------ */
   proto.drawLinAlgAdvScene = function (sub, ctx, pal, bounds, params, time, duration) {
-    const plot = this.createPlotArea(ctx, pal, bounds, -2.8, 2.8, -2.4, 2.4, spanEase(time, 0, 0.5), 0.60);
+    const plot = this.createPlotArea(ctx, pal, bounds, -2.8, 2.8, -2.4, 2.4, spanEase(time, 0, 0.5), 0.60, true);
     const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
     const { scale, padX, plotW } = bounds;
     const tProg = Math.max(0.2, spanEase(time, 0.25, duration * 0.82));
@@ -4668,7 +4668,7 @@ export function attachExtendedRenderers(EngineClass) {
    * 13. COMPASS & STRAIGHTEDGE GEOMETRICAL CONSTRUCTIONS ENGINE (15 Scenes)
    * ------------------------------------------------------------------------ */
   proto.drawConstructionScene = function (sub, ctx, pal, bounds, params, time, duration) {
-    const plot = this.createPlotArea(ctx, pal, bounds, -3.2, 3.2, -2.5, 2.5, spanEase(time, 0, 0.5), 0.60);
+    const plot = this.createPlotArea(ctx, pal, bounds, -3.2, 3.2, -2.5, 2.5, spanEase(time, 0, 0.5), 0.60, true);
     const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
     const { scale, padX, plotW } = bounds;
     const v = params || {};

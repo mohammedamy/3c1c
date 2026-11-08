@@ -1331,12 +1331,32 @@ export function attach3DRenderers(EngineClass) {
     const { scale, padX, plotW } = bounds;
     const prog = spanEase(time, 0.15, duration * 0.82);
 
-    // Subtle gentle auto-orbit breathing added to user's azimDeg
+    const liveParams = { ...(preset.defaults || {}), ...(params || {}) };
+    const ctrls = preset.controls || [];
+    const env = spanEase(time, 0.25, 1.35);
+    ctrls.forEach((ctrl, idx) => {
+      const paramKey = ctrl.key || ctrl.id;
+      if (paramKey === 'azimDeg' || paramKey === 'elevDeg') return;
+      const baseVal = Number(liveParams[paramKey] ?? ctrl.default ?? 0);
+      const minV = Number(ctrl.min ?? baseVal - 1);
+      const maxV = Number(ctrl.max ?? baseVal + 1);
+      const span = Math.max(0, maxV - minV);
+      const step = Number(ctrl.step || 0.1);
+      if (step < 1 && span > 0) {
+        const wave = Math.sin(time * (1.25 + idx * 0.38) + idx * 1.1) * env;
+        const modVal = baseVal + span * 0.08 * wave;
+        liveParams[paramKey] = Math.max(minV, Math.min(maxV, modVal));
+      }
+    });
+    params = liveParams;
+
+    // Subtle gentle auto-orbit breathing added to user's azimDeg & elevDeg
     const baseAzim = Number(params.azimDeg ?? 38);
     const baseElev = Number(params.elevDeg ?? 26);
     const liveAzim = baseAzim + 10 * Math.sin(time * 0.65);
+    const liveElev = Math.max(8, Math.min(72, baseElev + 2.5 * Math.cos(time * 0.52)));
 
-    const stage = this.create3DStage(ctx, pal, bounds, liveAzim, baseElev, 1.65);
+    const stage = this.create3DStage(ctx, pal, bounds, liveAzim, liveElev, 1.65);
     const { project, areaX, areaY, areaW, areaH, isTall, zFloor } = stage;
 
     let lines = [];

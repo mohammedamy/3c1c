@@ -3,9 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=166.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=166.0';
-import { attach3DRenderers } from './scenes_3d.js?v=166.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=167.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=167.0';
+import { attach3DRenderers } from './scenes_3d.js?v=167.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -197,7 +197,7 @@ export class Engine3c1c {
     return telemetry;
   }
 
-  createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, axisAlpha = 1, widthFrac = 0.62) {
+  createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, axisAlpha = 1, widthFrac = 0.62, isotropic = false) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
     const isTall = bounds.height >= bounds.width * 0.95;
     const isSquare = Math.abs(bounds.height - bounds.width) < bounds.width * 0.1;
@@ -205,6 +205,24 @@ export class Engine3c1c {
     const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
+
+    if (isotropic && areaW > 0 && areaH > 0) {
+      const xSpan0 = xMax - xMin;
+      const ySpan0 = yMax - yMin;
+      const xMid = 0.5 * (xMin + xMax);
+      const yMid = 0.5 * (yMin + yMax);
+      const pxAspect = areaW / areaH;
+      const mathAspect = xSpan0 / ySpan0;
+      if (pxAspect > mathAspect) {
+        const newXSpan = ySpan0 * pxAspect;
+        xMin = xMid - 0.5 * newXSpan;
+        xMax = xMid + 0.5 * newXSpan;
+      } else if (pxAspect < mathAspect) {
+        const newYSpan = xSpan0 / pxAspect;
+        yMin = yMid - 0.5 * newYSpan;
+        yMax = yMid + 0.5 * newYSpan;
+      }
+    }
 
     const toPx = (x, y) => ({
       x: areaX + ((x - xMin) / (xMax - xMin)) * areaW,
