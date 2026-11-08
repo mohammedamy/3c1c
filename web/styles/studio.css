@@ -353,12 +353,14 @@ body.dark .btn-amber:hover {
   border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  max-height: calc(100vh - 58px);
+  overflow: hidden;
 }
 
 .rail-section-header {
-  padding: 14px 16px 10px;
+  padding: 12px 14px 10px;
   border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 .rail-eyebrow {
@@ -378,11 +380,59 @@ body.dark .btn-amber:hover {
   color: var(--ink);
 }
 
+.scene-search-wrap {
+  margin-top: 8px;
+}
+
+.scene-search-input {
+  width: 100%;
+  font-size: 0.76rem;
+  padding: 6px 10px;
+}
+
+.category-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.cat-pill {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.cat-pill:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.cat-pill.active {
+  background: var(--indigo);
+  color: #FAF7F2;
+  border-color: var(--indigo);
+}
+
+body.dark .cat-pill.active {
+  color: #0A0D14;
+}
+
 .scene-list {
   padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .scene-card {
@@ -391,12 +441,13 @@ body.dark .btn-amber:hover {
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--r-md);
-  padding: 10px 12px;
+  padding: 9px 11px;
   cursor: pointer;
   transition: background 140ms ease, border-color 140ms ease;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  flex-shrink: 0;
 }
 
 .scene-card:hover {
@@ -416,34 +467,46 @@ body.dark .btn-amber:hover {
   gap: 6px;
 }
 
+.scene-num-badge {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: var(--faint);
+  margin-right: 4px;
+}
+
 .scene-track-tag {
   font-family: var(--mono);
-  font-size: 0.67rem;
+  font-size: 0.64rem;
   font-weight: 600;
   color: var(--amber-text);
   letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .scene-glyph {
   font-family: var(--serif-display);
   font-style: italic;
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.90rem;
   color: var(--indigo);
+  flex-shrink: 0;
 }
 
 .scene-name {
   font-family: var(--serif-display);
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--ink);
   line-height: 1.25;
 }
 
 .scene-desc {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   color: var(--muted);
-  line-height: 1.4;
+  line-height: 1.38;
 }
 
 .rail-footer-note {

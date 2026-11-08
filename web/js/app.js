@@ -2,8 +2,22 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=11.1';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=11.1';
+import { Engine3c1c, clamp01 } from './engine.js?v=100.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=100.0';
+
+const SCENE_CATEGORIES = [
+  'All',
+  'Calculus',
+  'Linear Algebra',
+  'SAT / Algebra',
+  'Geometry & Trig',
+  'Probability & Stats',
+  'Qudrat & Olympiad',
+  'Complex & Fourier',
+  'Optimization & ML',
+  'Physics & ODEs',
+  'Discrete & Number',
+];
 
 const state = {
   presetIndex: 0,
@@ -21,6 +35,8 @@ const state = {
   serverInfo: null,
   recording: false,
   codeDirty: false,
+  searchQuery: '',
+  activeCategory: 'All',
 };
 
 const canvas = document.getElementById('stage-canvas');
@@ -28,6 +44,9 @@ const engine = new Engine3c1c(canvas);
 
 const els = {
   sceneList: document.getElementById('scene-list'),
+  sceneSearch: document.getElementById('scene-search'),
+  categoryBar: document.getElementById('category-filter-bar'),
+  sceneCountEyebrow: document.getElementById('scene-count-eyebrow'),
   dragHint: document.getElementById('stage-drag-hint'),
   scrubber: document.getElementById('timeline-scrubber'),
   timecode: document.getElementById('timecode-readout'),
@@ -98,16 +117,50 @@ function applyStageToolbar() {
   });
 }
 
+function renderCategoryBar() {
+  if (!els.categoryBar) return;
+  els.categoryBar.innerHTML = '';
+  SCENE_CATEGORIES.forEach((cat) => {
+    const count =
+      cat === 'All'
+        ? SCENE_PRESETS.length
+        : SCENE_PRESETS.filter((p) => p.category === cat).length;
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = `cat-pill${state.activeCategory === cat ? ' active' : ''}`;
+    pill.textContent = `${cat} (${count})`;
+    pill.addEventListener('click', () => {
+      state.activeCategory = cat;
+      renderCategoryBar();
+      renderSceneLibrary();
+    });
+    els.categoryBar.appendChild(pill);
+  });
+}
+
 function renderSceneLibrary() {
   els.sceneList.innerHTML = '';
+  const q = state.searchQuery.trim().toLowerCase();
+  let visibleCount = 0;
+
   SCENE_PRESETS.forEach((preset, idx) => {
+    if (state.activeCategory !== 'All' && preset.category !== state.activeCategory) {
+      return;
+    }
+    const numTag = `#${String(idx + 1).padStart(3, '0')}`;
+    if (q) {
+      const hay = `${numTag} ${preset.id} ${preset.name} ${preset.track} ${preset.summary} ${preset.category || ''}`.toLowerCase();
+      if (!hay.includes(q)) return;
+    }
+    visibleCount++;
+
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.id = `scene-preset-${preset.id}`;
     btn.className = `scene-card${idx === state.presetIndex ? ' active' : ''}`;
     btn.innerHTML = `
       <div class="scene-card-top">
-        <span class="scene-track-tag">${preset.track}</span>
+        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${preset.track}</span>
         <span class="scene-glyph">${preset.glyph}</span>
       </div>
       <div class="scene-name">${preset.name}</div>
@@ -116,6 +169,13 @@ function renderSceneLibrary() {
     btn.addEventListener('click', () => selectPreset(idx));
     els.sceneList.appendChild(btn);
   });
+
+  if (els.sceneCountEyebrow) {
+    els.sceneCountEyebrow.textContent =
+      visibleCount === SCENE_PRESETS.length
+        ? `Curriculum Presets · ${SCENE_PRESETS.length} Scenes`
+        : `Showing ${visibleCount} of ${SCENE_PRESETS.length} Scenes`;
+  }
 }
 
 function selectPreset(index) {
@@ -281,6 +341,12 @@ function renderDynamicControls() {
       sliderField('ctrl-xstart', 'Initial Parameter x₀', p.xStart, -2.9, 2.9, 0.05),
       sliderField('ctrl-lr', 'Learning Rate η', p.lr, 0.05, 0.55, 0.01)
     );
+  } else if (Array.isArray(preset.controls)) {
+    preset.controls.forEach((ctrl) => {
+      parts.push(
+        sliderField(ctrl.id, ctrl.label, p[ctrl.key], ctrl.min, ctrl.max, ctrl.step)
+      );
+    });
   }
 
   els.controlsContainer.innerHTML = parts.join('');
@@ -340,6 +406,13 @@ function bindControlListeners() {
   bind('ctrl-phase', 'phaseDeg', true);
   bind('ctrl-xstart', 'xStart', true);
   bind('ctrl-lr', 'lr', true);
+
+  const preset = activePreset();
+  if (Array.isArray(preset.controls)) {
+    preset.controls.forEach((ctrl) => {
+      bind(ctrl.id, ctrl.key, true);
+    });
+  }
 }
 
 function syncPythonEditor() {
@@ -432,6 +505,53 @@ function setupCanvasDragging() {
     const preset = activePreset();
     const mapper = engine.lastPlotMapper;
     if (!mapper) return;
+
+    if (Array.isArray(preset.controls)) {
+      const angleCtrl = preset.controls.find((c) => c.drag === 'angle');
+      if (angleCtrl && mapper.unitCircle) {
+        const { cx, cy } = mapper.unitCircle;
+        let deg = (Math.atan2(cy - py, px - cx) * 180) / Math.PI;
+        if (deg < 0) deg += 360;
+        const clamped = Math.max(angleCtrl.min, Math.min(angleCtrl.max, Math.round(deg)));
+        state.params[angleCtrl.key] = clamped;
+        const input = document.getElementById(angleCtrl.id);
+        const span = document.getElementById(`${angleCtrl.id}-val`);
+        if (input) input.value = String(clamped);
+        if (span) span.textContent = clamped.toFixed(angleCtrl.step >= 1 ? 0 : 2);
+        if (!state.codeDirty) syncPythonEditor();
+        drawImmediate();
+        return;
+      }
+
+      if (mapper.toMath) {
+        const m = mapper.toMath(px, py);
+        const xCtrl = preset.controls.find((c) => c.drag === 'x');
+        const yCtrl = preset.controls.find((c) => c.drag === 'y');
+        if (xCtrl) {
+          const step = xCtrl.step || 0.05;
+          const raw = Math.round(m.x / step) * step;
+          const clamped = Math.max(xCtrl.min, Math.min(xCtrl.max, Number(raw.toFixed(2))));
+          state.params[xCtrl.key] = clamped;
+          const input = document.getElementById(xCtrl.id);
+          const span = document.getElementById(`${xCtrl.id}-val`);
+          if (input) input.value = String(clamped);
+          if (span) span.textContent = clamped.toFixed(step >= 1 ? 0 : 2);
+        }
+        if (yCtrl) {
+          const step = yCtrl.step || 0.05;
+          const raw = Math.round(m.y / step) * step;
+          const clamped = Math.max(yCtrl.min, Math.min(yCtrl.max, Number(raw.toFixed(2))));
+          state.params[yCtrl.key] = clamped;
+          const input = document.getElementById(yCtrl.id);
+          const span = document.getElementById(`${yCtrl.id}-val`);
+          if (input) input.value = String(clamped);
+          if (span) span.textContent = clamped.toFixed(step >= 1 ? 0 : 2);
+        }
+        if (!state.codeDirty) syncPythonEditor();
+        drawImmediate();
+        return;
+      }
+    }
 
     if ((preset.id === 'unitcircle' || preset.id === 'complex' || preset.id === 'circle_thm') && mapper.unitCircle) {
       const { cx, cy } = mapper.unitCircle;
@@ -702,6 +822,13 @@ function escapeAttr(str) {
 
 /* ── Event Wiring ── */
 function initEvents() {
+  if (els.sceneSearch) {
+    els.sceneSearch.addEventListener('input', () => {
+      state.searchQuery = els.sceneSearch.value || '';
+      renderSceneLibrary();
+    });
+  }
+
   els.btnPlay.addEventListener('click', () => {
     if (state.time >= state.duration) state.time = 0;
     state.playing = !state.playing;
@@ -828,6 +955,7 @@ function initEvents() {
 /* ── Initialize Studio ── */
 applyUiTheme();
 applyStageToolbar();
+renderCategoryBar();
 initEvents();
 setupCanvasDragging();
 selectPreset(0);
@@ -842,3 +970,4 @@ requestAnimationFrame((ts) => {
   lastFrameTs = ts;
   requestAnimationFrame(tick);
 });
+

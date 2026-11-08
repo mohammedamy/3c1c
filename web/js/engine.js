@@ -3,7 +3,8 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS } from './presets.js';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=100.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=100.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -177,6 +178,11 @@ export class Engine3c1c {
       telemetry = this.drawComplexScene(ctx, pal, bounds, params, time, duration);
     } else if (presetId === 'grad_descent') {
       telemetry = this.drawGradDescentScene(ctx, pal, bounds, params, time, duration);
+    } else {
+      const preset = SCENE_PRESETS.find((p) => p.id === presetId);
+      if (preset && preset.archetype && this.renderExtendedScene) {
+        telemetry = this.renderExtendedScene(preset, ctx, pal, bounds, params, time, duration);
+      }
     }
 
     // 5. ClipSAT · 3c1c Corner Watermark
@@ -482,69 +488,67 @@ export class Engine3c1c {
 
     let approxSum = 0;
     const tableRows = [];
-    const rectAlpha = spanEase(time, 0.9, 1.6);
+    const rectAlpha = Math.max(0.18, spanEase(time, 0.9, 1.6));
 
-    if (rectAlpha > 0) {
-      ctx.save();
-      ctx.globalAlpha = rectAlpha;
-      for (let i = 0; i < activeN; i++) {
-        const x0 = a + i * dx;
-        const x1 = x0 + dx;
-        let sampleX = x0;
-        if (rule === 'right') sampleX = x1;
-        else if (rule === 'midpoint') sampleX = 0.5 * (x0 + x1);
+    ctx.save();
+    ctx.globalAlpha = rectAlpha;
+    for (let i = 0; i < activeN; i++) {
+      const x0 = a + i * dx;
+      const x1 = x0 + dx;
+      let sampleX = x0;
+      if (rule === 'right') sampleX = x1;
+      else if (rule === 'midpoint') sampleX = 0.5 * (x0 + x1);
 
-        const hVal =
-          rule === 'trapezoid' ? 0.5 * (fnObj.eval(x0) + fnObj.eval(x1)) : fnObj.eval(sampleX);
-        const area = hVal * dx;
-        approxSum += area;
+      const hVal =
+        rule === 'trapezoid' ? 0.5 * (fnObj.eval(x0) + fnObj.eval(x1)) : fnObj.eval(sampleX);
+      const area = hVal * dx;
+      approxSum += area;
 
-        if (i < 10) {
-          tableRows.push([
-            String(i + 1),
-            `[${x0.toFixed(2)}, ${x1.toFixed(2)}]`,
-            sampleX.toFixed(2),
-            hVal.toFixed(3),
-            area.toFixed(3),
-          ]);
-        }
-
-        const pTopLeft = toPx(x0, Math.max(0, hVal));
-        const pBotRight = toPx(x1, Math.min(0, hVal));
-        ctx.fillStyle = hVal >= 0 ? pal.amberFill : pal.indigoFill;
-        ctx.strokeStyle = hVal >= 0 ? pal.amber : pal.indigo;
-        ctx.lineWidth = 1.4 * scale;
-
-        if (rule === 'trapezoid') {
-          const p0Base = toPx(x0, 0);
-          const p0Top = toPx(x0, fnObj.eval(x0));
-          const p1Top = toPx(x1, fnObj.eval(x1));
-          const p1Base = toPx(x1, 0);
-          ctx.beginPath();
-          ctx.moveTo(p0Base.x, p0Base.y);
-          ctx.lineTo(p0Top.x, p0Top.y);
-          ctx.lineTo(p1Top.x, p1Top.y);
-          ctx.lineTo(p1Base.x, p1Base.y);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-        } else {
-          ctx.fillRect(
-            pTopLeft.x,
-            pTopLeft.y,
-            pBotRight.x - pTopLeft.x,
-            pBotRight.y - pTopLeft.y
-          );
-          ctx.strokeRect(
-            pTopLeft.x,
-            pTopLeft.y,
-            pBotRight.x - pTopLeft.x,
-            pBotRight.y - pTopLeft.y
-          );
-        }
+      if (i < 10) {
+        tableRows.push([
+          String(i + 1),
+          `[${x0.toFixed(2)}, ${x1.toFixed(2)}]`,
+          sampleX.toFixed(2),
+          hVal.toFixed(3),
+          area.toFixed(3),
+        ]);
       }
-      ctx.restore();
+
+      const pTopLeft = toPx(x0, Math.max(0, hVal));
+      const pBotRight = toPx(x1, Math.min(0, hVal));
+      ctx.fillStyle = hVal >= 0 ? pal.amberFill : pal.indigoFill;
+      ctx.strokeStyle = hVal >= 0 ? pal.amber : pal.indigo;
+      ctx.lineWidth = 1.4 * scale;
+
+      if (rule === 'trapezoid') {
+        const p0Base = toPx(x0, 0);
+        const p0Top = toPx(x0, fnObj.eval(x0));
+        const p1Top = toPx(x1, fnObj.eval(x1));
+        const p1Base = toPx(x1, 0);
+        ctx.beginPath();
+        ctx.moveTo(p0Base.x, p0Base.y);
+        ctx.lineTo(p0Top.x, p0Top.y);
+        ctx.lineTo(p1Top.x, p1Top.y);
+        ctx.lineTo(p1Base.x, p1Base.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillRect(
+          pTopLeft.x,
+          pTopLeft.y,
+          pBotRight.x - pTopLeft.x,
+          pBotRight.y - pTopLeft.y
+        );
+        ctx.strokeRect(
+          pTopLeft.x,
+          pTopLeft.y,
+          pBotRight.x - pTopLeft.x,
+          pBotRight.y - pTopLeft.y
+        );
+      }
     }
+    ctx.restore();
 
     // Curve on top
     ctx.save();
@@ -2101,3 +2105,6 @@ export class Engine3c1c {
     ctx.roundRect(x, y, w, h, r);
   }
 }
+
+attachExtendedRenderers(Engine3c1c);
+

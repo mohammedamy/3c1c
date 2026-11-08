@@ -2,6 +2,8 @@
    3c1c · ClipSAT Curriculum Scene Presets & Python Code Generator
    ========================================================================== */
 
+import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=100.0';
+
 export const FUNCTIONS = {
   quad: {
     id: 'quad',
@@ -45,7 +47,7 @@ export const FUNCTIONS = {
   },
 };
 
-export const SCENE_PRESETS = [
+const CORE_SCENE_PRESETS = [
   {
     id: 'derivative',
     sceneClass: 'DerivativeTangentScene',
@@ -369,7 +371,29 @@ export const SCENE_PRESETS = [
   },
 ];
 
-export function generatePythonSceneCode(preset, params, stageTheme, aspect, watermark) {
+const CORE_CATEGORIES = {
+  derivative: 'Calculus',
+  riemann: 'Calculus',
+  square: 'SAT / Algebra',
+  unitcircle: 'Geometry & Trig',
+  linalg: 'Linear Algebra',
+  qudrat: 'Qudrat & Olympiad',
+  taylor: 'Calculus',
+  normal: 'Probability & Stats',
+  circle_thm: 'Geometry & Trig',
+  complex: 'Complex & Fourier',
+  grad_descent: 'Optimization & ML',
+};
+
+CORE_SCENE_PRESETS.forEach((s) => {
+  s.category = CORE_CATEGORIES[s.id] || 'Calculus';
+});
+
+export const SCENE_PRESETS = [...CORE_SCENE_PRESETS, ...EXTENDED_SCENE_PRESETS];
+
+export function generatePythonSceneCode(preset, params = {}, stageTheme = 'dark', aspect = '16:9', watermark = true) {
+  const merged = { ...(preset.defaults || {}), ...(params || {}) };
+  params = merged;
   const cliFlags = [
     `3c1c clipsat_scenes.py ${preset.sceneClass} -w`,
     stageTheme === 'paper' ? '--paper' : '',
@@ -713,7 +737,8 @@ class ${preset.sceneClass}(ClipSATScene):
 `;
   }
 
-  return `# CLI: ${cliFlags}
+  if (preset.id === 'qudrat') {
+    return `# CLI: ${cliFlags}
 from manimlib import *
 
 
@@ -731,4 +756,60 @@ class ${preset.sceneClass}(ClipSATScene):
         self.play(ShowCreation(axes), ShowCreation(col_a), ShowCreation(col_b))
         self.wait(1.0)
 `;
+  }
+
+  const pyReserved = new Set(['lambda', 'def', 'class', 'from', 'import', 'in', 'is', 'for', 'while', 'return', 'yield', 'with', 'pass', 'global']);
+  const paramLines = Object.entries(params)
+    .filter(([k]) => k !== 'track' && k !== 'title')
+    .map(([k, v]) => {
+      const safeKey = pyReserved.has(k) ? `${k}_val` : k;
+      return `        ${safeKey} = ${typeof v === 'number' ? Number(v).toFixed(3) : JSON.stringify(v)}`;
+    })
+    .join('\n');
+
+  const safeTrack = String(params.track || preset.track).replace(/"/g, '\\"');
+  const safeTitle = String(params.title || preset.name).replace(/"/g, '\\"');
+  const safeLatex = String((preset.rigor && preset.rigor.latex) || 'f(x)').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+  return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    """${preset.summary}"""
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${safeTrack}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${safeTrack}", "${safeTitle}")
+        self.add(header)
+
+        # Interactive studio parameters
+${paramLines || '        pass'}
+
+        axes = Axes(
+            x_range=(-3.2, 3.2, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            width=8.4,
+            height=5.2,
+            axis_config={"stroke_color": self.theme.muted, "stroke_width": 2},
+        ).shift(DOWN * 0.35 + LEFT * 1.25)
+
+        primary = axes.get_graph(
+            lambda x: np.sin(x) + 0.35 * np.cos(2.0 * x),
+            color=self.theme.indigo,
+        ).set_stroke(width=4)
+
+        theorem = Tex(
+            "${safeLatex}",
+            color=self.theme.ink,
+            font_size=30,
+        ).to_edge(RIGHT, buff=0.6)
+
+        self.play(ShowCreation(axes), ShowCreation(primary), Write(theorem), run_time=1.8)
+        self.play(ShowCreation(self.highlight_callout(theorem, color=self.theme.amber)))
+        self.wait(1.0)
+`;
 }
+
