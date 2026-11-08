@@ -5699,5 +5699,771 @@ export const EXTENDED_SCENE_PRESETS = [
       "latex": "\\theta_{\\text{hour}} = 30^\\circ H + 0.5^\\circ M, \\quad \\theta_{\\text{min}} = 6^\\circ M \\implies \\Delta\\theta = \\left|30^\\circ H - \\frac{11^\\circ}{2}M\\right|",
       "prose": "At 3:30 the angle is NOT 90°: the hour hand has moved halfway toward 4 (+15°), leaving an acute angle of |90° − 165°| = 75°."
     }
+  },
+  {
+    "id": "const_perp_bisector",
+    "category": "Geometrical Constructions",
+    "name": "Perpendicular Bisector & Equidistant Locus (PA = PB)",
+    "track": "Euclid Elements I.10 · IGCSE 0580 Construction",
+    "glyph": "⊥",
+    "sceneClass": "PerpendicularBisectorConstructionScene",
+    "archetype": "construction",
+    "subType": "const_perp_bisector",
+    "duration": 6,
+    "summary": "Sweeps two equal-radius compass arcs centered at A and B (R > ½|AB|) to locate intersections P and Q, constructing the straightedge perpendicular bisector PQ ⊥ AB.",
+    "dragHint": "Drag segment half-length a or compass radius ratio R/a to watch the two lens arcs intersect at P and Q",
+    "defaults": {
+      "track": "EUCLID ELEMENTS I.10 · IGCSE 0580 LOCUS CONSTRUCTION",
+      "title": "Compass & Straightedge Perpendicular Bisector: PA = PB",
+      "halfLen": 1.45,
+      "radiusRatio": 1.35
+    },
+    "controls": [
+      {
+        "id": "ctrl-halflen",
+        "key": "halfLen",
+        "label": "Segment Half-Length a = ½|AB|",
+        "min": 0.8,
+        "max": 2.1,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-radratio",
+        "key": "radiusRatio",
+        "label": "Compass Radius Ratio R / a (> 1)",
+        "min": 1.08,
+        "max": 1.85,
+        "step": 0.02,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Given Segment AB", "time": 0 },
+      { "label": "2 · Arc Centered at A", "time": 1.4 },
+      { "label": "3 · Arc Centered at B", "time": 2.8 },
+      { "label": "4 · Straightedge Bisector PQ", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 10",
+      "heading": "Rhombus Congruence & Equidistant Locus Theorem",
+      "latex": "|AP| = |BP| = |AQ| = |BQ| = R \\implies \\triangle APQ \\cong \\triangle BPQ \\implies PQ \\perp AB \\;\\text{at midpoint } M",
+      "prose": "Because the four compass radii form a rhombus APBQ, its diagonals PQ and AB bisect each other at 90°. Every point on line PQ is equidistant from A and B."
+    }
+  },
+  {
+    "id": "const_angle_bisector",
+    "category": "Geometrical Constructions",
+    "name": "Angle Bisector Compass Construction & Equidistant Rays",
+    "track": "Euclid Elements I.9 · IGCSE 0580 Locus",
+    "glyph": "∠/2",
+    "sceneClass": "AngleBisectorConstructionScene",
+    "archetype": "construction",
+    "subType": "const_angle_bisector",
+    "duration": 6,
+    "summary": "Strikes a primary compass arc from vertex O cutting the rays at D and E, then equal arcs from D and E meeting at F so straightedge ray OF bisects ∠AOB.",
+    "dragHint": "Drag opening angle θ or primary compass radius r₁ to bisect ∠AOB and verify equal distances to both arms",
+    "defaults": {
+      "track": "EUCLID ELEMENTS I.9 · ANGLE BISECTOR CONSTRUCTION",
+      "title": "Compass Angle Bisector & Locus Equidistant from Two Intersecting Lines",
+      "angleDeg": 68,
+      "arcR": 1.65
+    },
+    "controls": [
+      {
+        "id": "ctrl-angdeg",
+        "key": "angleDeg",
+        "label": "Given Vertex Angle θ (deg)",
+        "min": 24,
+        "max": 136,
+        "step": 2,
+        "drag": "angle"
+      },
+      {
+        "id": "ctrl-arcr",
+        "key": "arcR",
+        "label": "Primary Compass Radius r₁",
+        "min": 1.0,
+        "max": 2.2,
+        "step": 0.05,
+        "drag": "x"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Vertex O & Rays OA, OB", "time": 0 },
+      { "label": "2 · Primary Arc D, E", "time": 1.4 },
+      { "label": "3 · Equal Arcs from D & E → F", "time": 2.8 },
+      { "label": "4 · Bisector Ray OF (θ/2)", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 9",
+      "heading": "SSS Triangle Congruence (△ODF ≅ △OEF)",
+      "latex": "|OD| = |OE| = r_1,\\; |DF| = |EF| = r_2,\\; |OF| = |OF| \\implies \\angle DOF = \\angle EOF = \\frac{\\theta}{2}",
+      "prose": "By Side-Side-Side congruence, ray OF divides ∠AOB into two equal halves, and orthogonal projections from F onto OA and OB have equal length r₁ sin(θ/2)."
+    }
+  },
+  {
+    "id": "const_equilateral_60",
+    "category": "Geometrical Constructions",
+    "name": "Vesica Piscis, Equilateral Triangle & Exact 60° / 30°",
+    "track": "Euclid Elements I.1 · Classical Construction",
+    "glyph": "60°",
+    "sceneClass": "EquilateralSixtyConstructionScene",
+    "archetype": "construction",
+    "subType": "const_equilateral_60",
+    "duration": 6,
+    "summary": "Constructs Euclid's Proposition I.1 Vesica Piscis from two full circles of radius |AB| to form equilateral △ABC (60°) and bisects it to construct an exact 30° ray.",
+    "dragHint": "Drag base length s = |AB| or toggle the 30° bisector step to inspect the Vesica Piscis almond geometry",
+    "defaults": {
+      "track": "EUCLID ELEMENTS PROPOSITION I.1 · VESICA PISCIS",
+      "title": "Equilateral Triangle △ABC & Exact 60° / 30° Compass Construction",
+      "sideLen": 1.85,
+      "showBisect": 1
+    },
+    "controls": [
+      {
+        "id": "ctrl-sidelen",
+        "key": "sideLen",
+        "label": "Base Segment Length s = |AB|",
+        "min": 1.1,
+        "max": 2.3,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-showbisect",
+        "key": "showBisect",
+        "label": "30° Bisection Overlay (0–1)",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Base Segment AB (s)", "time": 0 },
+      { "label": "2 · Circle A & Circle B", "time": 1.4 },
+      { "label": "3 · Apex C & 60° Triangle", "time": 2.8 },
+      { "label": "4 · Exact 30° Bisector Ray", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 1",
+      "heading": "The First Proposition of Euclid's Elements",
+      "latex": "|AC| = |AB| = s \\;\\land\\; |BC| = |BA| = s \\implies |AB| = |BC| = |CA|, \\quad h = \\frac{\\sqrt{3}}{2}s",
+      "prose": "Because C lies on both circles of radius s centered at A and B, all three sides equal s, yielding exact 60° interior angles without any protractor."
+    }
+  },
+  {
+    "id": "const_drop_perp_point",
+    "category": "Geometrical Constructions",
+    "name": "Dropping a Perpendicular from an External Point to a Line",
+    "track": "Euclid Elements I.12 · Orthogonal Projection",
+    "glyph": "P⊥ℓ",
+    "sceneClass": "DropPerpendicularPointScene",
+    "archetype": "construction",
+    "subType": "const_drop_perp_point",
+    "duration": 6,
+    "summary": "Swings a compass arc from external point P cutting line ℓ at A and B, then equal arcs from A and B meeting at Q below ℓ so straightedge PQ meets ℓ at 90°.",
+    "dragHint": "Drag external point P(x_P, y_P) to watch the compass chord AB and orthogonal foot H update live",
+    "defaults": {
+      "track": "EUCLID ELEMENTS I.12 · EXTERNAL PERPENDICULAR",
+      "title": "Dropping a Perpendicular from External Point P onto Line ℓ",
+      "px": 0.55,
+      "py": 1.65
+    },
+    "controls": [
+      {
+        "id": "ctrl-px",
+        "key": "px",
+        "label": "External Point X-Position x_P",
+        "min": -1.4,
+        "max": 1.4,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-py",
+        "key": "py",
+        "label": "External Point Height y_P",
+        "min": 0.85,
+        "max": 2.35,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Line ℓ & External Point P", "time": 0 },
+      { "label": "2 · Arc from P Cuts ℓ at A, B", "time": 1.4 },
+      { "label": "3 · Arcs from A, B Meet at Q", "time": 2.8 },
+      { "label": "4 · Orthogonal Foot H (PH ⊥ ℓ)", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 12",
+      "heading": "Shortest Distance & Orthogonal Projection Foot",
+      "latex": "|PA| = |PB| = R,\\; |QA| = |QB| \\implies PQ \\perp AB \\;\\text{at } H(x_P, y_\\ell), \\quad d_{\\min}(P,\\ell) = |PH|",
+      "prose": "Constructing points A and B equidistant from P reduces the external perpendicular problem to bisecting chord AB via symmetric lower intersection Q."
+    }
+  },
+  {
+    "id": "const_erect_perp_on_line",
+    "category": "Geometrical Constructions",
+    "name": "Erecting a 90° Perpendicular at a Point on a Line",
+    "track": "Euclid Elements I.11 · Right-Angle Construction",
+    "glyph": "90°",
+    "sceneClass": "ErectPerpendicularOnLineScene",
+    "archetype": "construction",
+    "subType": "const_erect_perp_on_line",
+    "duration": 6,
+    "summary": "Steps off equal compass segments PA = PB = r along line ℓ from point P, then swings larger arcs of radius R > r from A and B to intersect at apex Q directly above P.",
+    "dragHint": "Drag base step radius r or apex compass radius R to adjust the right-triangle construction height |PQ|",
+    "defaults": {
+      "track": "EUCLID ELEMENTS I.11 · RIGHT ANGLE AT POINT ON LINE",
+      "title": "Erecting a Perpendicular PQ ⊥ ℓ at Given Point P on Line ℓ",
+      "stepR": 1.15,
+      "outerR": 2.05
+    },
+    "controls": [
+      {
+        "id": "ctrl-stepr",
+        "key": "stepR",
+        "label": "Collinear Step Radius r = |PA| = |PB|",
+        "min": 0.65,
+        "max": 1.65,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-outerr",
+        "key": "outerR",
+        "label": "Upper Compass Radius R (> r)",
+        "min": 1.45,
+        "max": 2.65,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Point P on Line ℓ", "time": 0 },
+      { "label": "2 · Tick Equal Steps A & B", "time": 1.4 },
+      { "label": "3 · Intersecting Arcs at Q", "time": 2.8 },
+      { "label": "4 · Erected Normal PQ ⊥ ℓ", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 11",
+      "heading": "Pythagorean Altitude & Congruent Adjacent Angles",
+      "latex": "|PA| = |PB| = r,\\; |QA| = |QB| = R \\implies \\angle QPA = \\angle QPB = 90^\\circ, \\quad |PQ| = \\sqrt{R^2 - r^2}",
+      "prose": "Because supplementary angles ∠QPA and ∠QPB are congruent by SSS (△QPA ≅ △QPB), each is an exact right angle of 90°."
+    }
+  },
+  {
+    "id": "const_parallel_alt_angle",
+    "category": "Geometrical Constructions",
+    "name": "Parallel Line Construction via Copying an Angle",
+    "track": "Euclid Elements I.31 · Parallel Postulate",
+    "glyph": "ℓ′∥ℓ",
+    "sceneClass": "ParallelLineAngleCopyScene",
+    "archetype": "construction",
+    "subType": "const_parallel_alt_angle",
+    "duration": 6,
+    "summary": "Draws a transversal through P meeting line ℓ at Q at angle α, then copies ∠α at vertex P using two compass arcs (reference radius r and chord span c) to construct ℓ′ ∥ ℓ.",
+    "dragHint": "Drag transversal angle α or vertical separation h to watch the compass chord-transfer arcs align ℓ′ ∥ ℓ",
+    "defaults": {
+      "track": "EUCLID ELEMENTS I.31 · PARALLEL LINE CONSTRUCTION",
+      "title": "Constructing ℓ′ ∥ ℓ Through Point P by Copying Corresponding Angle α",
+      "transDeg": 52,
+      "sepH": 1.55
+    },
+    "controls": [
+      {
+        "id": "ctrl-transdeg",
+        "key": "transDeg",
+        "label": "Transversal Angle α (deg)",
+        "min": 28,
+        "max": 78,
+        "step": 2,
+        "drag": "angle"
+      },
+      {
+        "id": "ctrl-seph",
+        "key": "sepH",
+        "label": "Parallel Line Separation h",
+        "min": 0.95,
+        "max": 2.15,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Transversal PQ at Angle α", "time": 0 },
+      { "label": "2 · Equal Reference Arcs at Q & P", "time": 1.4 },
+      { "label": "3 · Measure & Transfer Chord c", "time": 2.8 },
+      { "label": "4 · Parallel Straightedge ℓ′ ∥ ℓ", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK I PROP. 23 & 31",
+      "heading": "Chord-Length Angle Copy & Corresponding Angles",
+      "latex": "c = 2r\\sin\\left(\\frac{\\alpha}{2}\\right) \\implies \\angle_{\\text{upper}} = \\angle_{\\text{lower}} = \\alpha \\implies \\ell' \\parallel \\ell",
+      "prose": "Two arcs of equal radius r have equal central angles if and only if their subtended chords c are equal; transferring chord c with the compass copies α exactly."
+    }
+  },
+  {
+    "id": "const_thales_segment_div",
+    "category": "Geometrical Constructions",
+    "name": "Dividing a Segment into N Equal Parts (Thales Intercept)",
+    "track": "Euclid Elements VI.9 · Intercept Construction",
+    "glyph": "AB/N",
+    "sceneClass": "ThalesSegmentDivisionScene",
+    "archetype": "construction",
+    "subType": "const_thales_segment_div",
+    "duration": 6,
+    "summary": "Steps N equal compass marks P₁…P_N along an auxiliary ray AX, joins P_N to B, and constructs parallel rays through each P_k to partition AB into N exact parts.",
+    "dragHint": "Adjust division count N (2–7) or auxiliary ray angle α to see parallel intercepts partition AB evenly",
+    "defaults": {
+      "track": "EUCLID ELEMENTS VI.9 · THALES SEGMENT DIVISION",
+      "title": "Compass & Straightedge Division of Segment AB into N Equal Sub-Segments",
+      "partsN": 5,
+      "rayDeg": 38
+    },
+    "controls": [
+      {
+        "id": "ctrl-partsn",
+        "key": "partsN",
+        "label": "Equal Divisions N (2–7)",
+        "min": 2,
+        "max": 7,
+        "step": 1,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-raydeg",
+        "key": "rayDeg",
+        "label": "Auxiliary Ray Angle α (deg)",
+        "min": 22,
+        "max": 58,
+        "step": 2,
+        "drag": "angle"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Segment AB & Auxiliary Ray AX", "time": 0 },
+      { "label": "2 · Step N Equal Compass Ticks P_k", "time": 1.4 },
+      { "label": "3 · Connect Terminal Strut P_N B", "time": 2.8 },
+      { "label": "4 · Parallel Intercepts Divide AB", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK VI PROP. 9",
+      "heading": "Thales' Intercept Theorem & Similar Triangles",
+      "latex": "P_k Q_k \\parallel P_N B \\implies \\frac{|AQ_k|}{|AB|} = \\frac{|AP_k|}{|AP_N|} = \\frac{k}{N} \\quad (k = 1, \\dots, N)",
+      "prose": "Because ΔAP_k Q_k ~ ΔAP_N B with scale factor k/N, the equally spaced compass marks on the auxiliary ray project onto exact 1/N divisions of AB."
+    }
+  },
+  {
+    "id": "const_external_tangents_circle",
+    "category": "Geometrical Constructions",
+    "name": "Tangents to a Circle from an External Point (Thales Circle)",
+    "track": "Euclid Elements III.17 · IGCSE / Olympiad",
+    "glyph": "PT⊥OT",
+    "sceneClass": "CircleExternalTangentsConstructionScene",
+    "archetype": "construction",
+    "subType": "const_external_tangents_circle",
+    "duration": 6,
+    "summary": "Bisects OP to find midpoint M, sweeps the Thales circle of diameter OP centered at M, and connects P to intersections T₁, T₂ where ∠OT₁P = ∠OT₂P = 90°.",
+    "dragHint": "Drag external distance d = |OP| or circle radius R to see the Thales circle locate tangent points T₁ and T₂",
+    "defaults": {
+      "track": "EUCLID ELEMENTS III.17 · EXTERNAL TANGENTS CONSTRUCTION",
+      "title": "Constructing Exact Tangents PT₁, PT₂ to Circle (O, R) via Thales Semicircle",
+      "distOP": 2.35,
+      "circR": 1.05
+    },
+    "controls": [
+      {
+        "id": "ctrl-distop",
+        "key": "distOP",
+        "label": "External Center-Point Distance |OP|",
+        "min": 1.55,
+        "max": 2.85,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-circr",
+        "key": "circR",
+        "label": "Target Circle Radius R",
+        "min": 0.65,
+        "max": 1.4,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Circle (O, R) & External Point P", "time": 0 },
+      { "label": "2 · Bisect OP at Midpoint M", "time": 1.4 },
+      { "label": "3 · Thales Circle Cuts (O,R) at T₁, T₂", "time": 2.8 },
+      { "label": "4 · Tangent Rays PT₁ & PT₂ (90°)", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK III PROP. 17",
+      "heading": "Thales' Semicircle Right-Angle Guarantee",
+      "latex": "|MO| = |MP| = |MT_i| = \\frac{|OP|}{2} \\implies \\angle OT_i P = 90^\\circ \\implies |PT_1| = |PT_2| = \\sqrt{|OP|^2 - R^2}",
+      "prose": "Any angle inscribed in the circle with diameter OP is 90°; thus the intersections T₁ and T₂ automatically satisfy OT_i ⊥ PT_i, making PT₁ and PT₂ exact tangents."
+    }
+  },
+  {
+    "id": "const_common_bitangents",
+    "category": "Geometrical Constructions",
+    "name": "External Common Bitangents to Two Circles (Auxiliary r₁ − r₂)",
+    "track": "Monge's Circle Construction · Homothety",
+    "glyph": "r₁−r₂",
+    "sceneClass": "TwoCirclesCommonTangentsScene",
+    "archetype": "construction",
+    "subType": "const_common_bitangents",
+    "duration": 6,
+    "summary": "Constructs an auxiliary concentric circle of radius r₁ − r₂ at O₁, draws tangents from O₂ via the Thales circle on O₁O₂, and shifts radially by r₂ to get the common bitangents.",
+    "dragHint": "Adjust larger radius r₁ or smaller radius r₂ to watch the auxiliary (r₁ − r₂) reduction circle and bitangents",
+    "defaults": {
+      "track": "MONGE'S AUXILIARY CIRCLE · COMMON BITANGENTS",
+      "title": "Constructing External Common Tangents to Two Circles via Radius Reduction (r₁ − r₂)",
+      "r1": 1.35,
+      "r2": 0.55
+    },
+    "controls": [
+      {
+        "id": "ctrl-r1",
+        "key": "r1",
+        "label": "Left Circle Radius r₁",
+        "min": 0.95,
+        "max": 1.65,
+        "step": 0.05,
+        "drag": "y"
+      },
+      {
+        "id": "ctrl-r2",
+        "key": "r2",
+        "label": "Right Circle Radius r₂",
+        "min": 0.25,
+        "max": 0.85,
+        "step": 0.05,
+        "drag": "x"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Two Circles (O₁, r₁) & (O₂, r₂)", "time": 0 },
+      { "label": "2 · Auxiliary Circle (O₁, r₁ − r₂)", "time": 1.4 },
+      { "label": "3 · Thales Tangent from O₂ to Aux", "time": 2.8 },
+      { "label": "4 · Parallel Shift by r₂ → Bitangents", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "CLASSICAL REDUCTION",
+      "heading": "Reducing Two-Circle Tangency to Point-Circle Tangency",
+      "latex": "r_{\\text{aux}} = r_1 - r_2, \\quad L_{\\text{tangent}} = \\sqrt{d^2 - (r_1 - r_2)^2}, \\quad \\sin\\alpha = \\frac{r_1 - r_2}{d}",
+      "prose": "Shrinking both circles by r₂ reduces (O₂, r₂) to a single point O₂ and (O₁, r₁) to radius r₁ − r₂; translating the resulting tangent outward along the normal by r₂ restores both circles."
+    }
+  },
+  {
+    "id": "const_geometric_mean_sqrt",
+    "category": "Geometrical Constructions",
+    "name": "Geometric Mean √(a·b) & Squaring the Rectangle (Euclid II.14)",
+    "track": "Euclid Elements II.14 & VI.13 · Geometric Mean",
+    "glyph": "√ab",
+    "sceneClass": "GeometricMeanSqrtConstructionScene",
+    "archetype": "construction",
+    "subType": "const_geometric_mean_sqrt",
+    "duration": 6,
+    "summary": "Places segments a and b end-to-end, sweeps a semicircle of diameter a + b, and erects a perpendicular at their junction H to construct altitude |CH| = √(ab).",
+    "dragHint": "Drag segment lengths a and b to see altitude |CH| = √(ab) construct the exact square of area a·b",
+    "defaults": {
+      "track": "EUCLID ELEMENTS II.14 & VI.13 · GEOMETRIC MEAN √(ab)",
+      "title": "Compass Construction of √(a·b) & Squaring a Rectangle via Semicircle Altitude",
+      "segA": 2.2,
+      "segB": 0.9
+    },
+    "controls": [
+      {
+        "id": "ctrl-sega",
+        "key": "segA",
+        "label": "Left Segment Length a",
+        "min": 0.6,
+        "max": 2.6,
+        "step": 0.1,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-segb",
+        "key": "segB",
+        "label": "Right Segment Length b",
+        "min": 0.5,
+        "max": 2.2,
+        "step": 0.1,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Collinear Segments a & b", "time": 0 },
+      { "label": "2 · Bisect a+b & Draw Semicircle", "time": 1.4 },
+      { "label": "3 · Erect Perpendicular CH at Junction", "time": 2.8 },
+      { "label": "4 · Altitude |CH| = √(ab) & Square", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK VI PROP. 13",
+      "heading": "Right-Triangle Altitude Theorem & Constructible Square Roots",
+      "latex": "\\triangle ACH \\sim \\triangle CBH \\implies \\frac{a}{|CH|} = \\frac{|CH|}{b} \\implies |CH| = \\sqrt{ab} \\le \\frac{a+b}{2}",
+      "prose": "Setting b = 1 constructs √a for any constructible length a, proving that compass and straightedge can extract arbitrary nested square roots."
+    }
+  },
+  {
+    "id": "const_golden_section_pentagon",
+    "category": "Geometrical Constructions",
+    "name": "Golden Ratio φ & Ptolemy's Regular Pentagon Construction",
+    "track": "Euclid Elements IV.11 · Ptolemy's Pentagon",
+    "glyph": "φ, s₅",
+    "sceneClass": "GoldenRatioPentagonConstructionScene",
+    "archetype": "construction",
+    "subType": "const_golden_section_pentagon",
+    "duration": 6,
+    "summary": "Bisects radius OB at M, swings an arc of radius |MC| = R√5/2 from M to cut the diameter at D, constructing both the Golden Ratio |OD|/R = φ⁻¹ and pentagon side |CD| = s₅.",
+    "dragHint": "Adjust circumradius R or step progress to watch Ptolemy's arc |MC| simultaneously construct s₅ and s₁₀",
+    "defaults": {
+      "track": "EUCLID IV.11 & PTOLEMY'S ALMAGEST · REGULAR PENTAGON",
+      "title": "Ptolemy's Compass Construction of the Golden Ratio φ & Regular Pentagon",
+      "pentR": 1.75,
+      "rotDeg": 0
+    },
+    "controls": [
+      {
+        "id": "ctrl-pentr",
+        "key": "pentR",
+        "label": "Circumcircle Radius R",
+        "min": 1.15,
+        "max": 2.15,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-rotdeg",
+        "key": "rotDeg",
+        "label": "Pentagon Inspection Rotation (deg)",
+        "min": 0,
+        "max": 72,
+        "step": 2,
+        "drag": "angle"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Circle (O, R) & Midpoint M of OB", "time": 0 },
+      { "label": "2 · Swing Arc |MC| = R√5/2 to D", "time": 1.4 },
+      { "label": "3 · Chord |CD| = Pentagon Side s₅", "time": 2.8 },
+      { "label": "4 · Step s₅ Around Circle → Pentagon", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "PTOLEMY'S ALMAGEST I.10",
+      "heading": "Simultaneous Construction of Decagon (s₁₀) & Pentagon (s₅)",
+      "latex": "|MC| = \\frac{\\sqrt{5}}{2}R,\\quad s_{10} = |OD| = \\frac{\\sqrt{5}-1}{2}R = \\frac{R}{\\varphi},\\quad s_5 = |CD| = R\\sqrt{1 + \\varphi^{-2}} = \\frac{\\sqrt{10-2\\sqrt{5}}}{2}R",
+      "prose": "In right triangle △COD, legs R = s₆ (hexagon) and |OD| = s₁₀ (decagon) have hypotenuse |CD| = s₅, because s₆² + s₁₀² = s₅² (Euclid Book XIII Proposition 10)."
+    }
+  },
+  {
+    "id": "const_incircle_incenter",
+    "category": "Geometrical Constructions",
+    "name": "Incircle of a Triangle via Angle Bisectors & Apothem",
+    "track": "Euclid Elements IV.4 · Inscribed Circle",
+    "glyph": "r=Δ/s",
+    "sceneClass": "IncircleTriangleConstructionScene",
+    "archetype": "construction",
+    "subType": "const_incircle_incenter",
+    "duration": 6,
+    "summary": "Constructs two compass angle bisectors meeting at Incenter I, drops a perpendicular from I to side AB at T_c, and sweeps the unique inscribed circle of radius r = |IT_c|.",
+    "dragHint": "Drag apex C(x_C, y_C) to see the compass angle bisectors, Incenter I, and tangent points T_a, T_b, T_c update",
+    "defaults": {
+      "track": "EUCLID ELEMENTS IV.4 · INCIRCLE & INCENTER CONSTRUCTION",
+      "title": "Compass Construction of Incenter I, Apothem IT ⊥ AB, and Inscribed Circle",
+      "cx": 0.35,
+      "cy": 2.15
+    },
+    "controls": [
+      {
+        "id": "ctrl-incx",
+        "key": "cx",
+        "label": "Apex X-Coordinate x_C",
+        "min": -1.4,
+        "max": 1.6,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-incy",
+        "key": "cy",
+        "label": "Apex Y-Coordinate y_C",
+        "min": 1.1,
+        "max": 2.6,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Given Triangle △ABC", "time": 0 },
+      { "label": "2 · Bisect ∠A and ∠B → Incenter I", "time": 1.4 },
+      { "label": "3 · Drop Apothem IT_c ⊥ AB", "time": 2.8 },
+      { "label": "4 · Sweep Incircle (I, r = Δ/s)", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK IV PROP. 4",
+      "heading": "Concurrency of Angle Bisectors & Inradius r = Δ / s",
+      "latex": "|IT_a| = |IT_b| = |IT_c| = r = \\frac{\\Delta}{s}, \\quad s = \\frac{a+b+c}{2}, \\quad |AT_b| = |AT_c| = s - a",
+      "prose": "Because I lies on the bisectors of ∠A and ∠B, it is equidistant from all three sides; dropping the perpendicular IT_c determines the exact compass opening r for the incircle."
+    }
+  },
+  {
+    "id": "const_circumcircle_3pts",
+    "category": "Geometrical Constructions",
+    "name": "Circle Through Three Non-Collinear Points (Circumcircle)",
+    "track": "Euclid Elements IV.5 · Circumcenter Construction",
+    "glyph": "◯ABC",
+    "sceneClass": "CircumcircleThreePointsScene",
+    "archetype": "construction",
+    "subType": "const_circumcircle_3pts",
+    "duration": 6,
+    "summary": "Constructs the compass perpendicular bisectors of segments AB and BC, locates their intersection at Circumcenter O, and sweeps the unique circle passing through A, B, and C.",
+    "dragHint": "Drag third point C(x_C, y_C) to watch the two perpendicular bisector lenses intersect at Circumcenter O",
+    "defaults": {
+      "track": "EUCLID ELEMENTS IV.5 · CIRCLE THROUGH 3 POINTS",
+      "title": "Constructing the Unique Circle Through A, B, C via Two Perpendicular Bisectors",
+      "cx": 0.45,
+      "cy": 1.65
+    },
+    "controls": [
+      {
+        "id": "ctrl-ccx",
+        "key": "cx",
+        "label": "Third Point X-Coordinate x_C",
+        "min": -1.35,
+        "max": 1.55,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-ccy",
+        "key": "cy",
+        "label": "Third Point Y-Coordinate y_C",
+        "min": 0.65,
+        "max": 2.35,
+        "step": 0.05,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Three Non-Collinear Points A, B, C", "time": 0 },
+      { "label": "2 · Perp Bisector of Chord AB", "time": 1.4 },
+      { "label": "3 · Perp Bisector of Chord BC → O", "time": 2.8 },
+      { "label": "4 · Sweep Circumcircle (O, R = |OA|)", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK IV PROP. 5",
+      "heading": "Uniqueness of the Circumcircle via Equidistant Loci",
+      "latex": "O \\in \\text{perp}(AB) \\implies |OA|=|OB|,\\quad O \\in \\text{perp}(BC) \\implies |OB|=|OC| \\implies |OA|=|OB|=|OC|=R",
+      "prose": "Any three non-collinear points determine two non-parallel chords AB and BC whose perpendicular bisectors intersect at a unique point O equidistant from A, B, and C."
+    }
+  },
+  {
+    "id": "const_regular_hexagon_12gon",
+    "category": "Geometrical Constructions",
+    "name": "Regular Hexagon & Dodecagon Compass Daisy Rosette",
+    "track": "Euclid Elements IV.15 · Six-Petal Rosette",
+    "glyph": "s₆=R",
+    "sceneClass": "HexagonDodecagonConstructionScene",
+    "archetype": "construction",
+    "subType": "const_regular_hexagon_12gon",
+    "duration": 6,
+    "summary": "Steps the circle's own radius R around its circumference 6 times (s₆ = R) to sweep the classic 6-petal compass rosette and regular hexagon, then bisects arcs for the 12-gon.",
+    "dragHint": "Adjust compass radius R or petal count k (1–6) to trace the 6-petal rosette, regular hexagon, and 12-gon",
+    "defaults": {
+      "track": "EUCLID ELEMENTS IV.15 · COMPASS ROSETTE & HEXAGON",
+      "title": "Six-Petal Compass Daisy Rosette, Regular Hexagon (s₆ = R) & Dodecagon",
+      "hexR": 1.65,
+      "petals": 6
+    },
+    "controls": [
+      {
+        "id": "ctrl-hexr",
+        "key": "hexR",
+        "label": "Compass Opening Radius R",
+        "min": 1.05,
+        "max": 2.1,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-petals",
+        "key": "petals",
+        "label": "Constructed Rosette Arcs (1–6)",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "drag": "y"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Primary Circle of Radius R", "time": 0 },
+      { "label": "2 · Walk Radius R Around Rim (6×)", "time": 1.4 },
+      { "label": "3 · Six-Petal Compass Daisy Rosette", "time": 2.8 },
+      { "label": "4 · Regular Hexagon & 12-Gon Chord", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "EUCLID BOOK IV PROP. 15",
+      "heading": "Six Equilateral Sectors & Archimedes' Polygon Doubling",
+      "latex": "s_6 = R,\\quad A_6 = \\frac{3\\sqrt{3}}{2}R^2,\\quad s_{12} = R\\sqrt{2 - \\sqrt{3}},\\quad A_{12} = 3R^2",
+      "prose": "Because a chord of length R subtends a 60° equilateral triangle at the center, six unaltered compass steps close around 360°; bisecting each 60° arc yields the regular 12-gon of exact area 3R²."
+    }
+  },
+  {
+    "id": "const_apollonius_locus",
+    "category": "Geometrical Constructions",
+    "name": "Circle of Apollonius (|PA| / |PB| = k) Harmonic Construction",
+    "track": "Apollonius of Perga · Harmonic Locus",
+    "glyph": "|PA|=k|PB|",
+    "sceneClass": "ApolloniusCircleConstructionScene",
+    "archetype": "construction",
+    "subType": "const_apollonius_locus",
+    "duration": 6,
+    "summary": "Constructs internal and external angle bisectors of ∠APB meeting line AB at harmonic conjugates D₁ and D₂, sweeping the Apollonius circle with diameter D₁D₂ where |PA|/|PB| = k.",
+    "dragHint": "Drag distance ratio k = |PA|/|PB| or probe angle φ around the Apollonius circle to verify |PA| = k|PB|",
+    "defaults": {
+      "track": "APOLLONIUS OF PERGA · HARMONIC RATIO LOCUS",
+      "title": "Constructing the Circle of Apollonius {P : |PA| / |PB| = k} via Bisector Diameter D₁D₂",
+      "ratioK": 2.0,
+      "probeDeg": 65
+    },
+    "controls": [
+      {
+        "id": "ctrl-ratiok",
+        "key": "ratioK",
+        "label": "Distance Ratio k = |PA| / |PB| (> 1)",
+        "min": 1.35,
+        "max": 3.2,
+        "step": 0.05,
+        "drag": "x"
+      },
+      {
+        "id": "ctrl-probedeg",
+        "key": "probeDeg",
+        "label": "Locus Point Angle φ on Circle (deg)",
+        "min": 15,
+        "max": 165,
+        "step": 3,
+        "drag": "angle"
+      }
+    ],
+    "beats": [
+      { "label": "1 · Anchors A, B & Ratio k : 1", "time": 0 },
+      { "label": "2 · Internal & External Bisectors D₁, D₂", "time": 1.4 },
+      { "label": "3 · Orthogonal Bisectors ∠D₁PD₂ = 90°", "time": 2.8 },
+      { "label": "4 · Apollonius Circle on Diameter D₁D₂", "time": 4.2 }
+    ],
+    "rigor": {
+      "badge": "APOLLONIUS LOCUS THEOREM",
+      "heading": "Orthogonal Internal & External Angle Bisectors",
+      "latex": "\\frac{|AD_1|}{|D_1 B|} = \\frac{|AD_2|}{|D_2 B|} = k,\\quad PD_1 \\perp PD_2 \\implies R_{\\text{Apollonius}} = \\frac{k}{k^2 - 1}|AB|",
+      "prose": "By the internal and external angle bisector theorems, P satisfies |PA|/|PB| = k if and only if PD₁ and PD₂ bisect the interior and exterior angles at P; since adjacent supplementary bisectors meet at 90°, P traces the circle with diameter D₁D₂."
+    }
   }
 ];
+

@@ -3533,3 +3533,348 @@ class BlochSphereQubit3DScene(ClipSATScene):
         )
         self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
+
+
+class PerpendicularBisectorConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS I.10 · IGCSE 0580 LOCUS CONSTRUCTION — Sweeps two equal-radius compass arcs centered at A and B (R > ½|AB|) to locate intersections P and Q, constructing the straightedge perpendicular bisector PQ ⊥ AB."""
+
+    clipsat_track = "EUCLID ELEMENTS I.10 · IGCSE 0580 LOCUS CONSTRUCTION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS I.10 · IGCSE 0580 LOCUS CONSTRUCTION", "Compass & Straightedge Perpendicular Bisector: PA = PB")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class AngleBisectorConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS I.9 · ANGLE BISECTOR CONSTRUCTION — Strikes a primary compass arc from vertex O cutting the rays at D and E, then equal arcs from D and E meeting at F so straightedge ray OF bisects ∠AOB."""
+
+    clipsat_track = "EUCLID ELEMENTS I.9 · ANGLE BISECTOR CONSTRUCTION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS I.9 · ANGLE BISECTOR CONSTRUCTION", "Compass Angle Bisector & Locus Equidistant from Two Intersecting Lines")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class EquilateralSixtyConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS PROPOSITION I.1 · VESICA PISCIS — Constructs Euclid's Proposition I.1 Vesica Piscis from two full circles of radius |AB| to form equilateral △ABC (60°) and bisects it to construct an exact 30° ray."""
+
+    clipsat_track = "EUCLID ELEMENTS PROPOSITION I.1 · VESICA PISCIS"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS PROPOSITION I.1 · VESICA PISCIS", "Equilateral Triangle △ABC & Exact 60° / 30° Compass Construction")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class DropPerpendicularPointScene(ClipSATScene):
+    """EUCLID ELEMENTS I.12 · EXTERNAL PERPENDICULAR — Swings a compass arc from external point P cutting line ℓ at A and B, then equal arcs from A and B meeting at Q below ℓ so straightedge PQ meets ℓ at 90°."""
+
+    clipsat_track = "EUCLID ELEMENTS I.12 · EXTERNAL PERPENDICULAR"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS I.12 · EXTERNAL PERPENDICULAR", "Dropping a Perpendicular from External Point P onto Line ℓ")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class ErectPerpendicularOnLineScene(ClipSATScene):
+    """EUCLID ELEMENTS I.11 · RIGHT ANGLE AT POINT ON LINE — Steps off equal compass segments PA = PB = r along line ℓ from point P, then swings larger arcs of radius R > r from A and B to intersect at apex Q directly above P."""
+
+    clipsat_track = "EUCLID ELEMENTS I.11 · RIGHT ANGLE AT POINT ON LINE"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS I.11 · RIGHT ANGLE AT POINT ON LINE", "Erecting a Perpendicular PQ ⊥ ℓ at Given Point P on Line ℓ")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class ParallelLineAngleCopyScene(ClipSATScene):
+    """EUCLID ELEMENTS I.31 · PARALLEL LINE CONSTRUCTION — Draws a transversal through P meeting line ℓ at Q at angle α, then copies ∠α at vertex P using two compass arcs (reference radius r and chord span c) to construct ℓ′ ∥ ℓ."""
+
+    clipsat_track = "EUCLID ELEMENTS I.31 · PARALLEL LINE CONSTRUCTION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS I.31 · PARALLEL LINE CONSTRUCTION", "Constructing ℓ′ ∥ ℓ Through Point P by Copying Corresponding Angle α")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class ThalesSegmentDivisionScene(ClipSATScene):
+    """EUCLID ELEMENTS VI.9 · THALES SEGMENT DIVISION — Steps N equal compass marks P₁…P_N along an auxiliary ray AX, joins P_N to B, and constructs parallel rays through each P_k to partition AB into N exact parts."""
+
+    clipsat_track = "EUCLID ELEMENTS VI.9 · THALES SEGMENT DIVISION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS VI.9 · THALES SEGMENT DIVISION", "Compass & Straightedge Division of Segment AB into N Equal Sub-Segments")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class CircleExternalTangentsConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS III.17 · EXTERNAL TANGENTS CONSTRUCTION — Bisects OP to find midpoint M, sweeps the Thales circle of diameter OP centered at M, and connects P to intersections T₁, T₂ where ∠OT₁P = ∠OT₂P = 90°."""
+
+    clipsat_track = "EUCLID ELEMENTS III.17 · EXTERNAL TANGENTS CONSTRUCTION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS III.17 · EXTERNAL TANGENTS CONSTRUCTION", "Constructing Exact Tangents PT₁, PT₂ to Circle (O, R) via Thales Semicircle")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class TwoCirclesCommonTangentsScene(ClipSATScene):
+    """MONGE'S AUXILIARY CIRCLE · COMMON BITANGENTS — Constructs an auxiliary concentric circle of radius r₁ − r₂ at O₁, draws tangents from O₂ via the Thales circle on O₁O₂, and shifts radially by r₂ to get the common bitangents."""
+
+    clipsat_track = "MONGE'S AUXILIARY CIRCLE · COMMON BITANGENTS"
+
+    def construct(self):
+        header = self.build_exam_header("MONGE'S AUXILIARY CIRCLE · COMMON BITANGENTS", "Constructing External Common Tangents to Two Circles via Radius Reduction (r₁ − r₂)")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class GeometricMeanSqrtConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS II.14 & VI.13 · GEOMETRIC MEAN √(ab) — Places segments a and b end-to-end, sweeps a semicircle of diameter a + b, and erects a perpendicular at their junction H to construct altitude |CH| = √(ab)."""
+
+    clipsat_track = "EUCLID ELEMENTS II.14 & VI.13 · GEOMETRIC MEAN √(ab)"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS II.14 & VI.13 · GEOMETRIC MEAN √(ab)", "Compass Construction of √(a·b) & Squaring a Rectangle via Semicircle Altitude")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class GoldenRatioPentagonConstructionScene(ClipSATScene):
+    """EUCLID IV.11 & PTOLEMY'S ALMAGEST · REGULAR PENTAGON — Bisects radius OB at M, swings an arc of radius |MC| = R√5/2 from M to cut the diameter at D, constructing both the Golden Ratio |OD|/R = φ⁻¹ and pentagon side |CD| = s₅."""
+
+    clipsat_track = "EUCLID IV.11 & PTOLEMY'S ALMAGEST · REGULAR PENTAGON"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID IV.11 & PTOLEMY'S ALMAGEST · REGULAR PENTAGON", "Ptolemy's Compass Construction of the Golden Ratio φ & Regular Pentagon")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class IncircleTriangleConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS IV.4 · INCIRCLE & INCENTER CONSTRUCTION — Constructs two compass angle bisectors meeting at Incenter I, drops a perpendicular from I to side AB at T_c, and sweeps the unique inscribed circle of radius r = |IT_c|."""
+
+    clipsat_track = "EUCLID ELEMENTS IV.4 · INCIRCLE & INCENTER CONSTRUCTION"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS IV.4 · INCIRCLE & INCENTER CONSTRUCTION", "Compass Construction of Incenter I, Apothem IT ⊥ AB, and Inscribed Circle")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class CircumcircleThreePointsScene(ClipSATScene):
+    """EUCLID ELEMENTS IV.5 · CIRCLE THROUGH 3 POINTS — Constructs the compass perpendicular bisectors of segments AB and BC, locates their intersection at Circumcenter O, and sweeps the unique circle passing through A, B, and C."""
+
+    clipsat_track = "EUCLID ELEMENTS IV.5 · CIRCLE THROUGH 3 POINTS"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS IV.5 · CIRCLE THROUGH 3 POINTS", "Constructing the Unique Circle Through A, B, C via Two Perpendicular Bisectors")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class HexagonDodecagonConstructionScene(ClipSATScene):
+    """EUCLID ELEMENTS IV.15 · COMPASS ROSETTE & HEXAGON — Steps the circle's own radius R around its circumference 6 times (s₆ = R) to sweep the classic 6-petal compass rosette and regular hexagon, then bisects arcs for the 12-gon."""
+
+    clipsat_track = "EUCLID ELEMENTS IV.15 · COMPASS ROSETTE & HEXAGON"
+
+    def construct(self):
+        header = self.build_exam_header("EUCLID ELEMENTS IV.15 · COMPASS ROSETTE & HEXAGON", "Six-Petal Compass Daisy Rosette, Regular Hexagon (s₆ = R) & Dodecagon")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)
+
+
+class ApolloniusCircleConstructionScene(ClipSATScene):
+    """APOLLONIUS OF PERGA · HARMONIC RATIO LOCUS — Constructs internal and external angle bisectors of ∠APB meeting line AB at harmonic conjugates D₁ and D₂, sweeping the Apollonius circle with diameter D₁D₂ where |PA|/|PB| = k."""
+
+    clipsat_track = "APOLLONIUS OF PERGA · HARMONIC RATIO LOCUS"
+
+    def construct(self):
+        header = self.build_exam_header("APOLLONIUS OF PERGA · HARMONIC RATIO LOCUS", "Constructing the Circle of Apollonius {P : |PA| / |PB| = k} via Bisector Diameter D₁D₂")
+        self.add(header)
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_seg = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_a = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_b = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        locus = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+        self.play(FadeIn(plane), ShowCreation(base_seg), run_time=1.0)
+        self.play(ShowCreation(arc_a), ShowCreation(arc_b), run_time=1.4)
+        self.play(ShowCreation(locus), run_time=1.2)
+        self.wait(1.0)

@@ -2,8 +2,8 @@
    3c1c · ClipSAT Curriculum Scene Presets & Python Code Generator
    ========================================================================== */
 
-import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=151.0';
-import { SCENES_3D_PRESETS } from './scenes_3d.js?v=151.0';
+import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=165.0';
+import { SCENES_3D_PRESETS } from './scenes_3d.js?v=165.0';
 
 export const FUNCTIONS = {
   quad: {
@@ -822,6 +822,47 @@ ${paramLines || '        pass'}
 `;
   }
 
+  if (preset.archetype === 'construction') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    """${preset.summary}"""
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${safeTrack}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${safeTrack}", "${safeTitle}")
+        self.add(header)
+
+        # Interactive Euclidean compass-and-straightedge parameters
+${paramLines || '        pass'}
+
+        plane = NumberPlane(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            background_line_style={"stroke_color": self.theme.muted, "stroke_opacity": 0.22},
+        )
+        base_segment = Line(LEFT * 2.0, RIGHT * 2.0, color=self.theme.indigo, stroke_width=4)
+        arc_left = Arc(start_angle=-PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=LEFT * 2.0, color=self.theme.amber)
+        arc_right = Arc(start_angle=2 * PI / 3, angle=2 * PI / 3, radius=2.4, arc_center=RIGHT * 2.0, color=self.theme.amber)
+        constructed_line = Line(DOWN * 1.8, UP * 1.8, color=self.theme.teal, stroke_width=4)
+
+        theorem = Tex(
+            "${safeLatex}",
+            color=self.theme.ink,
+            font_size=28,
+        ).to_edge(DOWN, buff=0.45)
+
+        self.play(FadeIn(plane), ShowCreation(base_segment), run_time=1.2)
+        self.play(ShowCreation(arc_left), ShowCreation(arc_right), run_time=1.6)
+        self.play(ShowCreation(constructed_line), Write(theorem), run_time=1.6)
+        self.wait(1.0)
+`;
+  }
+
   return `# CLI: ${cliFlags}
 from manimlib import *
 
@@ -863,4 +904,5 @@ ${paramLines || '        pass'}
         self.wait(1.0)
 `;
 }
+
 

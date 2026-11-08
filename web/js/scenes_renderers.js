@@ -55,6 +55,9 @@ export function attachExtendedRenderers(EngineClass) {
     if (arch === 'physics') {
       return this.drawPhysicsScene(sub, ctx, pal, bounds, params, time, duration);
     }
+    if (arch === 'construction') {
+      return this.drawConstructionScene(sub, ctx, pal, bounds, params, time, duration);
+    }
     return this.drawExamTrapsScene(sub, ctx, pal, bounds, params, time, duration);
   };
 
@@ -4597,4 +4600,983 @@ export function attachExtendedRenderers(EngineClass) {
     ctx.stroke();
     ctx.restore();
   };
+
+  /* ------------------------------------------------------------------------
+   * 13. COMPASS & STRAIGHTEDGE GEOMETRICAL CONSTRUCTIONS ENGINE (15 Scenes)
+   * ------------------------------------------------------------------------ */
+  proto.drawConstructionScene = function (sub, ctx, pal, bounds, params, time, duration) {
+    const plot = this.createPlotArea(ctx, pal, bounds, -3.2, 3.2, -2.5, 2.5, spanEase(time, 0, 0.5), 0.60);
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
+    const v = params || {};
+
+    // 4 progressive construction beats
+    const b1 = spanEase(time, 0.05, 1.3);
+    const b2 = spanEase(time, 1.2, 2.7);
+    const b3 = spanEase(time, 2.5, 4.1);
+    const b4 = spanEase(time, 3.8, 5.4);
+
+    // Euclidean compass arc in math coordinates (with optional compass needle arm)
+    const drawCompassArc = (cx, cy, r, a0, a1, color, width = 2.6, dashed = true, prog = 1, showArm = false) => {
+      const p = clamp01(prog);
+      if (p <= 0.01 || r <= 0) return;
+      const steps = 72;
+      const aEnd = a0 + (a1 - a0) * p;
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width * scale;
+      if (dashed) ctx.setLineDash([7 * scale, 5 * scale]);
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const a = a0 + ((aEnd - a0) * i) / steps;
+        const pt = toPx(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      if (showArm && p < 0.99) {
+        ctx.setLineDash([3 * scale, 3 * scale]);
+        ctx.lineWidth = 1.6 * scale;
+        const pc = toPx(cx, cy);
+        const pTip = toPx(cx + r * Math.cos(aEnd), cy + r * Math.sin(aEnd));
+        ctx.beginPath();
+        ctx.moveTo(pc.x, pc.y);
+        ctx.lineTo(pTip.x, pTip.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    const drawSeg = (x0, y0, x1, y1, color, width = 3.2, dashed = false, prog = 1) => {
+      const p = clamp01(prog);
+      if (p <= 0.01) return;
+      const p0 = toPx(x0, y0);
+      const p1 = toPx(x0 + (x1 - x0) * p, y0 + (y1 - y0) * p);
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width * scale;
+      if (dashed) ctx.setLineDash([7 * scale, 5 * scale]);
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const drawPt = (x, y, label, color, dx = 10, dy = -10, isCross = false) => {
+      const p = toPx(x, y);
+      if (isCross) {
+        const s = 6.5 * scale;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.4 * scale;
+        ctx.beginPath();
+        ctx.moveTo(p.x - s, p.y - s);
+        ctx.lineTo(p.x + s, p.y + s);
+        ctx.moveTo(p.x - s, p.y + s);
+        ctx.lineTo(p.x + s, p.y - s);
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        this.drawDot(ctx, p.x, p.y, 6.8 * scale, color, pal.bg);
+      }
+      if (label) {
+        ctx.save();
+        ctx.font = `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = color;
+        ctx.fillText(label, p.x + dx * scale, p.y + dy * scale);
+        ctx.restore();
+      }
+    };
+
+    const drawRightBox = (vx, vy, ux, uy, nx, ny, sz = 0.22, color = pal.teal) => {
+      const p0 = toPx(vx + ux * sz, vy + uy * sz);
+      const p1 = toPx(vx + (ux + nx) * sz, vy + (uy + ny) * sz);
+      const p2 = toPx(vx + nx * sz, vy + ny * sz);
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2 * scale;
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    let readouts = [];
+    let tableHeaders = ['Construction Step', 'Compass / Straightedge', 'Key Metric', 'Geometric Property'];
+    let tableRows = [];
+    let cardLines = [];
+
+    // ── #151: Perpendicular Bisector & Equidistant Locus (Euclid I.10) ──
+    if (sub === 'const_perp_bisector') {
+      const a = Number(params.halfLen ?? 1.45);
+      const ratio = Number(params.radiusRatio ?? 1.35);
+      const R = a * ratio;
+      const h = Math.sqrt(Math.max(0.04, R * R - a * a));
+
+      // Step 1: Given segment AB
+      drawSeg(-a, 0, a, 0, pal.indigo, 4.2, false, b1);
+      drawPt(-a, 0, 'A', pal.indigo, -18, 18);
+      drawPt(a, 0, 'B', pal.indigo, 10, 18);
+
+      // Step 2 & 3: Equal compass arcs of radius R centered at A and B
+      drawCompassArc(-a, 0, R, -1.25, 1.25, pal.amber, 2.8, true, Math.max(0.25, b2), true);
+      drawCompassArc(a, 0, R, Math.PI - 1.25, Math.PI + 1.25, pal.amber, 2.8, true, Math.max(0.25, b3), true);
+
+      // Rhombus radii AP, BP, AQ, BQ
+      drawSeg(-a, 0, 0, h, pal.amber, 1.8, true, b3);
+      drawSeg(a, 0, 0, h, pal.amber, 1.8, true, b3);
+      drawSeg(-a, 0, 0, -h, pal.amber, 1.8, true, b3);
+      drawSeg(a, 0, 0, -h, pal.amber, 1.8, true, b3);
+
+      // Step 4: Straightedge perpendicular bisector line PQ
+      drawSeg(0, -2.15, 0, 2.15, pal.teal, 4.0, false, Math.max(0.2, b4));
+      drawRightBox(0, 0, 1, 0, 0, 1, 0.22, pal.teal);
+      drawPt(0, h, 'P', pal.amber, 10, -8, true);
+      drawPt(0, -h, 'Q', pal.amber, 10, 16, true);
+      drawPt(0, 0, 'M', pal.teal, 10, 18);
+
+      readouts = [
+        { key: 'Length |AB|', val: (2 * a).toFixed(2) },
+        { key: 'Compass Radius R', val: R.toFixed(2) },
+        { key: 'Lens Half-Chord h', val: h.toFixed(3) },
+        { key: 'Midpoint Angle', val: '90.0° (PQ ⊥ AB)' },
+      ];
+      tableRows = [
+        ['1 · Given Segment AB', 'Straightedge AB', `|AB| = ${(2 * a).toFixed(2)}`, 'Endpoints A(−a,0), B(+a,0)'],
+        ['2 · Arc from Center A', `Compass R = ${R.toFixed(2)}`, 'R > ½|AB|', 'Circle (A, R) Locus'],
+        ['3 · Arc from Center B', `Compass R = ${R.toFixed(2)}`, `P(0, +${h.toFixed(2)}), Q(0, −${h.toFixed(2)})`, '|PA| = |PB| = |QA| = |QB|'],
+        ['4 · Join P and Q', 'Straightedge PQ', 'Midpoint M(0, 0)', 'PQ ⊥ AB & |AM| = |MB|'],
+      ];
+      cardLines = [
+        { text: 'EUCLID I.10 · PERPENDICULAR BISECTOR', color: pal.amber },
+        { text: `Segment |AB| = ${(2 * a).toFixed(2)},  Compass R = ${R.toFixed(2)}`, color: pal.ink },
+        { text: `Lens Intersections: y = ±√(R² − a²) = ±${h.toFixed(3)}`, color: pal.teal },
+        { text: `Rhombus APBQ ⇒ Diagonals PQ ⊥ AB at M(0,0)`, color: pal.indigo },
+      ];
+    }
+    // ── #152: Angle Bisector Compass Construction (Euclid I.9) ──
+    else if (sub === 'const_angle_bisector') {
+      const angDeg = Number(params.angleDeg ?? 68);
+      const angRad = (angDeg * Math.PI) / 180;
+      const r1 = Number(params.arcR ?? 1.65);
+      const vx = -2.1;
+      const vy = -1.25;
+
+      // Step 1: Vertex O and rays OA (along 0°) and OB (along angRad)
+      drawSeg(vx, vy, vx + 4.3, vy, pal.indigo, 4.0, false, b1);
+      drawSeg(vx, vy, vx + 4.0 * Math.cos(angRad), vy + 4.0 * Math.sin(angRad), pal.indigo, 4.0, false, b1);
+      drawPt(vx, vy, 'O', pal.indigo, -18, 16);
+
+      // Step 2: Primary arc of radius r1 centered at O cutting OA at D and OB at E
+      const dx = vx + r1;
+      const dy = vy;
+      const ex = vx + r1 * Math.cos(angRad);
+      const ey = vy + r1 * Math.sin(angRad);
+      drawCompassArc(vx, vy, r1, -0.08, angRad + 0.08, pal.amber, 2.8, true, Math.max(0.25, b2), true);
+      drawPt(dx, dy, 'D', pal.amber, 6, 18);
+      drawPt(ex, ey, 'E', pal.amber, -18, -8);
+
+      // Step 3: Secondary equal arcs of radius r2 = 0.85*r1 from D and E meeting at F
+      const r2 = 0.85 * r1;
+      const halfA = angRad / 2;
+      const dChordHalf = r1 * Math.sin(halfA);
+      const ofDist = r1 * Math.cos(halfA) + Math.sqrt(Math.max(0.04, r2 * r2 - dChordHalf * dChordHalf));
+      const fx = vx + ofDist * Math.cos(halfA);
+      const fy = vy + ofDist * Math.sin(halfA);
+      drawCompassArc(dx, dy, r2, halfA - 0.35, halfA + 0.85, pal.amber, 2.5, true, Math.max(0.25, b3));
+      drawCompassArc(ex, ey, r2, halfA - 0.85, halfA + 0.35, pal.amber, 2.5, true, Math.max(0.25, b3));
+      drawPt(fx, fy, 'F', pal.amber, 10, -8, true);
+
+      // Step 4: Bisector ray OF and equidistant perpendicular drops to OA and OB
+      drawSeg(vx, vy, vx + 4.2 * Math.cos(halfA), vy + 4.2 * Math.sin(halfA), pal.teal, 4.0, false, Math.max(0.2, b4));
+      drawSeg(fx, fy, fx, vy, pal.teal, 2.0, true, b4);
+      const projDist = ofDist * Math.cos(halfA);
+      drawSeg(fx, fy, vx + projDist * Math.cos(angRad), vy + projDist * Math.sin(angRad), pal.teal, 2.0, true, b4);
+      const perpDist = ofDist * Math.sin(halfA);
+
+      readouts = [
+        { key: 'Given Angle ∠AOB', val: `${angDeg.toFixed(1)}°` },
+        { key: 'Bisected ½∠AOB', val: `${(angDeg / 2).toFixed(1)}°` },
+        { key: 'Compass Radius r₁', val: r1.toFixed(2) },
+        { key: 'Equidistance d_⊥', val: perpDist.toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Given Angle ∠AOB', `Rays OA, OB (${angDeg}°)`, 'Vertex O', 'Two Intersecting Rays'],
+        ['2 · Primary Arc at O', `Compass r₁ = ${r1.toFixed(2)}`, '|OD| = |OE| = r₁', 'Equidistant Marks D, E'],
+        ['3 · Equal Arcs at D, E', `Compass r₂ = ${r2.toFixed(2)}`, '|DF| = |EF| = r₂', 'Intersection Point F'],
+        ['4 · Draw Ray OF', 'Straightedge OF', `∠AOF = ∠FOB = ${(angDeg / 2).toFixed(1)}°`, `SSS: △ODF ≅ △OEF (d_⊥=${perpDist.toFixed(2)})`],
+      ];
+      cardLines = [
+        { text: 'EUCLID I.9 · COMPASS ANGLE BISECTOR', color: pal.amber },
+        { text: `∠AOB = ${angDeg.toFixed(1)}°  →  Bisected into ${(angDeg / 2).toFixed(1)}° + ${(angDeg / 2).toFixed(1)}°`, color: pal.ink },
+        { text: `SSS Congruence: |OD| = |OE| = ${r1.toFixed(2)}, |DF| = |EF| = ${r2.toFixed(2)}`, color: pal.teal },
+        { text: `Locus Equidistance to Both Rays = ${perpDist.toFixed(3)}`, color: pal.indigo },
+      ];
+    }
+    // ── #153: Vesica Piscis, Equilateral Triangle & Exact 60° / 30° (Euclid I.1) ──
+    else if (sub === 'const_equilateral_60') {
+      const s = Number(params.sideLen ?? 1.85);
+      const showBis = Number(params.showBisect ?? 1);
+      const ax = -0.5 * s;
+      const bx = 0.5 * s;
+      const ay = -0.85;
+      const h = (Math.sqrt(3) / 2) * s;
+      const cy = ay + h;
+
+      // Base AB and two full Vesica Piscis circles of radius s
+      drawSeg(ax, ay, bx, ay, pal.indigo, 4.2, false, b1);
+      drawCompassArc(ax, ay, s, -Math.PI * 0.35, Math.PI * 0.75, pal.amber, 2.6, true, Math.max(0.25, b2));
+      drawCompassArc(bx, ay, s, Math.PI * 0.25, Math.PI * 1.35, pal.amber, 2.6, true, Math.max(0.25, b2));
+
+      // Equilateral triangle sides AC and BC (60°)
+      drawSeg(ax, ay, 0, cy, pal.teal, 4.0, false, Math.max(0.2, b3));
+      drawSeg(bx, ay, 0, cy, pal.teal, 4.0, false, Math.max(0.2, b3));
+      drawPt(ax, ay, 'A (60°)', pal.indigo, -24, 20);
+      drawPt(bx, ay, 'B (60°)', pal.indigo, 8, 20);
+      drawPt(0, cy, 'C (60°)', pal.amber, -18, -12, true);
+
+      // Optional 30° bisector from A through midpoint M_BC of BC
+      if (showBis > 0.2) {
+        const mx = 0.5 * bx;
+        const my = 0.5 * (ay + cy);
+        drawSeg(ax, ay, ax + 1.35 * (mx - ax), ay + 1.35 * (my - ay), pal.amber, 3.2, false, Math.max(0.2, b4) * showBis);
+        drawPt(mx, my, '30° Ray', pal.amber, 10, -6);
+      }
+
+      const areaTri = (Math.sqrt(3) / 4) * s * s;
+      readouts = [
+        { key: 'Side Length s', val: s.toFixed(2) },
+        { key: 'Altitude (√3/2)s', val: h.toFixed(3) },
+        { key: 'Interior Angles', val: '60° / 30° Bisected' },
+        { key: 'Area (√3/4)s²', val: areaTri.toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Base Segment AB', `Length s = ${s.toFixed(2)}`, 'Centers A and B', 'Initial Distance s'],
+        ['2 · Circle Centered at A', `Radius R = ${s.toFixed(2)}`, '|AC| = s', 'Passes Through B'],
+        ['3 · Circle Centered at B', `Radius R = ${s.toFixed(2)}`, '|BC| = s', 'Intersects at Apex C'],
+        ['4 · △ABC & Bisection', 'Straightedge AC, BC', `h = ${h.toFixed(3)}`, 'Exact 60° & 30° Angles'],
+      ];
+      cardLines = [
+        { text: "EUCLID I.1 · VESICA PISCIS & 60° / 30°", color: pal.amber },
+        { text: `|AB| = |BC| = |CA| = s = ${s.toFixed(2)}`, color: pal.ink },
+        { text: `Exact Altitude h = (√3/2)s = ${h.toFixed(3)}`, color: pal.teal },
+        { text: `Equilateral Area = (√3/4)s² = ${areaTri.toFixed(3)}`, color: pal.indigo },
+      ];
+    }
+    // ── #154: Dropping a Perpendicular from an External Point P (Euclid I.12) ──
+    else if (sub === 'const_drop_perp_point') {
+      const px = Number(params.px ?? 0.55);
+      const py = Number(params.py ?? 1.65);
+      const yLine = -0.35;
+      const dy = py - yLine;
+      const R = dy * 1.28;
+      const halfChord = Math.sqrt(Math.max(0.05, R * R - dy * dy));
+      const ax = px - halfChord;
+      const bx = px + halfChord;
+      const qy = yLine - dy * 0.95;
+      const r2 = Math.hypot(halfChord, yLine - qy);
+
+      // Step 1: Line l and external point P
+      drawSeg(-2.9, yLine, 2.9, yLine, pal.indigo, 3.8, false, b1);
+      drawPt(px, py, 'P', pal.amber, 10, -10);
+
+      // Step 2: Arc centered at P cutting line l at A and B
+      drawCompassArc(px, py, R, -Math.PI * 0.82, -Math.PI * 0.18, pal.amber, 2.8, true, Math.max(0.25, b2), true);
+      drawPt(ax, yLine, 'A', pal.indigo, -16, -10);
+      drawPt(bx, yLine, 'B', pal.indigo, 8, -10);
+
+      // Step 3: Equal arcs from A and B meeting at Q below line l
+      drawCompassArc(ax, yLine, r2, -1.35, -0.35, pal.amber, 2.5, true, Math.max(0.25, b3));
+      drawCompassArc(bx, yLine, r2, -Math.PI + 0.35, -Math.PI + 1.35, pal.amber, 2.5, true, Math.max(0.25, b3));
+      drawPt(px, qy, 'Q', pal.amber, 10, 16, true);
+
+      // Step 4: Straightedge PQ perpendicular to line l at foot H(px, yLine)
+      drawSeg(px, py, px, qy, pal.teal, 4.0, false, Math.max(0.2, b4));
+      drawRightBox(px, yLine, 1, 0, 0, 1, 0.22, pal.teal);
+      drawPt(px, yLine, 'H', pal.teal, 10, 18);
+
+      readouts = [
+        { key: 'Point P(x_P, y_P)', val: `(${px.toFixed(2)}, ${py.toFixed(2)})` },
+        { key: 'Shortest Dist |PH|', val: dy.toFixed(3) },
+        { key: 'Cut Chord |AB|', val: (2 * halfChord).toFixed(3) },
+        { key: 'Foot H Angle', val: '90.0° (PH ⊥ ℓ)' },
+      ];
+      tableRows = [
+        ['1 · External Point P', `P(${px.toFixed(2)}, ${py.toFixed(2)})`, `Line y = ${yLine.toFixed(2)}`, `Altitude |PH| = ${dy.toFixed(2)}`],
+        ['2 · Swing Arc from P', `Radius R = ${R.toFixed(2)}`, `A(${ax.toFixed(2)}), B(${bx.toFixed(2)})`, '|PA| = |PB| = R'],
+        ['3 · Arcs from A and B', `Radius r₂ = ${r2.toFixed(2)}`, `Apex Q(${px.toFixed(2)}, ${qy.toFixed(2)})`, '|QA| = |QB| = r₂'],
+        ['4 · Draw Segment PQ', 'Straightedge PQ', `Foot H(${px.toFixed(2)}, ${yLine.toFixed(2)})`, 'PH ⊥ ℓ (Shortest Path)'],
+      ];
+      cardLines = [
+        { text: 'EUCLID I.12 · DROP EXTERNAL PERPENDICULAR', color: pal.amber },
+        { text: `External Point P(${px.toFixed(2)}, ${py.toFixed(2)})  →  Foot H(${px.toFixed(2)}, ${yLine.toFixed(2)})`, color: pal.ink },
+        { text: `Cut Span |AB| = ${(2 * halfChord).toFixed(3)} via Radius R = ${R.toFixed(2)}`, color: pal.teal },
+        { text: `Orthogonal Distance d_min(P, ℓ) = |PH| = ${dy.toFixed(3)}`, color: pal.indigo },
+      ];
+    }
+    // ── #155: Erecting a 90° Perpendicular at a Point on a Line (Euclid I.11) ──
+    else if (sub === 'const_erect_perp_on_line') {
+      const r = Number(params.stepR ?? 1.15);
+      const R = Math.max(r + 0.25, Number(params.outerR ?? 2.05));
+      const y0 = -1.15;
+      const h = Math.sqrt(Math.max(0.05, R * R - r * r));
+      const qy = y0 + h;
+
+      // Step 1: Line l and given point P(0, y0)
+      drawSeg(-2.9, y0, 2.9, y0, pal.indigo, 3.8, false, b1);
+      drawPt(0, y0, 'P', pal.indigo, -6, 22);
+
+      // Step 2: Equal step ticks A(-r, y0) and B(+r, y0) via compass radius r centered at P
+      drawCompassArc(0, y0, r, 0, Math.PI, pal.amber, 2.4, true, Math.max(0.25, b2));
+      drawPt(-r, y0, 'A', pal.amber, -16, 22);
+      drawPt(r, y0, 'B', pal.amber, 8, 22);
+
+      // Step 3: Intersecting arcs of radius R from A and B meeting at Q(0, qy)
+      const angQ = Math.atan2(h, r);
+      drawCompassArc(-r, y0, R, angQ - 0.35, angQ + 0.35, pal.amber, 2.8, true, Math.max(0.25, b3), true);
+      drawCompassArc(r, y0, R, Math.PI - angQ - 0.35, Math.PI - angQ + 0.35, pal.amber, 2.8, true, Math.max(0.25, b3), true);
+      drawSeg(-r, y0, 0, qy, pal.amber, 1.8, true, b3);
+      drawSeg(r, y0, 0, qy, pal.amber, 1.8, true, b3);
+      drawPt(0, qy, 'Q', pal.amber, 10, -8, true);
+
+      // Step 4: Erected perpendicular ray PQ
+      drawSeg(0, y0, 0, qy + 0.35, pal.teal, 4.2, false, Math.max(0.2, b4));
+      drawRightBox(0, y0, 1, 0, 0, 1, 0.24, pal.teal);
+
+      readouts = [
+        { key: 'Tick Radius r', val: r.toFixed(2) },
+        { key: 'Apex Radius R', val: R.toFixed(2) },
+        { key: 'Erected Height |PQ|', val: h.toFixed(3) },
+        { key: 'Angle ∠QPB', val: '90.0° (Exact)' },
+      ];
+      tableRows = [
+        ['1 · Point P on Line ℓ', 'Given Point P(0, y₀)', '|PA| = |PB| = r', 'Collinear Anchor'],
+        ['2 · Step Off A and B', `Compass r = ${r.toFixed(2)}`, `A(−${r.toFixed(2)}), B(+${r.toFixed(2)})`, 'P is Midpoint of AB'],
+        ['3 · Swing Radius R > r', `Compass R = ${R.toFixed(2)}`, '|QA| = |QB| = R', `Intersection Q(0, ${qy.toFixed(2)})`],
+        ['4 · Erect Normal PQ', 'Straightedge PQ', `|PQ| = √(R²−r²) = ${h.toFixed(3)}`, '△QPA ≅ △QPB ⇒ 90°'],
+      ];
+      cardLines = [
+        { text: 'EUCLID I.11 · ERECT 90° NORMAL AT POINT P', color: pal.amber },
+        { text: `Equal Ticks |PA| = |PB| = ${r.toFixed(2)},  Outer Arcs R = ${R.toFixed(2)}`, color: pal.ink },
+        { text: `Pythagorean Height |PQ| = √(R² − r²) = ${h.toFixed(3)}`, color: pal.teal },
+        { text: `SSS Congruence △QPA ≅ △QPB ⇒ ∠QPA = ∠QPB = 90°`, color: pal.indigo },
+      ];
+    }
+    // ── #156: Parallel Line Construction via Angle Copy (Euclid I.31) ──
+    else if (sub === 'const_parallel_alt_angle') {
+      const alphaDeg = Number(params.transDeg ?? 52);
+      const alpha = (alphaDeg * Math.PI) / 180;
+      const h = Number(params.sepH ?? 1.55);
+      const yBot = -1.05;
+      const yTop = yBot + h;
+      const qx = -1.15;
+      const px = qx + h / Math.tan(alpha);
+      const rArc = 0.85;
+      const chordC = 2 * rArc * Math.sin(alpha / 2);
+
+      // Step 1: Base line l, external point P, and transversal line through Q and P
+      drawSeg(-2.9, yBot, 2.9, yBot, pal.indigo, 3.8, false, b1);
+      drawSeg(qx - 0.55 * Math.cos(alpha), yBot - 0.55 * Math.sin(alpha), px + 0.75 * Math.cos(alpha), yTop + 0.75 * Math.sin(alpha), pal.indigo, 3.0, false, b1);
+      drawPt(qx, yBot, 'Q', pal.indigo, -18, 20);
+      drawPt(px, yTop, 'P', pal.indigo, -18, -10);
+
+      // Step 2: Equal reference arcs of radius rArc at Q and P
+      drawCompassArc(qx, yBot, rArc, -0.05, alpha + 0.12, pal.amber, 2.6, true, Math.max(0.25, b2));
+      drawCompassArc(px, yTop, rArc, -0.15, alpha + 0.12, pal.amber, 2.6, true, Math.max(0.25, b2));
+
+      // Step 3: Measure chord c at Q and transfer from upper transversal intersection at P
+      const pTopTransX = px + rArc * Math.cos(alpha);
+      const pTopTransY = yTop + rArc * Math.sin(alpha);
+      drawCompassArc(pTopTransX, pTopTransY, chordC, -Math.PI * 0.75, -Math.PI * 0.25, pal.amber, 2.6, true, Math.max(0.25, b3));
+      drawPt(px + rArc, yTop, 'R', pal.amber, 8, 18, true);
+
+      // Step 4: Parallel line l' through P and R
+      drawSeg(-2.9, yTop, 2.9, yTop, pal.teal, 4.0, false, Math.max(0.2, b4));
+
+      readouts = [
+        { key: 'Transversal α', val: `${alphaDeg.toFixed(1)}°` },
+        { key: 'Copied Angle ∠P', val: `${alphaDeg.toFixed(1)}°` },
+        { key: 'Chord Span c', val: chordC.toFixed(3) },
+        { key: 'Separation h', val: h.toFixed(2) },
+      ];
+      tableRows = [
+        ['1 · Transversal PQ', `Angle α = ${alphaDeg.toFixed(1)}°`, `Q(${qx.toFixed(2)}, ${yBot.toFixed(2)})`, `Meets P(${px.toFixed(2)}, ${yTop.toFixed(2)})`],
+        ['2 · Reference Arcs', `Compass r = ${rArc.toFixed(2)}`, 'Centers Q and P', 'Equal Radii on Both Vertices'],
+        ['3 · Transfer Chord c', `c = 2r sin(α/2) = ${chordC.toFixed(3)}`, 'Cut Upper Arc at R', 'Copies Angle α Exactly'],
+        ['4 · Draw Line PR (ℓ′)', 'Straightedge PR', `Slope = 0.000`, 'Corresponding Angles ⇒ ℓ′ ∥ ℓ'],
+      ];
+      cardLines = [
+        { text: 'EUCLID I.31 · PARALLEL LINE VIA ANGLE COPY', color: pal.amber },
+        { text: `Transversal Angle α = ${alphaDeg.toFixed(1)}°  ·  Separation h = ${h.toFixed(2)}`, color: pal.ink },
+        { text: `Transferred Compass Chord c = 2r sin(α/2) = ${chordC.toFixed(3)}`, color: pal.teal },
+        { text: `Equal Corresponding Angles (${alphaDeg.toFixed(1)}°) ⇒ ℓ′ ∥ ℓ`, color: pal.indigo },
+      ];
+    }
+    // ── #157: Dividing a Segment into N Equal Parts (Thales Intercept VI.9) ──
+    else if (sub === 'const_thales_segment_div') {
+      const N = Math.max(2, Math.min(7, Math.round(Number(params.partsN ?? 5))));
+      const rayDeg = Number(params.rayDeg ?? 38);
+      const alpha = (rayDeg * Math.PI) / 180;
+      const ax = -2.35;
+      const ay = -1.15;
+      const lenAB = 4.6;
+      const bx = ax + lenAB;
+      const stepR = 3.4 / N;
+
+      // Step 1: Segment AB and auxiliary ray AX at angle alpha
+      drawSeg(ax, ay, bx, ay, pal.indigo, 4.2, false, b1);
+      drawSeg(ax, ay, ax + 3.7 * Math.cos(alpha), ay + 3.7 * Math.sin(alpha), pal.amber, 2.8, false, b1);
+      drawPt(ax, ay, 'A', pal.indigo, -18, 18);
+      drawPt(bx, ay, 'B', pal.indigo, 10, 18);
+
+      // Step 2 & 3 & 4: N equal compass ticks P_k on AX and parallel struts P_k Q_k
+      for (let k = 1; k <= N; k++) {
+        const rk = k * stepR;
+        const pkx = ax + rk * Math.cos(alpha);
+        const pky = ay + rk * Math.sin(alpha);
+        const qkx = ax + (k / N) * lenAB;
+        drawCompassArc(ax + (k - 1) * stepR * Math.cos(alpha), ay + (k - 1) * stepR * Math.sin(alpha), stepR, alpha - 0.28, alpha + 0.28, pal.amber, 2.2, true, b2);
+        drawPt(pkx, pky, `P${k}`, pal.amber, -20, -6);
+        // Parallel intercept line from P_k to Q_k on AB
+        const col = k === N ? pal.indigo : pal.teal;
+        drawSeg(pkx, pky, qkx, ay, col, k === N ? 3.2 : 2.6, k !== N, k === N ? b3 : b4);
+        if (k < N) drawPt(qkx, ay, `Q${k}`, pal.teal, -8, 22);
+      }
+
+      const subLen = lenAB / N;
+      readouts = [
+        { key: 'Divisions N', val: String(N) },
+        { key: 'Total Length |AB|', val: lenAB.toFixed(2) },
+        { key: 'Sub-Segment |AB|/N', val: subLen.toFixed(3) },
+        { key: 'Auxiliary Angle α', val: `${rayDeg.toFixed(0)}°` },
+      ];
+      tableRows = Array.from({ length: N }, (_, idx) => {
+        const k = idx + 1;
+        return [`Tick k = ${k} / ${N}`, `|AP_${k}| = ${(k * stepR).toFixed(2)}`, `|AQ_${k}| = ${(k * subLen).toFixed(3)}`, `Ratio k/N = ${(k / N).toFixed(3)}`];
+      });
+      cardLines = [
+        { text: `EUCLID VI.9 · DIVIDING AB INTO N = ${N} EQUAL PARTS`, color: pal.amber },
+        { text: `|AB| = ${lenAB.toFixed(2)}  →  Each Part Δx = |AB|/${N} = ${subLen.toFixed(3)}`, color: pal.ink },
+        { text: `Parallel Struts P_k Q_k ∥ P_${N} B by Similar Triangles`, color: pal.teal },
+        { text: `Thales Ratio: |AQ_k| / |AB| = |AP_k| / |AP_${N}| = k / ${N}`, color: pal.indigo },
+      ];
+    }
+    // ── #158: Constructing Tangents to a Circle from an External Point (Euclid III.17) ──
+    else if (sub === 'const_external_tangents_circle') {
+      const d = Number(params.distOP ?? 2.35);
+      const R = Math.min(d * 0.82, Number(params.circR ?? 1.05));
+      const ox = -1.05;
+      const oy = 0;
+      const px = ox + d;
+      const mx = ox + 0.5 * d;
+      const rThales = 0.5 * d;
+      // Tangent point angle cos(phi) = R / d
+      const phi = Math.acos(R / d);
+      const t1x = ox + R * Math.cos(phi);
+      const t1y = R * Math.sin(phi);
+      const t2x = t1x;
+      const t2y = -t1y;
+      const tanLen = Math.sqrt(d * d - R * R);
+
+      // Step 1: Target circle (O, R), external point P, and line OP
+      drawCompassArc(ox, oy, R, 0, Math.PI * 2, pal.indigo, 3.8, false, b1);
+      drawSeg(ox, oy, px, oy, pal.indigo, 2.4, true, b1);
+      drawPt(ox, oy, 'O', pal.indigo, -18, 16);
+      drawPt(px, oy, 'P', pal.indigo, 10, 16);
+
+      // Step 2 & 3: Midpoint M of OP and Thales circle of radius d/2 centered at M
+      drawPt(mx, oy, 'M', pal.amber, -6, 20);
+      drawCompassArc(mx, oy, rThales, 0, Math.PI * 2, pal.amber, 2.6, true, Math.max(0.25, b3));
+
+      // Step 4: Radii OT1, OT2 and tangent segments PT1, PT2 (orthogonal at T1, T2)
+      drawSeg(ox, oy, t1x, t1y, pal.amber, 2.4, false, b3);
+      drawSeg(ox, oy, t2x, t2y, pal.amber, 2.4, false, b3);
+      drawSeg(px, oy, t1x, t1y, pal.teal, 4.0, false, Math.max(0.2, b4));
+      drawSeg(px, oy, t2x, t2y, pal.teal, 4.0, false, Math.max(0.2, b4));
+      drawPt(t1x, t1y, 'T₁ (90°)', pal.teal, -16, -12, true);
+      drawPt(t2x, t2y, 'T₂ (90°)', pal.teal, -16, 22, true);
+
+      readouts = [
+        { key: 'Distance |OP|', val: d.toFixed(2) },
+        { key: 'Circle Radius R', val: R.toFixed(2) },
+        { key: 'Tangent |PT₁|=|PT₂|', val: tanLen.toFixed(3) },
+        { key: 'Angle ∠OT₁P', val: '90.0° (Thales)' },
+      ];
+      tableRows = [
+        ['1 · Given (O, R) & P', `R = ${R.toFixed(2)}`, `|OP| = ${d.toFixed(2)}`, 'External Point P'],
+        ['2 · Bisect Segment OP', 'Perp Bisector Lens', `Midpoint M(${mx.toFixed(2)}, 0)`, `|OM| = |MP| = ${rThales.toFixed(2)}`],
+        ['3 · Thales Circle (M, d/2)', `Radius = ${rThales.toFixed(2)}`, `Cuts (O, R) at T₁, T₂`, '∠OT₁P = ∠OT₂P = 90°'],
+        ['4 · Draw PT₁ and PT₂', 'Straightedge Tangents', `|PT| = √(d²−R²) = ${tanLen.toFixed(3)}`, 'Exact Equal Tangents'],
+      ];
+      cardLines = [
+        { text: 'EUCLID III.17 · TANGENTS FROM EXTERNAL POINT', color: pal.amber },
+        { text: `|OP| = ${d.toFixed(2)},  Circle Radius R = ${R.toFixed(2)}`, color: pal.ink },
+        { text: `Thales Semicircle on OP ⇒ ∠OT₁P = ∠OT₂P = 90°`, color: pal.teal },
+        { text: `Tangent Length |PT₁| = |PT₂| = √(|OP|² − R²) = ${tanLen.toFixed(3)}`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_common_bitangents') {
+      const r1 = Math.max(0.95, Math.min(1.65, v.r1 ?? 1.35));
+      const r2 = Math.max(0.25, Math.min(0.85, v.r2 ?? 0.55));
+      const o1x = -1.55, o1y = 0.0;
+      const o2x = 1.65, o2y = 0.0;
+      const d = o2x - o1x;
+      const rAux = Math.max(0.08, r1 - r2);
+      const mx = 0.5 * (o1x + o2x);
+      const rThales = 0.5 * d;
+      const cosA = rAux / d;
+      const sinA = Math.sqrt(Math.max(0, 1 - cosA * cosA));
+      const tanLen = Math.sqrt(Math.max(0, d * d - rAux * rAux));
+
+      // Step 1: Primary circles (O1, r1) and (O2, r2)
+      drawCompassArc(o1x, o1y, r1, 0, Math.PI * 2, pal.indigo, 3.6, false, b1);
+      drawCompassArc(o2x, o2y, r2, 0, Math.PI * 2, pal.indigo, 3.6, false, b1);
+      drawSeg(o1x, o1y, o2x, o2y, pal.indigo, 2.0, true, b1);
+      drawPt(o1x, o1y, 'O₁', pal.indigo, -18, 16);
+      drawPt(o2x, o2y, 'O₂', pal.indigo, 10, 16);
+
+      // Step 2: Auxiliary circle (O1, r1 - r2)
+      drawCompassArc(o1x, o1y, rAux, 0, Math.PI * 2, pal.amber, 2.6, true, Math.max(0.25, b2));
+      const qx = o1x + rAux * cosA;
+      const qy = o1y + rAux * sinA;
+      drawPt(qx, qy, 'Q (r₁−r₂)', pal.amber, -26, -10);
+
+      // Step 3: Thales circle on O1O2 and inner tangent O2Q
+      drawCompassArc(mx, 0, rThales, -0.1, Math.PI + 0.1, pal.coral, 2.2, true, b3);
+      drawSeg(o2x, o2y, qx, qy, pal.amber, 2.5, true, b3);
+
+      // Step 4: Radial normals and outer common bitangents T1T2 (top & bottom)
+      const t1x = o1x + r1 * cosA, t1y = o1y + r1 * sinA;
+      const t2x = o2x + r2 * cosA, t2y = o2y + r2 * sinA;
+      const b1x = o1x + r1 * cosA, b1y = o1y - r1 * sinA;
+      const b2x = o2x + r2 * cosA, b2y = o2y - r2 * sinA;
+      drawSeg(o1x, o1y, t1x, t1y, pal.amber, 2.2, false, b4);
+      drawSeg(o2x, o2y, t2x, t2y, pal.amber, 2.2, false, b4);
+      drawSeg(t1x, t1y, t2x, t2y, pal.teal, 4.0, false, Math.max(0.25, b4));
+      drawSeg(b1x, b1y, b2x, b2y, pal.teal, 3.4, false, Math.max(0.25, b4));
+      drawPt(t1x, t1y, 'T₁', pal.teal, -12, -12, true);
+      drawPt(t2x, t2y, 'T₂', pal.teal, 8, -12, true);
+
+      readouts = [
+        { key: 'Radii r₁, r₂', val: `${r1.toFixed(2)}, ${r2.toFixed(2)}` },
+        { key: 'Aux Radius r₁−r₂', val: rAux.toFixed(2) },
+        { key: 'Center Dist d', val: d.toFixed(2) },
+        { key: 'Bitangent |T₁T₂|', val: tanLen.toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Two Circles', `r₁ = ${r1.toFixed(2)}`, `r₂ = ${r2.toFixed(2)}`, `d = |O₁O₂| = ${d.toFixed(2)}`],
+        ['2 · Aux Circle at O₁', 'Compass Radius r₁ − r₂', `r_aux = ${rAux.toFixed(2)}`, 'Reduces O₂ to Point'],
+        ['3 · Tangent O₂Q to Aux', 'Thales Semicircle on O₁O₂', `Q(${qx.toFixed(2)}, ${qy.toFixed(2)})`, `|O₂Q| = ${tanLen.toFixed(3)}`],
+        ['4 · Radial Shift by r₂', 'Extend O₁Q → T₁, O₂T₂ ∥ O₁T₁', `|T₁T₂| = ${tanLen.toFixed(3)}`, 'Exact Common Bitangents'],
+      ];
+      cardLines = [
+        { text: 'MONGE AUXILIARY REDUCTION · COMMON BITANGENTS', color: pal.amber },
+        { text: `r₁ = ${r1.toFixed(2)},  r₂ = ${r2.toFixed(2)},  Aux Radius r₁ − r₂ = ${rAux.toFixed(2)}`, color: pal.ink },
+        { text: `Inner Tangent O₂Q ⊥ O₁Q shifted radially outward by r₂`, color: pal.teal },
+        { text: `Bitangent Length |T₁T₂| = √(d² − (r₁ − r₂)²) = ${tanLen.toFixed(3)}`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_geometric_mean_sqrt') {
+      const segA = Math.max(0.6, Math.min(2.6, v.segA ?? 2.2));
+      const segB = Math.max(0.5, Math.min(2.2, v.segB ?? 0.9));
+      const tot = segA + segB;
+      const yBase = -0.85;
+      const ax = -0.5 * tot - 0.35;
+      const hx = ax + segA;
+      const bx = ax + tot;
+      const mx = 0.5 * (ax + bx);
+      const R = 0.5 * tot;
+      const gMean = Math.sqrt(segA * segB);
+      const cy = yBase + gMean;
+
+      // Step 1: Collinear segments AH = a and HB = b
+      drawSeg(ax, yBase, hx, yBase, pal.indigo, 4.0, false, b1);
+      drawSeg(hx, yBase, bx, yBase, pal.coral, 4.0, false, b1);
+      drawPt(ax, yBase, 'A', pal.indigo, -16, 18);
+      drawPt(hx, yBase, 'H', pal.amber, -6, 20);
+      drawPt(bx, yBase, 'B', pal.coral, 10, 18);
+
+      // Step 2: Midpoint M and semicircle of radius (a+b)/2
+      drawPt(mx, yBase, 'M', pal.amber, -6, -12);
+      drawCompassArc(mx, yBase, R, 0, Math.PI, pal.amber, 2.8, false, Math.max(0.25, b2));
+
+      // Step 3: Perpendicular altitude HC at H meeting semicircle at C
+      drawSeg(hx, yBase, hx, yBase + gMean * Math.max(0.2, b3), pal.teal, 4.2, false, 1);
+      drawRightBox(hx, yBase, 1, 0, 0, 1, 0.14);
+      drawSeg(ax, yBase, hx, cy, pal.indigo, 2.0, true, b3);
+      drawSeg(bx, yBase, hx, cy, pal.coral, 2.0, true, b3);
+      drawPt(hx, cy, 'C (90°)', pal.teal, -18, -12, true);
+
+      // Step 4: Construct square of side √(ab) on HC (Euclid II.14 squaring the rectangle)
+      if (b4 > 0.05) {
+        const pA = toPx(hx, yBase);
+        const pB = toPx(hx + gMean, yBase);
+        const pC = toPx(hx + gMean, cy);
+        const pD = toPx(hx, cy);
+        ctx.save();
+        ctx.globalAlpha = b4;
+        ctx.fillStyle = pal.tealFill || 'rgba(45, 212, 191, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(pA.x, pA.y);
+        ctx.lineTo(pB.x, pB.y);
+        ctx.lineTo(pC.x, pC.y);
+        ctx.lineTo(pD.x, pD.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        drawSeg(hx, yBase, hx + gMean, yBase, pal.teal, 2.8, false, b4);
+        drawSeg(hx + gMean, yBase, hx + gMean, cy, pal.teal, 2.8, false, b4);
+        drawSeg(hx + gMean, cy, hx, cy, pal.teal, 2.8, false, b4);
+      }
+
+      readouts = [
+        { key: 'Segments a, b', val: `${segA.toFixed(2)}, ${segB.toFixed(2)}` },
+        { key: 'Arith Mean (a+b)/2', val: R.toFixed(3) },
+        { key: 'Geom Mean √(ab)', val: gMean.toFixed(4) },
+        { key: 'Square Area |CH|²', val: (segA * segB).toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Collinear Segments', `|AH| = a = ${segA.toFixed(2)}`, `|HB| = b = ${segB.toFixed(2)}`, `Diameter a+b = ${tot.toFixed(2)}`],
+        ['2 · Semicircle on AB', `Center M(${mx.toFixed(2)}, ${yBase})`, `Radius R = ${R.toFixed(3)}`, 'Arithmetic Mean (a+b)/2'],
+        ['3 · Erect Altitude HC ⊥ AB', 'Thales Right △ACB', '△ACH ∼ △CBH', `|CH| = √(ab) = ${gMean.toFixed(4)}`],
+        ['4 · Square on Altitude HC', 'Euclid II.14 Quadrature', `Area = |CH|² = ${(segA * segB).toFixed(3)}`, 'Equals Rectangle a·b'],
+      ];
+      cardLines = [
+        { text: 'EUCLID II.14 & VI.13 · GEOMETRIC MEAN √(a·b)', color: pal.amber },
+        { text: `a = ${segA.toFixed(2)},  b = ${segB.toFixed(2)},  Radius (a+b)/2 = ${R.toFixed(3)}`, color: pal.ink },
+        { text: `Right Triangle Similarity: |CH| / a = b / |CH| ⇒ |CH| = √(ab) = ${gMean.toFixed(4)}`, color: pal.teal },
+        { text: `AM-GM Visual Proof: Altitude √(ab) = ${gMean.toFixed(3)} ≤ Radius (a+b)/2 = ${R.toFixed(3)}`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_golden_section_pentagon') {
+      const R = Math.max(1.15, Math.min(2.15, v.pentR ?? 1.75));
+      const rot = ((v.rotDeg ?? 0) * Math.PI) / 180;
+      const ox = 0.0, oy = -0.1;
+      const phi = 0.5 * (1 + Math.sqrt(5));
+      const s10 = R / phi;
+      const s5 = R * Math.sqrt(10 - 2 * Math.sqrt(5)) * 0.5;
+      const mx = ox + 0.5 * R, my = oy;
+      const cx = ox, cy = oy + R;
+      const rMC = Math.hypot(cx - mx, cy - my);
+      const dx = mx - rMC, dy = oy;
+
+      // Step 1: Primary circle (O, R), perpendicular diameters, and midpoint M of OB
+      drawCompassArc(ox, oy, R, 0, Math.PI * 2, pal.indigo, 3.2, false, b1);
+      drawSeg(ox - R, oy, ox + R, oy, pal.indigo, 2.0, true, b1);
+      drawSeg(ox, oy - R, ox, oy + R, pal.indigo, 2.0, true, b1);
+      drawPt(ox, oy, 'O', pal.indigo, -16, 18);
+      drawPt(ox + R, oy, 'B', pal.indigo, 8, 16);
+      drawPt(mx, my, 'M (R/2)', pal.amber, -12, 20);
+      drawPt(cx, cy, 'C', pal.indigo, 8, -10);
+
+      // Step 2: Swing Ptolemy arc centered at M of radius |MC| = R√5/2 down to diameter at D
+      drawSeg(mx, my, cx, cy, pal.amber, 2.4, true, b2);
+      const angMC = Math.atan2(cy - my, cx - mx);
+      drawCompassArc(mx, my, rMC, angMC, Math.PI, pal.amber, 2.8, true, Math.max(0.25, b2));
+      drawPt(dx, dy, 'D (s₁₀)', pal.amber, -22, 20);
+      drawSeg(ox, oy, dx, dy, pal.coral, 3.4, false, b2);
+
+      // Step 3: Hypotenuse CD = pentagon side s5
+      drawSeg(cx, cy, dx, dy, pal.teal, 4.0, false, Math.max(0.2, b3));
+
+      // Step 4: Step s5 around the circle to inscribe the regular pentagon
+      const verts = [];
+      for (let k = 0; k < 5; k++) {
+        const a = Math.PI * 0.5 + rot + (k * 2 * Math.PI) / 5;
+        verts.push({ x: ox + R * Math.cos(a), y: oy + R * Math.sin(a) });
+      }
+      for (let k = 0; k < 5; k++) {
+        const v0 = verts[k];
+        const v1 = verts[(k + 1) % 5];
+        drawSeg(v0.x, v0.y, v1.x, v1.y, pal.teal, 3.8, false, Math.max(0.18, b4));
+        drawPt(v0.x, v0.y, `P_${k + 1}`, pal.teal, 8, -8, k === 0);
+      }
+
+      readouts = [
+        { key: 'Golden Ratio φ', val: phi.toFixed(5) },
+        { key: 'Decagon Side s₁₀=|OD|', val: s10.toFixed(4) },
+        { key: 'Pentagon Side s₅=|CD|', val: s5.toFixed(4) },
+        { key: 'Identity s₆²+s₁₀²', val: `${(R * R + s10 * s10).toFixed(3)} = s₅²` },
+      ];
+      tableRows = [
+        ['1 · Bisect Radius OB at M', `|OM| = R/2 = ${(0.5 * R).toFixed(3)}`, `|OC| = R = ${R.toFixed(2)}`, `|MC| = R√5/2 = ${rMC.toFixed(3)}`],
+        ['2 · Arc (M, |MC|) to D', 'Cuts Diameter at D', `|OD| = R/φ = ${s10.toFixed(4)}`, 'Regular Decagon Side s₁₀'],
+        ['3 · Chord CD Hypotenuse', 'Euclid XIII.10: R²+|OD|²=|CD|²', `|CD| = s₅ = ${s5.toFixed(4)}`, 'Exact Pentagon Side s₅'],
+        ['4 · Step s₅ Around Circle', '5 Equal Chords of Length s₅', 'Interior ∠ = 108°', 'Diagonal / Side = φ = 1.61803'],
+      ];
+      cardLines = [
+        { text: "PTOLEMY'S PENTAGON & GOLDEN RATIO CONSTRUCTION", color: pal.amber },
+        { text: `|MC| = (√5/2)R = ${rMC.toFixed(3)},  |OD| = s₁₀ = R/φ = ${s10.toFixed(4)}`, color: pal.ink },
+        { text: `Pentagon Side s₅ = |CD| = √(R² + s₁₀²) = ${s5.toFixed(4)}`, color: pal.teal },
+        { text: `Golden Ratio φ = (1 + √5)/2 = ${phi.toFixed(5)} (Exact 72° Central Angle)`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_incircle_incenter') {
+      const ax = -2.15, ay = -1.15;
+      const bx = 2.15, by = -1.15;
+      const cx = Math.max(-1.4, Math.min(1.6, v.cx ?? 0.35));
+      const cy = Math.max(1.1, Math.min(2.6, v.cy ?? 2.15));
+      const a = Math.hypot(bx - cx, by - cy);
+      const b = Math.hypot(ax - cx, ay - cy);
+      const c = Math.hypot(bx - ax, by - ay);
+      const perim = a + b + c;
+      const s = 0.5 * perim;
+      const ix = (a * ax + b * bx + c * cx) / perim;
+      const iy = (a * ay + b * by + c * cy) / perim;
+      const area = 0.5 * Math.abs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay));
+      const rIn = area / s;
+
+      // Step 1: Triangle ABC
+      drawSeg(ax, ay, bx, by, pal.indigo, 3.8, false, b1);
+      drawSeg(bx, by, cx, cy, pal.indigo, 3.8, false, b1);
+      drawSeg(cx, cy, ax, ay, pal.indigo, 3.8, false, b1);
+      drawPt(ax, ay, 'A', pal.indigo, -18, 16);
+      drawPt(bx, by, 'B', pal.indigo, 10, 16);
+      drawPt(cx, cy, 'C', pal.indigo, -6, -12);
+
+      // Step 2: Angle bisectors from A, B, C meeting at Incenter I
+      const angAC = Math.atan2(cy - ay, cx - ax);
+      drawCompassArc(ax, ay, 0.65, 0, angAC, pal.amber, 2.2, true, b2);
+      const angBC = Math.atan2(cy - by, cx - bx);
+      drawCompassArc(bx, by, 0.65, angBC, Math.PI, pal.amber, 2.2, true, b2);
+      drawSeg(ax, ay, ix, iy, pal.amber, 2.5, true, Math.max(0.25, b2));
+      drawSeg(bx, by, ix, iy, pal.amber, 2.5, true, Math.max(0.25, b2));
+      drawSeg(cx, cy, ix, iy, pal.amber, 2.0, true, Math.max(0.25, b2));
+      drawPt(ix, iy, 'I (Incenter)', pal.amber, 10, -8);
+
+      // Step 3: Drop perpendicular apothem IT_c to side AB (which is horizontal y = ay)
+      const tcx = ix, tcy = ay;
+      drawSeg(ix, iy, tcx, tcy, pal.coral, 3.2, false, Math.max(0.2, b3));
+      drawRightBox(tcx, tcy, 1, 0, 0, 1, 0.14);
+      drawPt(tcx, tcy, 'T_c', pal.coral, -8, 22);
+
+      // Step 4: Sweep inscribed circle of radius r = |IT_c|
+      drawCompassArc(ix, iy, rIn, 0, Math.PI * 2 * Math.max(0.2, b4), pal.teal, 4.0, false, 1);
+
+      readouts = [
+        { key: 'Incenter I(x, y)', val: `(${ix.toFixed(2)}, ${iy.toFixed(2)})` },
+        { key: 'Semiperimeter s', val: s.toFixed(3) },
+        { key: 'Triangle Area Δ', val: area.toFixed(3) },
+        { key: 'Inradius r = Δ/s', val: rIn.toFixed(4) },
+      ];
+      tableRows = [
+        ['1 · Given △ABC', `a=${a.toFixed(2)}, b=${b.toFixed(2)}`, `c=${c.toFixed(2)}`, `s = (a+b+c)/2 = ${s.toFixed(2)}`],
+        ['2 · Bisect ∠A & ∠B', 'Compass Angle Bisectors', `I(${ix.toFixed(2)}, ${iy.toFixed(2)})`, 'Equidistant from All 3 Sides'],
+        ['3 · Drop Apothem IT_c ⊥ AB', `T_c(${tcx.toFixed(2)}, ${tcy.toFixed(2)})`, `|AT_c| = s − a = ${(s - a).toFixed(2)}`, `r = |IT_c| = ${rIn.toFixed(4)}`],
+        ['4 · Sweep Incircle (I, r)', 'Tangent at T_a, T_b, T_c', `r = Δ / s = ${rIn.toFixed(4)}`, 'Unique Inscribed Circle'],
+      ];
+      cardLines = [
+        { text: 'EUCLID IV.4 · INCIRCLE & INCENTER CONSTRUCTION', color: pal.amber },
+        { text: `Incenter I(${ix.toFixed(2)}, ${iy.toFixed(2)}) at Concurrency of Angle Bisectors`, color: pal.ink },
+        { text: `Apothem |IT_c| ⊥ AB Sets Compass Radius r = Δ / s = ${rIn.toFixed(4)}`, color: pal.teal },
+        { text: `Tangent Split: |AT_c| = s − a = ${(s - a).toFixed(2)},  |BT_c| = s − b = ${(s - b).toFixed(2)}`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_circumcircle_3pts') {
+      const ax = -1.75, ay = -0.85;
+      const bx = 1.65, by = -0.55;
+      const cx = Math.max(-1.35, Math.min(1.55, v.cx ?? 0.45));
+      const cy = Math.max(0.65, Math.min(2.35, v.cy ?? 1.65));
+
+      // Compute exact circumcenter O(ox, oy)
+      const D = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
+      const a2 = ax * ax + ay * ay;
+      const b2 = bx * bx + by * by;
+      const c2 = cx * cx + cy * cy;
+      const ox = (a2 * (by - cy) + b2 * (cy - ay) + c2 * (ay - by)) / D;
+      const oy = (a2 * (cx - bx) + b2 * (ax - cx) + c2 * (bx - ax)) / D;
+      const R = Math.hypot(ax - ox, ay - oy);
+
+      // Midpoints M_AB and M_BC
+      const m1x = 0.5 * (ax + bx), m1y = 0.5 * (ay + by);
+      const m2x = 0.5 * (bx + cx), m2y = 0.5 * (by + cy);
+
+      // Step 1: Three non-collinear points A, B, C and chords AB, BC
+      drawSeg(ax, ay, bx, by, pal.indigo, 3.2, false, b1);
+      drawSeg(bx, by, cx, cy, pal.indigo, 3.2, false, b1);
+      drawSeg(cx, cy, ax, ay, pal.indigo, 2.2, true, b1);
+      drawPt(ax, ay, 'A', pal.indigo, -18, 16);
+      drawPt(bx, by, 'B', pal.indigo, 10, 16);
+      drawPt(cx, cy, 'C', pal.indigo, 8, -12);
+
+      // Step 2: Perpendicular bisector of chord AB
+      const n1x = -(by - ay) / Math.hypot(bx - ax, by - ay);
+      const n1y = (bx - ax) / Math.hypot(bx - ax, by - ay);
+      drawSeg(m1x - 1.8 * n1x, m1y - 1.8 * n1y, m1x + 2.2 * n1x, m1y + 2.2 * n1y, pal.amber, 2.6, true, Math.max(0.25, b2));
+      drawPt(m1x, m1y, 'M_AB', pal.amber, -14, 20);
+
+      // Step 3: Perpendicular bisector of chord BC meeting at Circumcenter O
+      const n2x = -(cy - by) / Math.hypot(cx - bx, cy - by);
+      const n2y = (cx - bx) / Math.hypot(cx - bx, cy - by);
+      drawSeg(m2x - 2.2 * n2x, m2y - 2.2 * n2y, m2x + 1.8 * n2x, m2y + 1.8 * n2y, pal.coral, 2.6, true, Math.max(0.25, b3));
+      drawPt(m2x, m2y, 'M_BC', pal.coral, 10, -6);
+      drawSeg(ox, oy, ax, ay, pal.amber, 1.9, true, b3);
+      drawSeg(ox, oy, bx, by, pal.amber, 1.9, true, b3);
+      drawSeg(ox, oy, cx, cy, pal.amber, 1.9, true, b3);
+      drawPt(ox, oy, 'O (Circumcenter)', pal.teal, 10, 16, true);
+
+      // Step 4: Sweep unique Circumcircle (O, R = |OA|)
+      drawCompassArc(ox, oy, R, 0, Math.PI * 2 * Math.max(0.25, b4), pal.teal, 4.0, false, 1);
+
+      readouts = [
+        { key: 'Circumcenter O', val: `(${ox.toFixed(2)}, ${oy.toFixed(2)})` },
+        { key: 'Circumradius R', val: R.toFixed(4) },
+        { key: 'Radii |OA|=|OB|=|OC|', val: `${R.toFixed(3)} = ${R.toFixed(3)}` },
+        { key: 'Chord Midpoints', val: 'M_AB, M_BC (⊥)' },
+      ];
+      tableRows = [
+        ['1 · Non-Collinear A, B, C', `A(${ax}, ${ay})`, `B(${bx}, ${by})`, `C(${cx.toFixed(2)}, ${cy.toFixed(2)})`],
+        ['2 · Bisect Chord AB', `Midpoint M_AB(${m1x.toFixed(2)}, ${m1y.toFixed(2)})`, 'Locus |PA| = |PB|', 'Perpendicular Lens 1'],
+        ['3 · Bisect Chord BC → O', `Midpoint M_BC(${m2x.toFixed(2)}, ${m2y.toFixed(2)})`, `O(${ox.toFixed(2)}, ${oy.toFixed(2)})`, '|OA| = |OB| = |OC|'],
+        ['4 · Sweep Circle (O, |OA|)', `Radius R = ${R.toFixed(4)}`, 'Passes Through A, B, C', 'Unique Circumcircle'],
+      ];
+      cardLines = [
+        { text: 'EUCLID IV.5 · CIRCLE THROUGH 3 NON-COLLINEAR POINTS', color: pal.amber },
+        { text: `Perp Bisector(AB) ∩ Perp Bisector(BC) = O(${ox.toFixed(2)}, ${oy.toFixed(2)})`, color: pal.ink },
+        { text: `Equidistance Theorem: |OA| = |OB| = |OC| = R = ${R.toFixed(4)}`, color: pal.teal },
+        { text: `Compass anchored at O with opening |OA| sweeps through A, B, and C`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_regular_hexagon_12gon') {
+      const R = Math.max(1.05, Math.min(2.1, v.hexR ?? 1.65));
+      const petals = Math.max(1, Math.min(6, Math.round(v.petals ?? 6)));
+      const ox = 0.0, oy = -0.08;
+      const s6 = R;
+      const s12 = R * Math.sqrt(2 - Math.sqrt(3));
+      const area6 = 1.5 * Math.sqrt(3) * R * R;
+      const area12 = 3.0 * R * R;
+
+      // Step 1: Primary circle of radius R
+      drawCompassArc(ox, oy, R, 0, Math.PI * 2, pal.indigo, 3.4, false, b1);
+      drawPt(ox, oy, 'O', pal.indigo, -16, 18);
+
+      // Step 2 & 3: 6 vertices around rim & 6-petal compass rosette arcs passing through O
+      const hexPts = [];
+      for (let k = 0; k < 6; k++) {
+        const a = (k * Math.PI) / 3;
+        hexPts.push({ x: ox + R * Math.cos(a), y: oy + R * Math.sin(a), a });
+      }
+      for (let k = 0; k < petals; k++) {
+        const pt = hexPts[k];
+        // Arc centered at hexPts[k] of radius R from hexPts[(k+4)%6] through O to hexPts[(k+2)%6]
+        const aStart = pt.a + (2 * Math.PI) / 3;
+        const aEnd = pt.a + (4 * Math.PI) / 3;
+        drawCompassArc(pt.x, pt.y, R, aStart, aEnd, pal.amber, 2.3, false, Math.max(0.3, b3));
+      }
+
+      // Step 4: Regular hexagon chords and 12-gon bisected vertices
+      for (let k = 0; k < 6; k++) {
+        const p0 = hexPts[k];
+        const p1 = hexPts[(k + 1) % 6];
+        drawSeg(p0.x, p0.y, p1.x, p1.y, pal.teal, 3.8, false, Math.max(0.25, b4));
+        drawPt(p0.x, p0.y, `V_${k + 1}`, pal.teal, 8, -8, k === 0);
+        if (b4 > 0.35) {
+          const aMid = p0.a + Math.PI / 6;
+          const mx = ox + R * Math.cos(aMid);
+          const my = oy + R * Math.sin(aMid);
+          drawSeg(p0.x, p0.y, mx, my, pal.coral, 2.0, true, b4);
+          drawSeg(mx, my, p1.x, p1.y, pal.coral, 2.0, true, b4);
+        }
+      }
+
+      readouts = [
+        { key: 'Hexagon Side s₆ = R', val: s6.toFixed(3) },
+        { key: '12-Gon Side s₁₂', val: s12.toFixed(4) },
+        { key: 'Hexagon Area A₆', val: area6.toFixed(3) },
+        { key: '12-Gon Area A₁₂ = 3R²', val: area12.toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Primary Circle (O, R)', `Radius R = ${R.toFixed(2)}`, 'Unaltered Compass Opening', 'Circumference 2πR'],
+        ['2 · Step Radius R 6×', 'Equilateral △OV_kV_{k+1}', 'Central Angle = 60.0°', `Exact Closure 6 × 60° = 360°`],
+        ['3 · Six-Petal Daisy Rosette', `${petals} of 6 Arcs Drawn`, 'Each Arc Passes Through O', 'Classical Compass Motif'],
+        ['4 · Hexagon & 12-Gon', `s₆ = R = ${s6.toFixed(2)}`, `s₁₂ = ${s12.toFixed(3)}`, `A₁₂ = 3R² = ${area12.toFixed(3)}`],
+      ];
+      cardLines = [
+        { text: 'EUCLID IV.15 · COMPASS DAISY ROSETTE & HEXAGON', color: pal.amber },
+        { text: `Unaltered Compass Radius R = ${R.toFixed(2)} Steps Exactly 6 Times Around Circle`, color: pal.ink },
+        { text: `Hexagon Side s₆ = R = ${s6.toFixed(2)},  Area A₆ = (3√3/2)R² = ${area6.toFixed(3)}`, color: pal.teal },
+        { text: `Bisecting 60° Arcs → Regular 12-Gon of Exact Rational Area A₁₂ = 3R² = ${area12.toFixed(3)}`, color: pal.indigo },
+      ];
+    } else if (sub === 'const_apollonius_locus') {
+      const k = Math.max(1.35, Math.min(3.2, v.ratioK ?? 2.0));
+      const probeRad = ((v.probeDeg ?? 65) * Math.PI) / 180;
+      const ax = -2.2, ay = -0.15;
+      const bx = 0.55, by = -0.15;
+      const dAB = bx - ax;
+      // Internal harmonic point D1 divides AB in ratio k:1
+      const d1x = (ax + k * bx) / (1 + k);
+      // External harmonic point D2 divides AB externally in ratio k:1
+      const d2x = (k * bx - ax) / (k - 1);
+      const cx = 0.5 * (d1x + d2x);
+      const rApol = 0.5 * Math.abs(d2x - d1x);
+      const px = cx + rApol * Math.cos(probeRad);
+      const py = ay + rApol * Math.sin(probeRad);
+      const distPA = Math.hypot(px - ax, py - ay);
+      const distPB = Math.hypot(px - bx, py - by);
+
+      // Step 1: Anchor points A, B and line AB
+      drawSeg(ax - 0.35, ay, d2x + 0.35, ay, pal.indigo, 2.4, true, b1);
+      drawSeg(ax, ay, bx, ay, pal.indigo, 4.0, false, b1);
+      drawPt(ax, ay, 'A', pal.indigo, -16, 18);
+      drawPt(bx, ay, 'B', pal.indigo, -6, 20);
+
+      // Step 2: Internal & external angle bisectors of ∠APB meeting line AB at D1, D2
+      drawSeg(ax, ay, px, py, pal.indigo, 3.0, false, Math.max(0.25, b2));
+      drawSeg(bx, ay, px, py, pal.indigo, 3.0, false, Math.max(0.25, b2));
+      drawSeg(px, py, d1x, ay, pal.amber, 2.8, false, Math.max(0.25, b2));
+      drawSeg(px, py, d2x, ay, pal.coral, 2.8, true, Math.max(0.25, b3));
+      drawPt(d1x, ay, 'D₁ (Int)', pal.amber, -18, 22);
+      drawPt(d2x, ay, 'D₂ (Ext)', pal.coral, -10, 22);
+      drawPt(px, py, 'P', pal.teal, -6, -14, true);
+
+      // Step 3: Right angle between internal & external bisectors PD1 ⊥ PD2
+      const u1x = (d1x - px) / Math.hypot(d1x - px, ay - py);
+      const u1y = (ay - py) / Math.hypot(d1x - px, ay - py);
+      const u2x = (d2x - px) / Math.hypot(d2x - px, ay - py);
+      const u2y = (ay - py) / Math.hypot(d2x - px, ay - py);
+      drawRightBox(px, py, u1x, u1y, u2x, u2y, 0.14);
+
+      // Step 4: Sweep Apollonius Circle with diameter D1D2 and center C
+      drawPt(cx, ay, 'C', pal.teal, -4, -12);
+      drawCompassArc(cx, ay, rApol, 0, Math.PI * 2 * Math.max(0.25, b4), pal.teal, 3.8, false, 1);
+
+      readouts = [
+        { key: 'Target Ratio k', val: k.toFixed(2) },
+        { key: 'Distances |PA|, |PB|', val: `${distPA.toFixed(3)}, ${distPB.toFixed(3)}` },
+        { key: 'Measured |PA|/|PB|', val: (distPA / distPB).toFixed(4) },
+        { key: 'Apollonius Radius R', val: rApol.toFixed(3) },
+      ];
+      tableRows = [
+        ['1 · Anchors A & B', `|AB| = ${dAB.toFixed(2)}`, `Ratio k = ${k.toFixed(2)}`, `|PA| = ${k.toFixed(2)} |PB|`],
+        ['2 · Internal Bisector PD₁', `D₁(${d1x.toFixed(2)}, ${ay})`, `|AD₁|/|D₁B| = ${k.toFixed(2)}`, 'Interior Angle Bisector'],
+        ['3 · External Bisector PD₂', `D₂(${d2x.toFixed(2)}, ${ay})`, 'PD₁ ⊥ PD₂ (∠D₁PD₂ = 90°)', 'Harmonic Conjugate Pair'],
+        ['4 · Circle on Diameter D₁D₂', `Center C(${cx.toFixed(2)}, ${ay})`, `R = k|AB|/(k²−1) = ${rApol.toFixed(3)}`, 'Exact Apollonius Locus'],
+      ];
+      cardLines = [
+        { text: 'APOLLONIUS CIRCLE · HARMONIC BISECTOR CONSTRUCTION', color: pal.amber },
+        { text: `|PA| = ${distPA.toFixed(3)},  |PB| = ${distPB.toFixed(3)}  ⇒  |PA| / |PB| = ${(distPA / distPB).toFixed(4)} = k`, color: pal.ink },
+        { text: `Internal & External Bisectors Meet at 90°: ∠D₁PD₂ = 90°`, color: pal.teal },
+        { text: `Thales Circle on Diameter D₁D₂ Has Radius R = k|AB|/(k²−1) = ${rApol.toFixed(3)}`, color: pal.indigo },
+      ];
+    }
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      Math.round(240 * scale),
+      scale,
+      cardLines.map((line, idx) => ({
+        text: line.text,
+        color: line.color,
+        font: idx === 1 ? `600 ${Math.round(22 * scale)}px "Newsreader", serif` : undefined,
+        gap: 35 * scale,
+      })),
+      pal.panelBorder
+    );
+    return { readouts, tableHeaders, tableRows };
+  };
 }
+

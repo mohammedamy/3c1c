@@ -2,11 +2,12 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=151.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=151.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=165.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=165.0';
 
 const SCENE_CATEGORIES = [
   'All',
+  'Geometrical Constructions',
   '3D Math & Surfaces',
   'Calculus',
   'Linear Algebra',
