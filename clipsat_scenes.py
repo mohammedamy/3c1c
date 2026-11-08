@@ -2179,3 +2179,1253 @@ class QudratClockAngleScene(ClipSATScene):
         curve = axes.get_graph(lambda x: np.sin(x) + 0.35 * np.cos(2.0 * x), color=self.theme.indigo).set_stroke(width=4)
         self.play(ShowCreation(axes), ShowCreation(curve), run_time=2.0)
         self.wait(1.0)
+
+
+class EllipticParaboloid3DScene(ClipSATScene):
+    """MULTIVARIABLE CALCULUS · QUADRIC SURFACES — 3D bowl z = (x²/a²) + (y²/b²) sliced by horizontal plane z = c projecting elliptical floor contours."""
+
+    clipsat_track = "MULTIVARIABLE CALCULUS · QUADRIC SURFACES"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · QUADRIC SURFACES", "3D Elliptic Paraboloid & Level Curves")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class HyperbolicParaboloid3DScene(ClipSATScene):
+    """MULTIVARIABLE CALCULUS · SADDLE SURFACES — Minimax saddle surface z = x² − y² curving upward along x and downward along y."""
+
+    clipsat_track = "MULTIVARIABLE CALCULUS · SADDLE SURFACES"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · SADDLE SURFACES", "3D Hyperbolic Paraboloid Saddle")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class HyperboloidOneSheet3DScene(ClipSATScene):
+    """3D ANALYTIC GEOMETRY · RULED QUADRICS — Cooling-tower quadric x² + y² − z² = a² woven entirely from straight Amber and Teal ruling lines."""
+
+    clipsat_track = "3D ANALYTIC GEOMETRY · RULED QUADRICS"
+
+    def construct(self):
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · RULED QUADRICS", "3D Hyperboloid of One Sheet (Doubly Ruled)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class HyperboloidTwoSheets3DScene(ClipSATScene):
+    """3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION — Upper and lower disconnected sheets z²/c² − x²/a² − y²/a² = 1 separated by vertex gap 2c."""
+
+    clipsat_track = "3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION"
+
+    def construct(self):
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION", "3D Hyperboloid of Two Sheets")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class TriaxialEllipsoid3DScene(ClipSATScene):
+    """3D ANALYTIC GEOMETRY · QUADRIC VOLUMES — Triaxial ellipsoid (x/a)² + (y/b)² + (z/c)² = 1 with orthogonal semi-axes a, b, c and volume 4/3 πabc."""
+
+    clipsat_track = "3D ANALYTIC GEOMETRY · QUADRIC VOLUMES"
+
+    def construct(self):
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC VOLUMES", "3D Triaxial Ellipsoid & Principal Axes")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class ConeConicSlice3DScene(ClipSATScene):
+    """APOLLONIUS & DANDELIN · 3D CONIC SECTIONS — Double circular cone z² = x² + y² intersected by tilted plane z = m x + h0 generating ellipse, parabola, or hyperbola."""
+
+    clipsat_track = "APOLLONIUS & DANDELIN · 3D CONIC SECTIONS"
+
+    def construct(self):
+        header = self.build_exam_header("APOLLONIUS & DANDELIN · 3D CONIC SECTIONS", "3D Double Cone & Conic Section Slicing Plane")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class MonkeySaddle3DScene(ClipSATScene):
+    """DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS — Three-fold symmetric saddle z = x³ − 3xy² = r³ cos(3θ) with three valleys and three ridges."""
+
+    clipsat_track = "DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS"
+
+    def construct(self):
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS", "3D Monkey Saddle Surface (z = x³ − 3xy²)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class RippleSinc3DScene(ClipSATScene):
+    """FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC — Circular diffraction wave surface z = sin(k r)/(k r) with central peak and concentric nodal zero rings."""
+
+    clipsat_track = "FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC"
+
+    def construct(self):
+        header = self.build_exam_header("FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC", "3D Radial Sinc Wave Interference Surface")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class BivariateNormal3DScene(ClipSATScene):
+    """MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF — 3D Gaussian bell surface with correlation ρ and 1σ elliptical covariance contour on the floor."""
+
+    clipsat_track = "MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF", "3D Bivariate Normal Density & Mahalanobis Ellipse")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class HelicoidCatenoid3DScene(ClipSATScene):
+    """DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0) — Isometric Associate Family morphing a ruled spiral helicoid into a rotational soap-film catenoid."""
+
+    clipsat_track = "DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0)"
+
+    def construct(self):
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0)", "3D Helicoid to Catenoid Minimal Surface Morph")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class TangentPlane3DScene(ClipSATScene):
+    """AP / UNIVERSITY CALCULUS III · LINEARIZATION — Tangent plane L(x,y) = f(x₀,y₀) + f_x(x−x₀) + f_y(y−y₀) and normal vector n = (−f_x, −f_y, 1)."""
+
+    clipsat_track = "AP / UNIVERSITY CALCULUS III · LINEARIZATION"
+
+    def construct(self):
+        header = self.build_exam_header("AP / UNIVERSITY CALCULUS III · LINEARIZATION", "3D Tangent Plane & Surface Normal Vector")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class PartialDerivatives3DScene(ClipSATScene):
+    """CALCULUS III · PARTIAL DERIVATIVES — Vertical slicing planes y = y₀ and x = x₀ cutting z = f(x,y) to reveal partial slopes ∂f/∂x and ∂f/∂y."""
+
+    clipsat_track = "CALCULUS III · PARTIAL DERIVATIVES"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · PARTIAL DERIVATIVES", "3D Partial Derivatives f_x and f_y Slicing Planes")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class DirectionalDerivative3DScene(ClipSATScene):
+    """CALCULUS III · DIRECTIONAL DERIVATIVES — Vertical slicing plane along unit vector u = (cos α, sin α) comparing slope D_u f against steepest gradient ∇f."""
+
+    clipsat_track = "CALCULUS III · DIRECTIONAL DERIVATIVES"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · DIRECTIONAL DERIVATIVES", "3D Directional Derivative D_u f = ∇f · u")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class GradientAscent3DScene(ClipSATScene):
+    """OPTIMIZATION & CALCULUS III · STEEPEST ASCENT — 3D trajectory climbing a mountain peak z = f(x,y) while its floor shadow crosses every contour line at 90°."""
+
+    clipsat_track = "OPTIMIZATION & CALCULUS III · STEEPEST ASCENT"
+
+    def construct(self):
+        header = self.build_exam_header("OPTIMIZATION & CALCULUS III · STEEPEST ASCENT", "3D Gradient Ascent & Orthogonal Contour Path")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class HessianClassification3DScene(ClipSATScene):
+    """MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION — Quadratic surface z = ½(f_xx x² + 2f_xy xy + f_yy y²) morphing across D > 0 (bowl/dome) and D < 0 (saddle)."""
+
+    clipsat_track = "MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION", "3D Second Derivative Hessian Discriminant Test")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class LagrangeCylinder3DScene(ClipSATScene):
+    """MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA — Constraint cylinder g(x,y) = x² + y² = R² intersecting surface z = f(x,y) with constrained space curve extrema."""
+
+    clipsat_track = "MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA", "3D Lagrange Multipliers on a Constraint Cylinder")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class Taylor2DSurface3DScene(ClipSATScene):
+    """MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES — Comparing cos(x)cos(y) in 3D against its osculating quadratic Taylor paraboloid T₂(x,y) = 1 − ½(x²+y²)."""
+
+    clipsat_track = "MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES"
+
+    def construct(self):
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES", "3D Quadratic Taylor Paraboloid Approximation")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class EnvelopePlanes3DScene(ClipSATScene):
+    """DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES — A 1-parameter family of tangent planes wrapping around a 3D paraboloid envelope along characteristic rulings."""
+
+    clipsat_track = "DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES"
+
+    def construct(self):
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES", "3D Tangent Plane Family Envelope")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class ImplicitLevelSurface3DScene(ClipSATScene):
+    """VECTOR CALCULUS · EQUIPOTENTIAL SURFACES — Concentric 3D level surfaces F(x,y,z) = c with outward gradient normal vectors ∇F perpendicular to the shell."""
+
+    clipsat_track = "VECTOR CALCULUS · EQUIPOTENTIAL SURFACES"
+
+    def construct(self):
+        header = self.build_exam_header("VECTOR CALCULUS · EQUIPOTENTIAL SURFACES", "3D Level Surfaces F(x,y,z) = c & Normal Field ∇F")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class ChainRulePath3DScene(ClipSATScene):
+    """CALCULUS III · MULTIVARIABLE CHAIN RULE — Particle moving along spiral (x(t), y(t)) on z = f(x,y) with instantaneous rate dz/dt = f_x dx/dt + f_y dy/dt."""
+
+    clipsat_track = "CALCULUS III · MULTIVARIABLE CHAIN RULE"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · MULTIVARIABLE CHAIN RULE", "3D Multivariable Chain Rule Along a Spiral Path")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class DoubleIntegralColumns3DScene(ClipSATScene):
+    """CALCULUS III · DOUBLE INTEGRALS — N×N 3D rectangular prism columns under z = f(x,y) converging to the exact volume ∬_R f(x,y) dA."""
+
+    clipsat_track = "CALCULUS III · DOUBLE INTEGRALS"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · DOUBLE INTEGRALS", "3D Double Integral Riemann Prism Columns")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class FubiniSlices3DScene(ClipSATScene):
+    """CALCULUS III · ITERATED INTEGRALS — Sweeping vertical lamina A(x) = ∫ f(x,y) dy across x ∈ [−a, a] to integrate 3D volume by cross-sections."""
+
+    clipsat_track = "CALCULUS III · ITERATED INTEGRALS"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · ITERATED INTEGRALS", "3D Fubini's Theorem Iterated Cross-Section Slices")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class CylindricalCoords3DScene(ClipSATScene):
+    """CALCULUS III · 3D COORDINATE SYSTEMS — Point P(r cos θ, r sin θ, z) on a coaxial cylinder with radial arm r, angle θ, height z, and volume wedge r dr dθ dz."""
+
+    clipsat_track = "CALCULUS III · 3D COORDINATE SYSTEMS"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · 3D COORDINATE SYSTEMS", "3D Cylindrical Coordinates (r, θ, z) & Jacobian Wedge")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class SphericalCoords3DScene(ClipSATScene):
+    """CALCULUS III · SPHERICAL INTEGRALS — Spherical shell of radius ρ, polar angle φ from +Z, azimuth θ, and Jacobian patch dV = ρ² sin φ dρ dφ dθ."""
+
+    clipsat_track = "CALCULUS III · SPHERICAL INTEGRALS"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · SPHERICAL INTEGRALS", "3D Spherical Coordinates (ρ, θ, φ) & Volume Element")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class WasherShell3DScene(ClipSATScene):
+    """AP CALCULUS BC · 3D SOLIDS OF REVOLUTION — Full 3D revolved paraboloid goblet showing an animated 3D washer ring and nested cylindrical shell."""
+
+    clipsat_track = "AP CALCULUS BC · 3D SOLIDS OF REVOLUTION"
+
+    def construct(self):
+        header = self.build_exam_header("AP CALCULUS BC · 3D SOLIDS OF REVOLUTION", "3D Solid of Revolution — Washers & Cylindrical Shells")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class PappusTorus3DScene(ClipSATScene):
+    """CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM — Circular cross-section of radius r revolving at centroid distance R around the Z-axis to sweep a 3D torus."""
+
+    clipsat_track = "CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM"
+
+    def construct(self):
+        header = self.build_exam_header("CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM", "3D Pappus's Centroid Theorem & Revolving Torus")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class Cavalieri3DSolidsScene(ClipSATScene):
+    """ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE — Horizontal slicing plane at height z cutting a 3D hemisphere (disk π(R²−z²)) and cylinder-minus-cone (annulus πR²−πz²)."""
+
+    clipsat_track = "ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE"
+
+    def construct(self):
+        header = self.build_exam_header("ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE", "3D Cavalieri's Principle (Hemisphere vs Punctured Cylinder)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class TripleIntegralTetrahedron3DScene(ClipSATScene):
+    """CALCULUS III · TRIPLE INTEGRALS — First-octant tetrahedron x/a + y/b + z/c ≤ 1 with vertical z-integration column and planar xy-projection triangle."""
+
+    clipsat_track = "CALCULUS III · TRIPLE INTEGRALS"
+
+    def construct(self):
+        header = self.build_exam_header("CALCULUS III · TRIPLE INTEGRALS", "3D Triple Integral over a Simplex Tetrahedron")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class FrenetSerretHelix3DScene(ClipSATScene):
+    """DIFFERENTIAL GEOMETRY · SPACE CURVES — Circular 3D helix r(t) = (R cos t, R sin t, c t) with moving orthonormal Tangent T, Normal N, and Binormal B triad."""
+
+    clipsat_track = "DIFFERENTIAL GEOMETRY · SPACE CURVES"
+
+    def construct(self):
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · SPACE CURVES", "3D Helix & Moving Frenet-Serret Frame (T, N, B)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class VivianiCurve3DScene(ClipSATScene):
+    """3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS — Figure-eight 3D space curve formed where cylinder (x−a)² + y² = a² pierces sphere x² + y² + z² = 4a²."""
+
+    clipsat_track = "3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS"
+
+    def construct(self):
+        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS", "3D Viviani's Curve (Sphere ∩ Tangent Cylinder)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class TrefoilKnot3DScene(ClipSATScene):
+    """LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY — Non-trivial 3D torus knot winding p = 2 times meridionally and q = 3 times longitudinally with tubular neighborhood."""
+
+    clipsat_track = "LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY"
+
+    def construct(self):
+        header = self.build_exam_header("LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY", "3D Trefoil Torus Knot (p = 2, q = 3)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class MobiusStrip3DScene(ClipSATScene):
+    """DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY — Single-sided 3D ruled strip with a 180° half-twist where a transported normal vector n reverses direction after one loop."""
+
+    clipsat_track = "DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY"
+
+    def construct(self):
+        header = self.build_exam_header("DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY", "3D Möbius Strip & Non-Orientable Normal Transport")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class TorusVillarceau3DScene(ClipSATScene):
+    """3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES — 3D ring torus displaying four distinct circle families passing through a point: meridian, parallel, and two Villarceau circles."""
+
+    clipsat_track = "3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES"
+
+    def construct(self):
+        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES", "3D Ring Torus & Villarceau Circles")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class VectorField3DRotDivScene(ClipSATScene):
+    """VECTOR CALCULUS · 3D CURL & DIVERGENCE — 3D lattice of arrows blending rotational vortex curl (−y, x, 0) and radial source divergence (x, y, z)."""
+
+    clipsat_track = "VECTOR CALCULUS · 3D CURL & DIVERGENCE"
+
+    def construct(self):
+        header = self.build_exam_header("VECTOR CALCULUS · 3D CURL & DIVERGENCE", "3D Vector Field — Swirl Curl & Radial Divergence")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class GaussDivergenceFlux3DScene(ClipSATScene):
+    """VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM — Outward normal flux vectors F · n piercing a closed 3D sphere of radius R equal the interior volume integral of ∇·F."""
+
+    clipsat_track = "VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM"
+
+    def construct(self):
+        header = self.build_exam_header("VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM", "3D Gauss's Divergence Theorem Flux Sphere")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class StokesTheoremCap3DScene(ClipSATScene):
+    """VECTOR CALCULUS · KELVIN-STOKES THEOREM — Paraboloid cap Σ in 3D with surface curl arrows (∇×F)·n matching the boundary line integral ∮_∂Σ F·dr around the rim."""
+
+    clipsat_track = "VECTOR CALCULUS · KELVIN-STOKES THEOREM"
+
+    def construct(self):
+        header = self.build_exam_header("VECTOR CALCULUS · KELVIN-STOKES THEOREM", "3D Stokes' Theorem Paraboloid Cap & Rim Circulation")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class CrossProduct3DScene(ClipSATScene):
+    """LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT — Vectors a and b in R³, their spanned parallelogram of area ‖a×b‖ = ‖a‖‖b‖sin θ, and perpendicular vector a × b."""
+
+    clipsat_track = "LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT"
+
+    def construct(self):
+        header = self.build_exam_header("LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT", "3D Cross Product a × b & Right-Hand Orthogonal Area")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class ParallelepipedVolume3DScene(ClipSATScene):
+    """LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D — 3D parallelepiped spanned by vectors a, b, c with base area vector b × c and signed volume det[a b c] = a · (b × c)."""
+
+    clipsat_track = "LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D"
+
+    def construct(self):
+        header = self.build_exam_header("LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D", "3D Parallelepiped & Determinant Volume |a · (b × c)|")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class PlaneNormalDistance3DScene(ClipSATScene):
+    """IB MATH AA HL / 3D GEOMETRY · PLANES IN R³ — Tilted 3D plane Ax + By + Cz = D with normal vector n and shortest orthogonal projection segment from exterior point P."""
+
+    clipsat_track = "IB MATH AA HL / 3D GEOMETRY · PLANES IN R³"
+
+    def construct(self):
+        header = self.build_exam_header("IB MATH AA HL / 3D GEOMETRY · PLANES IN R³", "3D Plane Equation n · (r − r₀) = 0 & Point Distance")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class SkewLinesDistance3DScene(ClipSATScene):
+    """IB MATH AA HL · SKEW LINES IN 3D SPACE — Two non-parallel, non-intersecting 3D skew lines L₁(s) and L₂(t) joined by their unique common perpendicular bridge."""
+
+    clipsat_track = "IB MATH AA HL · SKEW LINES IN 3D SPACE"
+
+    def construct(self):
+        header = self.build_exam_header("IB MATH AA HL · SKEW LINES IN 3D SPACE", "3D Skew Lines & Common Perpendicular Distance")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class SVD3DEllipsoidScene(ClipSATScene):
+    """UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY — 3×3 matrix transformation mapping the 3D unit sphere into a rotated ellipsoid with singular semi-axes σ₁u₁, σ₂u₂, σ₃u₃."""
+
+    clipsat_track = "UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY"
+
+    def construct(self):
+        header = self.build_exam_header("UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY", "3D Singular Value Decomposition (Sphere → Ellipsoid)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class RodriguesRotation3DScene(ClipSATScene):
+    """3D LIE GROUPS SO(3) & COMPUTER GRAPHICS — Rotating 3D vector v around unit axis k by angle θ along a circular precession cone via Rodrigues’ formula."""
+
+    clipsat_track = "3D LIE GROUPS SO(3) & COMPUTER GRAPHICS"
+
+    def construct(self):
+        header = self.build_exam_header("3D LIE GROUPS SO(3) & COMPUTER GRAPHICS", "3D Rodrigues Rotation Formula & Axis-Angle Cone")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class PlatonicSolidsEuler3DScene(ClipSATScene):
+    """3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS — Interactive 3D Tetrahedron, Cube, Octahedron, and Icosahedron verifying Euler’s polyhedral invariant V − E + F = 2."""
+
+    clipsat_track = "3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS"
+
+    def construct(self):
+        header = self.build_exam_header("3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS", "3D Platonic Solids & Euler's Characteristic V − E + F = 2")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class StereographicProjection3DScene(ClipSATScene):
+    """COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE — Rays from North Pole N(0,0,1) through a circle on the 3D unit sphere S² projecting conformally to a circle on z = 0."""
+
+    clipsat_track = "COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE"
+
+    def construct(self):
+        header = self.build_exam_header("COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE", "3D Riemann Sphere & Stereographic Projection")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class LorenzAttractor3DScene(ClipSATScene):
+    """NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY — Chaotic 3D phase-space trajectory orbiting the two butterfly wing equilibria of the Lorenz convection system."""
+
+    clipsat_track = "NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY"
+
+    def construct(self):
+        header = self.build_exam_header("NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY", "3D Lorenz Strange Attractor Butterfly")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class RosslerAttractor3DScene(ClipSATScene):
+    """NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING — 3D Rössler strange attractor spiralling outward in the xy-plane before folding vertically along the z-axis."""
+
+    clipsat_track = "NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING"
+
+    def construct(self):
+        header = self.build_exam_header("NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING", "3D Rössler Chaotic Folding Band Attractor")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class MembraneEigenmode3DScene(ClipSATScene):
+    """PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION — 3D normal mode u(x,y,t) = sin(mπx) sin(nπy) cos(ωt) of a vibrating square membrane with Chladni nodal lines."""
+
+    clipsat_track = "PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION"
+
+    def construct(self):
+        header = self.build_exam_header("PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION", "3D Vibrating Drumhead Standing Wave Mode (m, n)")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class MagneticCyclotron3DScene(ClipSATScene):
+    """ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE — Charged particle spiralling along magnetic field B = B₀ k̂ with Larmor radius r_L = mv_⊥/(qB) and velocity/force vectors."""
+
+    clipsat_track = "ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE"
+
+    def construct(self):
+        header = self.build_exam_header("ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE", "3D Lorentz Cyclotron Helix in a Magnetic Field B")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class Kepler3DOrbitScene(ClipSATScene):
+    """CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS — 3D elliptical orbit tilted by inclination i from the ecliptic plane with conserved angular momentum vector L = r × p."""
+
+    clipsat_track = "CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS"
+
+    def construct(self):
+        header = self.build_exam_header("CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS", "3D Inclined Keplerian Orbit & Angular Momentum L")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)
+
+
+class BlochSphereQubit3DScene(ClipSATScene):
+    """QUANTUM COMPUTING & SU(2) · BLOCH SPHERE — Pure qubit state |ψ⟩ = cos(θ/2)|0⟩ + e^(iφ) sin(θ/2)|1⟩ on the 3D Bloch sphere with polar θ and phase φ."""
+
+    clipsat_track = "QUANTUM COMPUTING & SU(2) · BLOCH SPHERE"
+
+    def construct(self):
+        header = self.build_exam_header("QUANTUM COMPUTING & SU(2) · BLOCH SPHERE", "3D Quantum Bloch Sphere & Qubit State Precession")
+        self.add(header)
+        axes = ThreeDAxes(
+            x_range=(-3.0, 3.0, 1.0),
+            y_range=(-3.0, 3.0, 1.0),
+            z_range=(-2.5, 2.5, 1.0),
+        )
+        surface = ParametricSurface(
+            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
+            u_range=(-2.2, 2.2),
+            v_range=(-2.2, 2.2),
+            color=self.theme.indigo,
+            opacity=0.82,
+        )
+        self.frame.reorient(38, 66)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.wait(1.0)

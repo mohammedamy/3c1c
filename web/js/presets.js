@@ -2,7 +2,8 @@
    3c1c · ClipSAT Curriculum Scene Presets & Python Code Generator
    ========================================================================== */
 
-import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=100.0';
+import { EXTENDED_SCENE_PRESETS } from './scenes_catalog.js?v=150.0';
+import { SCENES_3D_PRESETS } from './scenes_3d.js?v=150.0';
 
 export const FUNCTIONS = {
   quad: {
@@ -389,7 +390,7 @@ CORE_SCENE_PRESETS.forEach((s) => {
   s.category = CORE_CATEGORIES[s.id] || 'Calculus';
 });
 
-export const SCENE_PRESETS = [...CORE_SCENE_PRESETS, ...EXTENDED_SCENE_PRESETS];
+export const SCENE_PRESETS = [...CORE_SCENE_PRESETS, ...EXTENDED_SCENE_PRESETS, ...SCENES_3D_PRESETS];
 
 export function generatePythonSceneCode(preset, params = {}, stageTheme = 'dark', aspect = '16:9', watermark = true) {
   const merged = { ...(preset.defaults || {}), ...(params || {}) };
@@ -770,6 +771,56 @@ class ${preset.sceneClass}(ClipSATScene):
   const safeTrack = String(params.track || preset.track).replace(/"/g, '\\"');
   const safeTitle = String(params.title || preset.name).replace(/"/g, '\\"');
   const safeLatex = String((preset.rigor && preset.rigor.latex) || 'f(x)').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+  if (preset.archetype === 'scene_3d') {
+    const azim = Number(params.azimDeg ?? 38).toFixed(1);
+    const elev = Number(params.elevDeg ?? 26).toFixed(1);
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    """${preset.summary}"""
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${safeTrack}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${safeTrack}", "${safeTitle}")
+        header.fix_in_frame()
+        self.add(header)
+
+        # Interactive 3D studio & camera parameters
+${paramLines || '        pass'}
+
+        axes = ThreeDAxes(
+            x_range=(-2.5, 2.5, 1.0),
+            y_range=(-2.5, 2.5, 1.0),
+            z_range=(-2.0, 2.5, 1.0),
+        )
+        self.frame.reorient(${azim}, ${elev})
+
+        surface = ParametricSurface(
+            lambda u, v: np.array([u, v, 0.45 * (u**2 - v**2)]),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
+            color=self.theme.indigo,
+            opacity=0.78,
+        )
+        mesh = SurfaceMesh(surface, resolution=(16, 16), stroke_color=self.theme.amber, stroke_width=1.5)
+
+        theorem = Tex(
+            "${safeLatex}",
+            color=self.theme.ink,
+            font_size=28,
+        ).to_edge(RIGHT, buff=0.55)
+        theorem.fix_in_frame()
+
+        self.play(ShowCreation(axes), FadeIn(surface), ShowCreation(mesh), Write(theorem), run_time=2.2)
+        self.play(self.frame.animate.increment_theta(25 * DEGREES), run_time=2.5)
+        self.wait(1.0)
+`;
+  }
 
   return `# CLI: ${cliFlags}
 from manimlib import *

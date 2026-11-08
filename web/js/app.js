@@ -2,11 +2,12 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=100.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=100.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=150.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=150.0';
 
 const SCENE_CATEGORIES = [
   'All',
+  '3D Math & Surfaces',
   'Calculus',
   'Linear Algebra',
   'SAT / Algebra',
@@ -154,13 +155,15 @@ function renderSceneLibrary() {
     }
     visibleCount++;
 
+    const is3d = preset.archetype === 'scene_3d';
+    const badge3d = is3d ? '<span class="scene-3d-badge">3D</span>' : '';
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.id = `scene-preset-${preset.id}`;
     btn.className = `scene-card${idx === state.presetIndex ? ' active' : ''}`;
     btn.innerHTML = `
       <div class="scene-card-top">
-        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${preset.track}</span>
+        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badge3d}${preset.track}</span>
         <span class="scene-glyph">${preset.glyph}</span>
       </div>
       <div class="scene-name">${preset.name}</div>
@@ -497,14 +500,50 @@ function tick(now) {
 /* ── Direct Interactive Canvas Manipulation ── */
 function setupCanvasDragging() {
   let dragging = false;
+  let lastClientX = 0;
+  let lastClientY = 0;
 
-  const updateFromPointer = (clientX, clientY) => {
+  const updateFromPointer = (clientX, clientY, isStart = false) => {
     const rect = canvas.getBoundingClientRect();
     const px = ((clientX - rect.left) / rect.width) * canvas.width;
     const py = ((clientY - rect.top) / rect.height) * canvas.height;
     const preset = activePreset();
     const mapper = engine.lastPlotMapper;
     if (!mapper) return;
+
+    if (mapper.is3D) {
+      if (isStart) {
+        lastClientX = clientX;
+        lastClientY = clientY;
+        return;
+      }
+      const dx = clientX - lastClientX;
+      const dy = clientY - lastClientY;
+      lastClientX = clientX;
+      lastClientY = clientY;
+
+      let azim = Number(state.params.azimDeg ?? 38) + dx * 0.45;
+      while (azim > 180) azim -= 360;
+      while (azim < -180) azim += 360;
+      const elev = Math.max(8, Math.min(72, Number(state.params.elevDeg ?? 26) + dy * 0.35));
+
+      state.params.azimDeg = Math.round(azim);
+      state.params.elevDeg = Math.round(elev);
+
+      const azInput = document.getElementById('ctrl-azim');
+      const azSpan = document.getElementById('ctrl-azim-val');
+      if (azInput) azInput.value = String(state.params.azimDeg);
+      if (azSpan) azSpan.textContent = String(state.params.azimDeg);
+
+      const elInput = document.getElementById('ctrl-elev');
+      const elSpan = document.getElementById('ctrl-elev-val');
+      if (elInput) elInput.value = String(state.params.elevDeg);
+      if (elSpan) elSpan.textContent = String(state.params.elevDeg);
+
+      if (!state.codeDirty) syncPythonEditor();
+      drawImmediate();
+      return;
+    }
 
     if (Array.isArray(preset.controls)) {
       const angleCtrl = preset.controls.find((c) => c.drag === 'angle');
@@ -628,12 +667,12 @@ function setupCanvasDragging() {
   canvas.addEventListener('pointerdown', (ev) => {
     dragging = true;
     canvas.setPointerCapture(ev.pointerId);
-    updateFromPointer(ev.clientX, ev.clientY);
+    updateFromPointer(ev.clientX, ev.clientY, true);
   });
 
   canvas.addEventListener('pointermove', (ev) => {
     if (!dragging) return;
-    updateFromPointer(ev.clientX, ev.clientY);
+    updateFromPointer(ev.clientX, ev.clientY, false);
   });
 
   canvas.addEventListener('pointerup', () => {

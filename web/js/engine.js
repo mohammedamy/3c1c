@@ -3,8 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=100.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=100.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=150.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=150.0';
+import { attach3DRenderers } from './scenes_3d.js?v=150.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -136,13 +137,13 @@ export class Engine3c1c {
     const headerAlpha = spanEase(time, 0, 0.55);
     ctx.save();
     ctx.globalAlpha = Math.max(0.25, headerAlpha);
-    ctx.font = `700 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`;
     ctx.fillStyle = pal.amber;
-    ctx.fillText((params.track || 'CLIPSAT MATHEMATICS').toUpperCase(), padX, headerTop);
+    ctx.fillText((params.track || 'CLIPSAT MATHEMATICS').toUpperCase(), padX, headerTop, plotW);
 
-    ctx.font = `600 ${Math.round(38 * scale)}px "Newsreader", Georgia, serif`;
+    ctx.font = `600 ${Math.round(35 * scale)}px "Newsreader", Georgia, serif`;
     ctx.fillStyle = pal.ink;
-    ctx.fillText(params.title || '', padX, headerTop + Math.round(42 * scale));
+    ctx.fillText(params.title || '', padX, headerTop + Math.round(41 * scale), plotW);
 
     ctx.strokeStyle = pal.panelBorder;
     ctx.lineWidth = Math.max(1.5, 2 * scale);
@@ -180,7 +181,9 @@ export class Engine3c1c {
       telemetry = this.drawGradDescentScene(ctx, pal, bounds, params, time, duration);
     } else {
       const preset = SCENE_PRESETS.find((p) => p.id === presetId);
-      if (preset && preset.archetype && this.renderExtendedScene) {
+      if (preset && preset.archetype === 'scene_3d' && this.draw3DScene) {
+        telemetry = this.draw3DScene(preset, ctx, pal, bounds, params, time, duration);
+      } else if (preset && preset.archetype && this.renderExtendedScene) {
         telemetry = this.renderExtendedScene(preset, ctx, pal, bounds, params, time, duration);
       }
     }
@@ -255,11 +258,18 @@ export class Engine3c1c {
 
     // Tick labels
     ctx.fillStyle = pal.muted;
-    ctx.font = `500 ${Math.round(16 * scale)}px "JetBrains Mono", monospace`;
+    ctx.font = `500 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`;
     for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
       if (gx === 0) continue;
       const p = toPx(gx, 0);
-      ctx.fillText(String(gx), p.x - 6 * scale, p.y + 22 * scale);
+      const ty = Math.min(areaY + areaH - 6 * scale, Math.max(areaY + 18 * scale, p.y + 20 * scale));
+      ctx.fillText(String(gx), p.x - 6 * scale, ty);
+    }
+    for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= Math.floor(yMax); gy += yStep) {
+      if (gy === 0) continue;
+      const p = toPx(0, gy);
+      const tx = Math.min(areaX + areaW - 30 * scale, Math.max(areaX + 6 * scale, p.x + 8 * scale));
+      ctx.fillText(String(gy), tx, p.y + 5 * scale);
     }
 
     ctx.restore();
@@ -268,19 +278,30 @@ export class Engine3c1c {
 
   drawCalloutCard(ctx, pal, x, y, w, h, scale, lines, accentColor) {
     ctx.save();
+    let totalNeededH = 26 * scale;
+    for (const item of lines) {
+      totalNeededH += item.gap || 32 * scale;
+    }
+    const cardH = Math.max(h, totalNeededH + 10 * scale);
     ctx.fillStyle = pal.panel;
     ctx.strokeStyle = accentColor || pal.panelBorder;
     ctx.lineWidth = 2 * scale;
-    this.roundRect(ctx, x, y, w, h, 14 * scale);
+    this.roundRect(ctx, x, y, w, cardH, 14 * scale);
     ctx.fill();
     ctx.stroke();
 
-    let curY = y + 34 * scale;
+    // Accent top-left stripe
+    ctx.fillStyle = accentColor || pal.indigo;
+    this.roundRect(ctx, x, y, 5 * scale, cardH, 3 * scale);
+    ctx.fill();
+
+    const maxTextW = Math.max(110 * scale, w - 40 * scale);
+    let curY = y + 32 * scale;
     for (const item of lines) {
-      ctx.font = item.font || `500 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`;
+      ctx.font = item.font || `500 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`;
       ctx.fillStyle = item.color || pal.ink;
-      ctx.fillText(item.text, x + 22 * scale, curY);
-      curY += item.gap || 34 * scale;
+      ctx.fillText(item.text, x + 22 * scale, curY, maxTextW);
+      curY += item.gap || 32 * scale;
     }
     ctx.restore();
   }
@@ -2107,4 +2128,6 @@ export class Engine3c1c {
 }
 
 attachExtendedRenderers(Engine3c1c);
+attach3DRenderers(Engine3c1c);
+
 
