@@ -1237,20 +1237,24 @@ export class Engine3c1c {
    * 7. TAYLOR SERIES & MACLAURIN POLYNOMIAL APPROXIMATION
    * ======================================================================== */
   drawTaylorScene(ctx, pal, bounds, params, time, duration) {
-    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
-    const areaX = padX;
-    const areaY = padTop;
-    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
-    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
-
     const xMin = -6.5;
     const xMax = 6.5;
     const yMin = -2.2;
     const yMax = 2.2;
-    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
-    this.lastPlotMapper = mapper;
 
-    this.drawAxes(ctx, pal, mapper, scale, 'x', 'y');
+    const plot = this.createPlotArea(
+      ctx,
+      pal,
+      bounds,
+      xMin,
+      xMax,
+      yMin,
+      yMax,
+      spanEase(time, 0, 0.7),
+      0.60
+    );
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
 
     const maxDeg = Math.max(1, Math.min(9, Number(params.degree ?? 5) | 1));
     const xEval = Math.max(-5.5, Math.min(5.5, Number(params.xEval ?? 2.2)));
@@ -1270,50 +1274,74 @@ export class Engine3c1c {
       return sum;
     };
 
-    const pDraw = this.smoothstep(time / (duration * 0.25));
-    this.plotFunction(ctx, mapper, (x) => Math.sin(x), pal.indigo, 4 * scale, pDraw);
+    // 1. Primary Indigo sin(x) curve
+    const pDraw = spanEase(time, 0.15, 1.4);
+    if (pDraw > 0) {
+      const steps = Math.max(8, Math.floor(200 * pDraw));
+      ctx.save();
+      ctx.strokeStyle = pal.indigo;
+      ctx.lineWidth = 4.2 * scale;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const x = xMin + ((xMax - xMin) * i) / 200;
+        const p = toPx(x, Math.sin(x));
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
 
-    const polyProg = this.smoothstep((time - duration * 0.18) / (duration * 0.62));
+    // 2. Maclaurin polynomial T_n(x)
+    const polyProg = spanEase(time, duration * 0.16, duration * 0.78);
     const oddDegrees = [1, 3, 5, 7, 9].filter((d) => d <= maxDeg);
     const activeIdx = Math.min(
       oddDegrees.length - 1,
       Math.floor(polyProg * oddDegrees.length)
     );
-    const activeDeg = time >= duration * 0.8 ? maxDeg : oddDegrees[activeIdx] || 1;
+    const activeDeg = time >= duration * 0.78 ? maxDeg : oddDegrees[activeIdx] || 1;
 
-    if (time > duration * 0.16) {
-      // Ghost lower-order approximations
+    if (time > duration * 0.14) {
       for (const d of oddDegrees) {
         if (d < activeDeg) {
           ctx.save();
           ctx.globalAlpha = 0.28;
-          this.plotFunction(
-            ctx,
-            mapper,
-            (x) => Math.max(-4, Math.min(4, taylorSin(x, d))),
-            pal.teal,
-            2 * scale,
-            1
-          );
+          ctx.strokeStyle = pal.teal;
+          ctx.lineWidth = 2.2 * scale;
+          ctx.beginPath();
+          for (let i = 0; i <= 200; i++) {
+            const x = xMin + ((xMax - xMin) * i) / 200;
+            const y = Math.max(-2.6, Math.min(2.6, taylorSin(x, d)));
+            const p = toPx(x, y);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
           ctx.restore();
         }
       }
-      this.plotFunction(
-        ctx,
-        mapper,
-        (x) => Math.max(-4, Math.min(4, taylorSin(x, activeDeg))),
-        pal.amber,
-        3.6 * scale,
-        1
-      );
+
+      ctx.save();
+      ctx.strokeStyle = pal.amber;
+      ctx.lineWidth = 3.8 * scale;
+      ctx.beginPath();
+      for (let i = 0; i <= 200; i++) {
+        const x = xMin + ((xMax - xMin) * i) / 200;
+        const y = Math.max(-2.6, Math.min(2.6, taylorSin(x, activeDeg)));
+        const p = toPx(x, y);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
     }
 
     const exactVal = Math.sin(xEval);
     const approxVal = taylorSin(xEval, activeDeg);
     const absErr = Math.abs(exactVal - approxVal);
 
-    const pExact = mapper.toScreen(xEval, exactVal);
-    const pApprox = mapper.toScreen(xEval, Math.max(yMin, Math.min(yMax, approxVal)));
+    const pExact = toPx(xEval, exactVal);
+    const pApprox = toPx(xEval, Math.max(yMin, Math.min(yMax, approxVal)));
 
     ctx.save();
     ctx.strokeStyle = pal.rose;
@@ -1404,20 +1432,24 @@ export class Engine3c1c {
    * 8. NORMAL DISTRIBUTION & EMPIRICAL Z-SCORE AREA
    * ======================================================================== */
   drawNormalScene(ctx, pal, bounds, params, time, duration) {
-    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
-    const areaX = padX;
-    const areaY = padTop;
-    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
-    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
-
     const xMin = -3.6;
     const xMax = 3.6;
     const yMin = -0.05;
     const yMax = 0.46;
-    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
-    this.lastPlotMapper = mapper;
 
-    this.drawAxes(ctx, pal, mapper, scale, 'z', 'φ(z)');
+    const plot = this.createPlotArea(
+      ctx,
+      pal,
+      bounds,
+      xMin,
+      xMax,
+      yMin,
+      yMax,
+      spanEase(time, 0, 0.7),
+      0.60
+    );
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
 
     const pdf = (z) => Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
     const erf = (x) => {
@@ -1434,36 +1466,50 @@ export class Engine3c1c {
     };
 
     const targetZ = Math.max(0.2, Math.min(3.2, Number(params.zCutoff ?? 1.96)));
-    const sweepProg = this.smoothstep((time - duration * 0.16) / (duration * 0.62));
+    const sweepProg = spanEase(time, duration * 0.16, duration * 0.78);
     const z0 = time < duration * 0.16 ? 0.15 : 0.15 + (targetZ - 0.15) * sweepProg;
 
     if (time > duration * 0.14) {
       ctx.save();
       ctx.beginPath();
       const steps = 120;
-      const pStart = mapper.toScreen(-z0, 0);
+      const pStart = toPx(-z0, 0);
       ctx.moveTo(pStart.x, pStart.y);
       for (let i = 0; i <= steps; i++) {
         const z = -z0 + (2 * z0 * i) / steps;
-        const pt = mapper.toScreen(z, pdf(z));
+        const pt = toPx(z, pdf(z));
         ctx.lineTo(pt.x, pt.y);
       }
-      const pEnd = mapper.toScreen(z0, 0);
+      const pEnd = toPx(z0, 0);
       ctx.lineTo(pEnd.x, pEnd.y);
       ctx.closePath();
-      ctx.fillStyle = pal.amberSoft;
+      ctx.fillStyle = pal.amberFill;
       ctx.fill();
       ctx.strokeStyle = pal.amber;
-      ctx.lineWidth = 2 * scale;
+      ctx.lineWidth = 2.2 * scale;
       ctx.stroke();
       ctx.restore();
     }
 
-    const pCurve = this.smoothstep(time / (duration * 0.28));
-    this.plotFunction(ctx, mapper, pdf, pal.indigo, 4 * scale, pCurve);
+    const pCurve = spanEase(time, 0.15, 1.4);
+    if (pCurve > 0) {
+      const steps = Math.max(8, Math.floor(180 * pCurve));
+      ctx.save();
+      ctx.strokeStyle = pal.indigo;
+      ctx.lineWidth = 4.2 * scale;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const z = xMin + ((xMax - xMin) * i) / 180;
+        const p = toPx(z, pdf(z));
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
 
-    const pLeft = mapper.toScreen(-z0, pdf(-z0));
-    const pRight = mapper.toScreen(z0, pdf(z0));
+    const pLeft = toPx(-z0, pdf(-z0));
+    const pRight = toPx(z0, pdf(z0));
     this.drawDot(ctx, pLeft.x, pLeft.y, 7 * scale, pal.amber, pal.bg);
     this.drawDot(ctx, pRight.x, pRight.y, 7 * scale, pal.amber, pal.bg);
 
@@ -1527,7 +1573,12 @@ export class Engine3c1c {
     const benchmarks = [0.67, 1.0, 1.645, 1.96, 2.576, 3.0];
     const tableRows = benchmarks.map((bz) => {
       const cp = erf(bz / Math.sqrt(2));
-      return [`±${bz.toFixed(2)}`, `${(cp * 100).toFixed(2)}%`, (0.5 + 0.5 * cp).toFixed(4), `${((1 - cp) * 100).toFixed(2)}%`];
+      return [
+        `±${bz.toFixed(2)}`,
+        `${(cp * 100).toFixed(2)}%`,
+        (0.5 + 0.5 * cp).toFixed(4),
+        `${((1 - cp) * 100).toFixed(2)}%`,
+      ];
     });
 
     return {
@@ -1546,9 +1597,10 @@ export class Engine3c1c {
    * 9. CIRCLE INSCRIBED vs. CENTRAL ANGLE THEOREM
    * ======================================================================== */
   drawCircleThmScene(ctx, pal, bounds, params, time, duration) {
-    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
-    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.31;
-    const cy = isTall ? padTop + plotH * 0.34 : padTop + plotH * 0.52;
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.28;
+    const cy = isTall ? plotTop + plotH * 0.34 : plotTop + plotH * 0.50;
     const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
 
     this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
@@ -1577,7 +1629,7 @@ export class Engine3c1c {
     ctx.stroke();
 
     // Central sector OA - OB
-    ctx.fillStyle = pal.amberSoft;
+    ctx.fillStyle = pal.amberFill;
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.lineTo(ptA.x, ptA.y);
@@ -1619,8 +1671,8 @@ export class Engine3c1c {
 
     const inscribedDeg = centralDeg / 2;
 
-    const cardX = isTall ? padX : padX + Math.round(plotW * 0.58);
-    const cardY = isTall ? padTop + Math.round(plotH * 0.66) : padTop + Math.round(plotH * 0.14);
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
     const cardW = isTall ? plotW : padX + plotW - cardX;
     const cardH = Math.round(270 * scale);
 
@@ -1652,13 +1704,13 @@ export class Engine3c1c {
           gap: 35 * scale,
         },
         {
-          text: `Vertex P Position = ${((pDeg % 360 + 360) % 360).toFixed(1)}°`,
+          text: `Vertex P Position = ${(((pDeg % 360) + 360) % 360).toFixed(1)}°`,
           font: `600 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
           color: pal.indigo,
           gap: 34 * scale,
         },
         {
-          text: `Ratio ∠AOB / ∠APB = 2.000 (Constant)`,
+          text: 'Ratio ∠AOB / ∠APB = 2.000 (Constant)',
           font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
           color: pal.inkSub,
           gap: 28 * scale,
@@ -1691,16 +1743,17 @@ export class Engine3c1c {
    * 10. COMPLEX PLANE & DE MOIVRE n-TH ROOTS OF UNITY
    * ======================================================================== */
   drawComplexScene(ctx, pal, bounds, params, time, duration) {
-    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
-    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.31;
-    const cy = isTall ? padTop + plotH * 0.34 : padTop + plotH * 0.52;
+    const { padX, plotTop, plotW, plotH, scale } = bounds;
+    const isTall = bounds.height > bounds.width * 1.1;
+    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.28;
+    const cy = isTall ? plotTop + plotH * 0.34 : plotTop + plotH * 0.50;
     const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
 
     this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
     const n = Math.max(3, Math.min(8, Math.round(Number(params.rootsN ?? 5))));
     const basePhaseDeg = Number(params.phaseDeg ?? 18);
-    const animRot = this.smoothstep((time - duration * 0.15) / (duration * 0.7)) * 36;
+    const animRot = spanEase(time, duration * 0.15, duration * 0.85) * 36;
     const phaseDeg = basePhaseDeg + (time > 0.05 && time < duration - 0.05 ? animRot : 0);
     const phaseRad = (phaseDeg * Math.PI) / 180;
 
@@ -1736,7 +1789,7 @@ export class Engine3c1c {
     }
 
     // Regular n-gon connecting roots
-    ctx.fillStyle = pal.amberSoft;
+    ctx.fillStyle = pal.amberFill;
     ctx.strokeStyle = pal.amber;
     ctx.lineWidth = 2.8 * scale;
     ctx.beginPath();
@@ -1776,8 +1829,8 @@ export class Engine3c1c {
     ctx.restore();
 
     const r0 = roots[0];
-    const cardX = isTall ? padX : padX + Math.round(plotW * 0.58);
-    const cardY = isTall ? padTop + Math.round(plotH * 0.66) : padTop + Math.round(plotH * 0.14);
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
     const cardW = isTall ? plotW : padX + plotW - cardX;
     const cardH = Math.round(275 * scale);
 
@@ -1809,13 +1862,13 @@ export class Engine3c1c {
           gap: 34 * scale,
         },
         {
-          text: `Phase φ      = ${((phaseDeg % 360 + 360) % 360).toFixed(1)}°`,
+          text: `Phase φ      = ${(((phaseDeg % 360) + 360) % 360).toFixed(1)}°`,
           font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
           color: pal.amber,
           gap: 34 * scale,
         },
         {
-          text: `Symmetry Sum ∑ zₖ = 0.000 + 0.000i`,
+          text: 'Symmetry Sum ∑ zₖ = 0.000 + 0.000i',
           font: `600 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
           color: pal.indigo,
           gap: 32 * scale,
@@ -1847,26 +1900,44 @@ export class Engine3c1c {
    * 11. GRADIENT DESCENT OPTIMIZATION TRAJECTORY
    * ======================================================================== */
   drawGradDescentScene(ctx, pal, bounds, params, time, duration) {
-    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
-    const areaX = padX;
-    const areaY = padTop;
-    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
-    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
-
     const xMin = -3.2;
     const xMax = 3.2;
     const yMin = -0.4;
     const yMax = 8.2;
-    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
-    this.lastPlotMapper = mapper;
 
-    this.drawAxes(ctx, pal, mapper, scale, 'x', 'L(x)');
+    const plot = this.createPlotArea(
+      ctx,
+      pal,
+      bounds,
+      xMin,
+      xMax,
+      yMin,
+      yMax,
+      spanEase(time, 0, 0.7),
+      0.60
+    );
+    const { toPx, areaX, areaY, areaW, areaH, isTall } = plot;
+    const { scale, padX, plotW } = bounds;
 
     const lossFn = (x) => 0.75 * x * x + 0.3 * Math.sin(2.5 * x) + 0.6;
     const gradFn = (x) => 1.5 * x + 0.75 * Math.cos(2.5 * x);
 
-    const pCurve = this.smoothstep(time / (duration * 0.25));
-    this.plotFunction(ctx, mapper, lossFn, pal.indigo, 4 * scale, pCurve);
+    const pCurve = spanEase(time, 0.15, 1.4);
+    if (pCurve > 0) {
+      const steps = Math.max(8, Math.floor(180 * pCurve));
+      ctx.save();
+      ctx.strokeStyle = pal.indigo;
+      ctx.lineWidth = 4.2 * scale;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const x = xMin + ((xMax - xMin) * i) / 180;
+        const p = toPx(x, lossFn(x));
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
 
     const xStart = Math.max(-2.8, Math.min(2.8, Number(params.xStart ?? -2.4)));
     const lr = Math.max(0.05, Math.min(0.85, Number(params.lr ?? 0.28)));
@@ -1881,18 +1952,18 @@ export class Engine3c1c {
       currX = currX - lr * gVal;
     }
 
-    const stepProg = this.smoothstep((time - duration * 0.2) / (duration * 0.68));
+    const stepProg = spanEase(time, duration * 0.2, duration * 0.88);
     const visibleSteps = Math.max(1, Math.min(totalSteps, Math.ceil(stepProg * totalSteps)));
 
     for (let i = 0; i < visibleSteps; i++) {
-      const p0 = mapper.toScreen(trajectory[i].x, trajectory[i].loss);
-      const p1 = mapper.toScreen(trajectory[i + 1].x, trajectory[i + 1].loss);
+      const p0 = toPx(trajectory[i].x, trajectory[i].loss);
+      const p1 = toPx(trajectory[i + 1].x, trajectory[i + 1].loss);
       this.drawArrow(ctx, p0.x, p0.y, p1.x, p1.y, pal.amber, 2.6 * scale);
       this.drawDot(ctx, p0.x, p0.y, 6.5 * scale, i === 0 ? pal.indigo : pal.amber, pal.bg);
     }
 
     const activeState = trajectory[visibleSteps];
-    const pActive = mapper.toScreen(activeState.x, activeState.loss);
+    const pActive = toPx(activeState.x, activeState.loss);
     this.drawDot(ctx, pActive.x, pActive.y, 8.5 * scale, pal.teal, pal.bg);
 
     const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
@@ -1940,7 +2011,10 @@ export class Engine3c1c {
           gap: 34 * scale,
         },
         {
-          text: Math.abs(activeState.grad) < 0.08 ? 'Status: Converged to Local Minimum' : 'Status: Descending along −∇L',
+          text:
+            Math.abs(activeState.grad) < 0.08
+              ? 'Status: Converged to Local Minimum'
+              : 'Status: Descending along −∇L',
           font: `500 ${Math.round(17 * scale)}px "JetBrains Mono", monospace`,
           color: pal.inkSub,
           gap: 26 * scale,
