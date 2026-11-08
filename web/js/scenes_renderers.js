@@ -22,43 +22,60 @@ export function attachExtendedRenderers(EngineClass) {
   proto.renderExtendedScene = function (preset, ctx, pal, bounds, params, time, duration) {
     const arch = preset.archetype;
     const sub = preset.subType;
+    const liveParams = { ...(preset.defaults || {}), ...(params || {}) };
+    const ctrls = preset.controls || [];
+    const env = spanEase(time, 0.25, 1.35);
+    ctrls.forEach((ctrl, idx) => {
+      const paramKey = ctrl.key || ctrl.id;
+      const baseVal = Number(liveParams[paramKey] ?? ctrl.default ?? 0);
+      const minV = Number(ctrl.min ?? baseVal - 1);
+      const maxV = Number(ctrl.max ?? baseVal + 1);
+      const span = Math.max(0, maxV - minV);
+      const step = Number(ctrl.step || 0.1);
+      if (step < 1 && span > 0) {
+        const wave = Math.sin(time * (1.35 + idx * 0.42) + idx * 1.15) * env;
+        const modVal = baseVal + span * 0.075 * wave;
+        liveParams[paramKey] = Math.max(minV, Math.min(maxV, modVal));
+      }
+    });
+
     if (arch === 'calculus_thm') {
-      return this.drawCalculusThmScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawCalculusThmScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'numerical') {
-      return this.drawNumericalScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawNumericalScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'parametric') {
-      return this.drawParametricScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawParametricScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'fourier') {
-      return this.drawFourierScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawFourierScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'slopefield') {
-      return this.drawSlopeFieldScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawSlopeFieldScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'conic') {
-      return this.drawConicScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawConicScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'geometry') {
-      return this.drawGeometryScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawGeometryScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'probability') {
-      return this.drawProbabilityScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawProbabilityScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'linalg_adv') {
-      return this.drawLinAlgAdvScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawLinAlgAdvScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'discrete') {
-      return this.drawDiscreteScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawDiscreteScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'physics') {
-      return this.drawPhysicsScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawPhysicsScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
     if (arch === 'construction') {
-      return this.drawConstructionScene(sub, ctx, pal, bounds, params, time, duration);
+      return this.drawConstructionScene(sub, ctx, pal, bounds, liveParams, time, duration);
     }
-    return this.drawExamTrapsScene(sub, ctx, pal, bounds, params, time, duration);
+    return this.drawExamTrapsScene(sub, ctx, pal, bounds, liveParams, time, duration);
   };
 
   /* ------------------------------------------------------------------------
@@ -398,6 +415,8 @@ export function attachExtendedRenderers(EngineClass) {
       tableRows = [4, 8, 16, 32].map((n) => [`N = ${n}`, (lowerSum + (gap * N) / (2 * n)).toFixed(3), (upperSum - (gap * N) / (2 * n)).toFixed(3), `Gap = ${((gap * N) / n).toFixed(3)}`]);
     } else if (sub === 'cantor') {
       const K = Math.max(1, Math.min(6, Math.round(Number(params.depthK ?? 4))));
+      const gapRatio = Math.max(0.15, Math.min(0.65, Number(params.gapRatio ?? 0.3333)));
+      const sideFrac = (1 - gapRatio) * 0.5;
       // Compute recursive Cantor intervals on [0, 1] mapped to x in [-2.4, 2.8], y in [-1.2, 2.8]
       let intervals = [{ l: 0, r: 1, valL: 0, valR: 1 }];
       for (let d = 0; d < K; d++) {
@@ -405,8 +424,8 @@ export function attachExtendedRenderers(EngineClass) {
         for (const iv of intervals) {
           const w = iv.r - iv.l;
           const vm = 0.5 * (iv.valL + iv.valR);
-          next.push({ l: iv.l, r: iv.l + w / 3, valL: iv.valL, valR: vm });
-          next.push({ l: iv.r - w / 3, r: iv.r, valL: vm, valR: iv.valR });
+          next.push({ l: iv.l, r: iv.l + w * sideFrac, valL: iv.valL, valR: vm });
+          next.push({ l: iv.r - w * sideFrac, r: iv.r, valL: vm, valR: iv.valR });
         }
         intervals = next;
       }
@@ -430,7 +449,7 @@ export function attachExtendedRenderers(EngineClass) {
         ctx.beginPath(); ctx.moveTo(b0.x, b0.y); ctx.lineTo(b1.x, b1.y); ctx.stroke();
       }
       ctx.restore();
-      const meas = Math.pow(2 / 3, K);
+      const meas = Math.pow(1 - gapRatio, K);
       cardLines = [
         { text: "CANTOR DUST & DEVIL'S STAIRCASE F(x)", color: pal.amber },
         { text: `Stage k = ${K}  ·  2^k = ${Math.pow(2, K)} Cantor Bars`, color: pal.ink },
@@ -646,10 +665,10 @@ export function attachExtendedRenderers(EngineClass) {
       ];
       tableRows = [25, 50, 100, totalN].map((n) => [`N = ${n}`, `${Math.round(n * 0.7854)}`, (4 * (Math.round(n * 0.7854) / n)).toFixed(4), Math.abs(4 * (Math.round(n * 0.7854) / n) - Math.PI).toFixed(4)]);
     } else if (sub === 'simpson') {
-      const pairsM = Math.max(1, Math.min(6, Math.round(Number(params.pairsM ?? 2))));
+      const pairsM = Math.max(1, Math.min(6, Math.round(Number(params.panels ?? params.pairsM ?? 3))));
       const freq = Number(params.freq ?? 1.0);
       const fn = (x) => 3.5 + 2.8 * Math.sin(freq * x);
-      const bEnd = 3.2, N = 2 * pairsM, h = bEnd / N;
+      const bEnd = Math.max(1.2, Math.min(3.5, Number(params.bMax ?? 3.0))), N = 2 * pairsM, h = bEnd / N;
       let simpSum = 0;
       ctx.save();
       for (let m = 0; m < pairsM; m++) {
@@ -1308,6 +1327,7 @@ export function attachExtendedRenderers(EngineClass) {
 
     if (sub === 'gibbs') {
       const N = Math.max(1, Math.round(Number(params.harmonics ?? 9)));
+      const freq = Number(params.freq ?? 1.0);
       ctx.save();
       // Ideal square wave step (dashed teal)
       ctx.strokeStyle = pal.teal;
@@ -1333,7 +1353,7 @@ export function attachExtendedRenderers(EngineClass) {
       let overX = 2.1;
       for (let i = 0; i <= 260; i++) {
         const t = (4.0 * i) / 260;
-        const u = (t - 2.0) * 1.5;
+        const u = (t - 2.0) * 1.5 * freq;
         let sum = 0;
         for (let k = 0; k < N; k++) {
           const n = 2 * k + 1;
@@ -1492,7 +1512,8 @@ export function attachExtendedRenderers(EngineClass) {
     }
 
     if (sub === 'dirichlet') {
-      const N = Math.max(1, Math.round(Number(params.orderN ?? 6)));
+      const N = Math.max(1, Math.round(Number(params.harmonics ?? params.orderN ?? 6)));
+      const freq = Number(params.freq ?? 1.0);
       ctx.save();
       ctx.fillStyle = pal.indigoFill;
       ctx.strokeStyle = pal.indigo;
@@ -1502,7 +1523,7 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.moveTo(pLeft.x, pLeft.y);
       for (let i = 0; i <= 240; i++) {
         const t = (4.0 * i) / 240;
-        const theta = (t - 2.0) * 1.45;
+        const theta = (t - 2.0) * 1.45 * freq;
         const val =
           Math.abs(theta) < 1e-4
             ? 1.4
@@ -2742,6 +2763,8 @@ export function attachExtendedRenderers(EngineClass) {
         { x: 1, y: 2 },
         { x: -1, y: 1 * scaleW },
       ];
+      const pulse = 1 + 0.14 * Math.sin(time * 2.4);
+      const scanAngle = time * 1.15;
       ctx.save();
       // Draw integer lattice grid dots
       for (let gx = -2; gx <= 2; gx++) {
@@ -2762,21 +2785,36 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
+
+      const p0 = toPx(poly[0].x, poly[0].y);
+      const p2 = toPx(poly[2].x, poly[2].y);
+      const diagProg = spanEase(time, 0.4, 2.2);
+      ctx.setLineDash([6 * scale, 4 * scale]);
+      ctx.strokeStyle = pal.amber;
+      ctx.lineWidth = 2.4 * scale;
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p0.x + (p2.x - p0.x) * diagProg, p0.y + (p2.y - p0.y) * diagProg);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const pOrig = toPx(0, 0);
+      const pProbe = toPx(0.85 * Math.cos(scanAngle), 0.55 + 0.45 * Math.sin(scanAngle));
+      this.drawArrow(ctx, pOrig.x, pOrig.y, pProbe.x, pProbe.y, pal.teal, 2.2 * scale);
       ctx.restore();
 
       // Highlight boundary lattice points (amber) and interior lattice points (teal)
-      poly.forEach((v) => {
+      poly.forEach((v, idx) => {
         const p = toPx(v.x, v.y);
-        this.drawDot(ctx, p.x, p.y, 7.5 * scale, pal.amber, pal.bg);
+        this.drawDot(ctx, p.x, p.y, (7.2 + 1.1 * Math.sin(time * 2.2 + idx)) * scale, pal.amber, pal.bg);
       });
       [
         { x: 0, y: 0 },
         { x: 1, y: 0 },
         { x: 0, y: 1 },
         { x: -1, y: 0 },
-      ].forEach((pt) => {
+      ].forEach((pt, idx) => {
         const p = toPx(pt.x, pt.y);
-        this.drawDot(ctx, p.x, p.y, 7.5 * scale, pal.teal, pal.bg);
+        this.drawDot(ctx, p.x, p.y, (7.5 * pulse + 0.6 * idx) * scale, pal.teal, pal.bg);
       });
 
       const I = 4;
@@ -2809,9 +2847,10 @@ export function attachExtendedRenderers(EngineClass) {
     // Remaining 6 Triangle scenes: euler_line, law_sines, law_cosines, incircle, feuerbach, ceva
     const A = { x: -1.85, y: -1.15 };
     const B = { x: 1.95, y: -1.15 };
+    const angShift = Number(params.angleADeg ?? params.angleCDeg ?? 60) * 0.015 + Number(params.sideA ?? 0) * 0.35;
     const C = {
-      x: Number(params.cxTop ?? params.px ?? 0.35),
-      y: Number(params.cyTop ?? params.py ?? 1.95),
+      x: Number(params.cxTop ?? params.px ?? (0.15 + 0.35 * Math.cos(angShift + time * 0.85))),
+      y: Number(params.cyTop ?? params.py ?? (1.85 + 0.18 * Math.sin(angShift + time * 1.15))),
     };
     const pA = toPx(A.x, A.y);
     const pB = toPx(B.x, B.y);
@@ -3180,10 +3219,13 @@ export function attachExtendedRenderers(EngineClass) {
 
       let hits = 0;
       const nBars = 15;
+      const barSpan = Math.max(0.25, spanEase(time, 0.25, 3.2));
       for (let i = 1; i <= nBars; i++) {
-        const sampleMean = 0.68 * Math.sin(i * 2.1 + 0.5) + 0.35 * Math.cos(i * 3.7);
-        const lo = sampleMean - halfW;
-        const hi = sampleMean + halfW;
+        const drift = 0.14 * Math.sin(time * 1.45 + i * 0.65) * spanEase(time, 0.4, 1.8);
+        const sampleMean = 0.68 * Math.sin(i * 2.1 + 0.5) + 0.35 * Math.cos(i * 3.7) + drift;
+        const curHalf = halfW * barSpan;
+        const lo = sampleMean - curHalf;
+        const hi = sampleMean + curHalf;
         const covers = lo <= 0 && hi >= 0;
         if (covers) hits++;
         const pL = toPx(lo, i);
@@ -3300,8 +3342,8 @@ export function attachExtendedRenderers(EngineClass) {
 
     const pmf = (k) => {
       if (sub === 'markov') {
-        const pA = Number(params.pStayA ?? 0.7);
-        const pB = Number(params.pStayB ?? 0.8);
+        const pA = Number(params.pStayA ?? (1 - Number(params.pAToB ?? 0.3)));
+        const pB = Number(params.pStayB ?? (1 - Number(params.pBToA ?? 0.45)));
         const eq = (1 - pB) / Math.max(0.05, 2 - pA - pB);
         return Math.min(0.34, eq * 0.45 + 0.16 * Math.pow(pA + pB - 1, k));
       }
@@ -3352,6 +3394,8 @@ export function attachExtendedRenderers(EngineClass) {
         (1 / (Math.max(0.4, sdVal) * Math.sqrt(2 * Math.PI))) *
         Math.exp(-0.5 * Math.pow((x - meanVal) / Math.max(0.4, sdVal), 2));
       this.strokeSampledCurve(ctx, toPx, 0, 14, gauss, pal.teal, 3.6 * scale, prog);
+    } else if (sub === 'markov') {
+      this.strokeSampledCurve(ctx, toPx, 0, 14, (x) => pmf(x) * prog, pal.amber, 3.0 * scale, prog);
     }
 
     const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
@@ -3458,8 +3502,8 @@ export function attachExtendedRenderers(EngineClass) {
 
     // 2. Trace-Determinant (tr A, det A) Bifurcation Plane (#077)
     if (sub === 'cayley_trace_det') {
-      const trA = Number(params.traceT ?? 1.1);
-      const detA = Number(params.detD ?? 0.85);
+      const trA = Number(params.traceTau ?? params.traceT ?? 1.1);
+      const detA = Number(params.detDelta ?? params.detD ?? 0.85);
       const critDet = 0.25 * trA * trA;
 
       ctx.save();
@@ -3604,7 +3648,7 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.stroke();
 
       // Input vector v
-      const v = { x: 0.75, y: 1.95 };
+      const v = { x: Number(params.vx ?? 0.75), y: Number(params.vy ?? 1.95) };
       const dot = v.x * ux + v.y * uy;
       const proj = { x: dot * ux, y: dot * uy };
       const refl = { x: 2 * proj.x - v.x, y: 2 * proj.y - v.y };
@@ -3650,7 +3694,7 @@ export function attachExtendedRenderers(EngineClass) {
 
     // 6. Perron-Frobenius Positive Cone Contraction (#080) & 7. Power Iteration (#081)
     if (sub === 'perron_frobenius' || sub === 'power_iter') {
-      const c = Number(params.mixEps ?? 0.35);
+      const c = Number(params.mixAlpha ?? params.ratioLambda ?? params.mixEps ?? 0.35);
       // Positive matrix [[1.2, c], [0.8*c, 0.9]]
       const a11 = 1.25;
       const a12 = c;
@@ -3860,28 +3904,37 @@ export function attachExtendedRenderers(EngineClass) {
       let h = B0;
       let stepIdx = 0;
       const steps = [];
+      const tileSweep = spanEase(time, 0.25, 4.2);
       while (w > 0.01 && h > 0.01 && stepIdx < 16) {
         const palCol = stepIdx % 3 === 0 ? pal.indigo : stepIdx % 3 === 1 ? pal.teal : pal.amber;
         const palFill = stepIdx % 3 === 0 ? pal.indigoFill : stepIdx % 3 === 1 ? pal.tealFill : pal.amberFill;
+        const stepVis = clamp01(tileSweep * 6 - stepIdx * 0.45);
         if (w >= h) {
           const sq = h;
           const pTL = toPx(x0, y0 + sq);
-          const pBR = toPx(x0 + sq, y0);
+          const pBR = toPx(x0 + sq * Math.max(0.2, stepVis), y0);
           ctx.fillStyle = palFill;
           ctx.strokeStyle = palCol;
-          ctx.lineWidth = 2.6 * scale;
+          ctx.lineWidth = (2.4 + 0.5 * Math.sin(time * 2.2 + stepIdx)) * scale;
           ctx.fillRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
           ctx.strokeRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
+          ctx.beginPath();
+          ctx.moveTo(pTL.x, pBR.y);
+          ctx.lineTo(
+            pTL.x + (pBR.x - pTL.x) * (0.5 + 0.5 * Math.sin(time * 1.8 + stepIdx)),
+            pBR.y + (pTL.y - pBR.y) * (0.5 + 0.5 * Math.sin(time * 1.8 + stepIdx))
+          );
+          ctx.stroke();
           steps.push([`Step ${stepIdx + 1}`, `${Math.round(w)} × ${Math.round(h)}`, `Square ${Math.round(sq)}×${Math.round(sq)}`, `Rem ${Math.round(w - sq)}`]);
           x0 += sq;
           w -= sq;
         } else {
           const sq = w;
-          const pTL = toPx(x0, y0 + sq);
+          const pTL = toPx(x0, y0 + sq * Math.max(0.2, stepVis));
           const pBR = toPx(x0 + sq, y0);
           ctx.fillStyle = palFill;
           ctx.strokeStyle = palCol;
-          ctx.lineWidth = 2.6 * scale;
+          ctx.lineWidth = (2.4 + 0.5 * Math.sin(time * 2.2 + stepIdx)) * scale;
           ctx.fillRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
           ctx.strokeRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
           steps.push([`Step ${stepIdx + 1}`, `${Math.round(w)} × ${Math.round(h)}`, `Square ${Math.round(sq)}×${Math.round(sq)}`, `Rem ${Math.round(h - sq)}`]);
@@ -3945,8 +3998,9 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.strokeStyle = pal.amber;
       ctx.lineWidth = 4 * scale;
       ctx.beginPath();
+      const spiralSpan = prog + 0.08 * Math.sin(time * 2.0) * spanEase(time, 3.5, 5.0);
       for (let i = 0; i <= 160; i++) {
-        const u = (i / 160) * Math.PI * 3.1 * prog;
+        const u = (i / 160) * Math.PI * 3.1 * spiralSpan;
         const r = 0.25 * Math.exp(0.30635 * u);
         const p = toPx(0.4 + r * Math.cos(u), -0.4 + r * Math.sin(u));
         if (i === 0) ctx.moveTo(p.x, p.y);
@@ -3991,8 +4045,10 @@ export function attachExtendedRenderers(EngineClass) {
 
       let oddCount = 0;
       let totalCount = 0;
+      const visRows = Math.max(3, Math.min(rowsN, Math.ceil(rowsN * spanEase(time, 0.15, 2.8))));
       ctx.save();
-      for (let r = 0; r < rowsN; r++) {
+      for (let r = 0; r < visRows; r++) {
+        const rowPulse = 1 + 0.12 * Math.sin(time * 2.4 - r * 0.35);
         for (let k = 0; k <= r; k++) {
           totalCount++;
           const isOdd = (k & (r - k)) === 0;
@@ -4000,7 +4056,7 @@ export function attachExtendedRenderers(EngineClass) {
           const cx = (k - r * 0.5) * 1.65;
           const cy = rowsN - r;
           const p = toPx(cx, cy);
-          const sz = Math.max(4, Math.min(14, Math.round((130 / rowsN) * scale)));
+          const sz = Math.max(4, Math.min(15, (130 / rowsN) * scale * (isOdd ? rowPulse : 1)));
           ctx.fillStyle = isOdd ? pal.amber : pal.indigoFill;
           ctx.strokeStyle = isOdd ? pal.amber : pal.gridMajor;
           ctx.lineWidth = 1.4 * scale;
@@ -4054,25 +4110,30 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.setLineDash([]);
 
       // Probability curve P(k) = 100 * (1 - exp(-k(k-1)/730))
+      const maxK = Math.max(6, Math.round(42 * spanEase(time, 0.15, 2.2)));
       ctx.fillStyle = pal.tealFill;
       ctx.strokeStyle = pal.teal;
       ctx.lineWidth = 4 * scale;
       ctx.beginPath();
       ctx.moveTo(toPx(0, 0).x, toPx(0, 0).y);
-      for (let k = 0; k <= 42; k++) {
+      for (let k = 0; k <= maxK; k++) {
         const prob = 100 * (1 - Math.exp(-(k * (k - 1)) / 730));
         const p = toPx(k, prob);
         ctx.lineTo(p.x, p.y);
       }
-      ctx.lineTo(toPx(42, 0).x, toPx(42, 0).y);
+      ctx.lineTo(toPx(maxK, 0).x, toPx(maxK, 0).y);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
       ctx.restore();
 
       const kMark = Math.min(41, seed);
+      const kLive = Math.max(2, Math.min(41, kMark * spanEase(time, 0.25, 2.8) + 1.5 * Math.sin(time * 2.1) * spanEase(time, 2.5, 4.8)));
       const pMarkVal = 100 * (1 - Math.exp(-(kMark * (kMark - 1)) / 730));
-      const pPin = toPx(kMark, pMarkVal);
+      const pLiveVal = 100 * (1 - Math.exp(-(kLive * (kLive - 1)) / 730));
+      const pPin = toPx(kLive, pLiveVal);
+      const pPinBase = toPx(kLive, 0);
+      this.drawArrow(ctx, pPinBase.x, pPinBase.y, pPin.x, pPin.y, pal.amber, 2.2 * scale);
       this.drawDot(ctx, pPin.x, pPin.y, 8.5 * scale, pal.amber, pal.bg);
 
       const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
@@ -4376,12 +4437,13 @@ export function attachExtendedRenderers(EngineClass) {
    * ------------------------------------------------------------------------ */
   proto.drawExamTrapsScene = function (sub, ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
 
     if (sub === 'qudrat_clock' || sub === 'qudrat_geometry') {
       const cx = padX + Math.round(plotW * (isTall ? 0.5 : 0.28));
-      const cy = plotTop + Math.round(plotH * (isTall ? 0.34 : 0.5));
-      const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
+      const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.30 : 0.34) : 0.5));
+      const radius = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.24 : 0.27) : 0.36);
       this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
       ctx.save();
@@ -4393,7 +4455,8 @@ export function attachExtendedRenderers(EngineClass) {
 
       if (sub === 'qudrat_clock') {
         const H = Number(params.hourH ?? 3);
-        const M = Number(params.minM ?? 30);
+        const baseM = Number(params.minM ?? 30);
+        const M = baseM + 5.0 * Math.sin(time * 1.65) * spanEase(time, 0.25, 1.5);
         const hourDeg = 30 * (H % 12) + 0.5 * M;
         const minDeg = 6 * M;
         const diff = Math.abs(hourDeg - minDeg);
@@ -4407,7 +4470,7 @@ export function attachExtendedRenderers(EngineClass) {
         ctx.restore();
 
         const cardX = isTall ? padX : padX + Math.round(plotW * 0.56);
-        const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
+        const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.58 : 0.64)) : plotTop + Math.round(plotH * 0.14);
         const cardW = isTall ? plotW : padX + plotW - cardX;
         this.drawCalloutCard(
           ctx,
@@ -4419,7 +4482,7 @@ export function attachExtendedRenderers(EngineClass) {
           scale,
           [
             { text: 'QIYAS QUDRAT · CLOCK HANDS FORMULA', color: pal.amber, gap: 34 * scale },
-            { text: `Time ${H}:${String(M).padStart(2, '0')} → Δθ = ${acute.toFixed(1)}°`, font: `600 ${Math.round(24 * scale)}px "Newsreader", serif`, color: pal.ink, gap: 36 * scale },
+            { text: `Time ${H}:${String(Math.round(baseM)).padStart(2, '0')} → Δθ = ${acute.toFixed(1)}°`, font: `600 ${Math.round(24 * scale)}px "Newsreader", serif`, color: pal.ink, gap: 36 * scale },
             { text: `Hour Hand = 30H + 0.5M = ${hourDeg.toFixed(1)}°`, color: pal.amber, gap: 34 * scale },
             { text: `Minute Hand = 6M       = ${minDeg.toFixed(1)}°`, color: pal.teal, gap: 34 * scale },
             { text: `Formula |30H − 5.5M|   = ${diff.toFixed(1)}°`, color: pal.indigo, gap: 32 * scale },
@@ -4429,7 +4492,7 @@ export function attachExtendedRenderers(EngineClass) {
 
         return {
           readouts: [
-            { key: 'Clock Time', val: `${H}:${String(M).padStart(2, '0')}` },
+            { key: 'Clock Time', val: `${H}:${String(Math.round(baseM)).padStart(2, '0')}` },
             { key: 'Hour Angle', val: `${hourDeg.toFixed(1)}°` },
             { key: 'Min Angle', val: `${minDeg.toFixed(1)}°` },
             { key: 'Acute Δθ', val: `${acute.toFixed(1)}°` },
@@ -4474,7 +4537,7 @@ export function attachExtendedRenderers(EngineClass) {
       const areaInner = 0.5 * Math.PI * R * R;
 
       const cardX = isTall ? padX : padX + Math.round(plotW * 0.56);
-      const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
+      const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.58 : 0.64)) : plotTop + Math.round(plotH * 0.14);
       const cardW = isTall ? plotW : padX + plotW - cardX;
       this.drawCalloutCard(
         ctx,
@@ -5447,11 +5510,15 @@ export function attachExtendedRenderers(EngineClass) {
       drawCompassArc(ox, oy, R, 0, Math.PI * 2, pal.indigo, 3.4, false, b1);
       drawPt(ox, oy, 'O', pal.indigo, -16, 18);
 
-      // Step 2 & 3: 6 vertices around rim & 6-petal compass rosette arcs passing through O
+      // Step 2 & 3: 6 vertices around rim (b2) & 6-petal compass rosette arcs passing through O (b3)
       const hexPts = [];
       for (let k = 0; k < 6; k++) {
         const a = (k * Math.PI) / 3;
         hexPts.push({ x: ox + R * Math.cos(a), y: oy + R * Math.sin(a), a });
+      }
+      for (let k = 0; k < 6; k++) {
+        const pt = hexPts[k];
+        drawCompassArc(pt.x, pt.y, R, pt.a + Math.PI / 3 - 0.25, pt.a + Math.PI / 3 + 0.25, pal.amber, 2.1, true, b2);
       }
       for (let k = 0; k < petals; k++) {
         const pt = hexPts[k];

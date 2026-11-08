@@ -2,8 +2,8 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=165.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=165.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=166.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=166.0';
 
 const SCENE_CATEGORIES = [
   'All',
@@ -135,6 +135,10 @@ function renderCategoryBar() {
       state.activeCategory = cat;
       renderCategoryBar();
       renderSceneLibrary();
+      if (cat !== 'All' && activePreset().category !== cat) {
+        const firstIdx = SCENE_PRESETS.findIndex((p) => p.category === cat);
+        if (firstIdx >= 0) selectPreset(firstIdx);
+      }
     });
     els.categoryBar.appendChild(pill);
   });
@@ -157,14 +161,19 @@ function renderSceneLibrary() {
     visibleCount++;
 
     const is3d = preset.archetype === 'scene_3d';
-    const badge3d = is3d ? '<span class="scene-3d-badge">3D</span>' : '';
+    const isConst = preset.archetype === 'construction';
+    const badgeType = is3d
+      ? '<span class="scene-3d-badge">3D</span>'
+      : isConst
+      ? '<span class="scene-const-badge">CONST</span>'
+      : '';
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.id = `scene-preset-${preset.id}`;
     btn.className = `scene-card${idx === state.presetIndex ? ' active' : ''}`;
     btn.innerHTML = `
       <div class="scene-card-top">
-        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badge3d}${preset.track}</span>
+        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badgeType}${preset.track}</span>
         <span class="scene-glyph">${preset.glyph}</span>
       </div>
       <div class="scene-name">${preset.name}</div>
@@ -213,6 +222,8 @@ function renderBeatChips() {
     chip.textContent = beat.label;
     chip.addEventListener('click', () => {
       state.time = beat.time;
+      state.playing = true;
+      els.btnPlay.textContent = 'Pause';
       drawImmediate();
     });
     els.beatStrip.appendChild(chip);

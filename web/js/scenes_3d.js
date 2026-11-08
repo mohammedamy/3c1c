@@ -1145,9 +1145,10 @@ export function attach3DRenderers(EngineClass) {
 
   proto.create3DStage = function (ctx, pal, bounds, azimDeg = 38, elevDeg = 26, boxScale = 1.6) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const areaW = isTall ? plotW : Math.round(plotW * 0.60);
-    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
     const cx = areaX + areaW * 0.5;

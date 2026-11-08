@@ -3,9 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=165.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=165.0';
-import { attach3DRenderers } from './scenes_3d.js?v=165.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=166.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=166.0';
+import { attach3DRenderers } from './scenes_3d.js?v=166.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -199,9 +199,10 @@ export class Engine3c1c {
 
   createPlotArea(ctx, pal, bounds, xMin, xMax, yMin, yMax, axisAlpha = 1, widthFrac = 0.62) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = Math.abs(bounds.height - bounds.width) < bounds.width * 0.1;
     const areaW = isTall ? plotW : Math.round(plotW * widthFrac);
-    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
 
@@ -278,11 +279,15 @@ export class Engine3c1c {
 
   drawCalloutCard(ctx, pal, x, y, w, h, scale, lines, accentColor) {
     ctx.save();
+    const canvasH = (ctx.canvas && ctx.canvas.height) || 1080;
+    const maxAvailH = Math.max(150 * scale, canvasH - y - 56 * scale);
     let totalNeededH = 26 * scale;
     for (const item of lines) {
       totalNeededH += item.gap || 32 * scale;
     }
-    const cardH = Math.max(h, totalNeededH + 10 * scale);
+    const rawCardH = Math.max(h, totalNeededH + 10 * scale);
+    const vCompress = rawCardH > maxAvailH ? maxAvailH / rawCardH : 1;
+    const cardH = Math.min(rawCardH, maxAvailH);
     ctx.fillStyle = pal.panel;
     ctx.strokeStyle = accentColor || pal.panelBorder;
     ctx.lineWidth = 2 * scale;
@@ -296,12 +301,12 @@ export class Engine3c1c {
     ctx.fill();
 
     const maxTextW = Math.max(110 * scale, w - 40 * scale);
-    let curY = y + 32 * scale;
+    let curY = y + 30 * scale * vCompress;
     for (const item of lines) {
-      ctx.font = item.font || `500 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`;
+      ctx.font = item.font || `500 ${Math.round(20 * scale * Math.max(0.84, vCompress))}px "JetBrains Mono", monospace`;
       ctx.fillStyle = item.color || pal.ink;
       ctx.fillText(item.text, x + 22 * scale, curY, maxTextW);
-      curY += item.gap || 32 * scale;
+      curY += (item.gap || 32 * scale) * vCompress;
     }
     ctx.restore();
   }
@@ -503,7 +508,7 @@ export class Engine3c1c {
     const targetN = Math.max(2, Math.round(Number(params.n ?? 24)));
     const rule = params.rule || 'left';
 
-    const refProg = spanEase(time, 1.4, 4.6);
+    const refProg = spanEase(time, 1.0, 5.6);
     const activeN = Math.max(2, Math.round(4 + (targetN - 4) * refProg));
     const dx = (b - a) / activeN;
 
@@ -571,7 +576,7 @@ export class Engine3c1c {
     }
     ctx.restore();
 
-    // Curve on top
+    // Curve on top + live quadrature scan probe
     ctx.save();
     ctx.strokeStyle = pal.indigo;
     ctx.lineWidth = 4.5 * scale;
@@ -583,6 +588,9 @@ export class Engine3c1c {
       else ctx.lineTo(p.x, p.y);
     }
     ctx.stroke();
+    const xScan = a + (b - a) * (0.5 + 0.45 * Math.sin(time * 1.65));
+    const pScan = toPx(xScan, fnObj.eval(xScan));
+    this.drawDot(ctx, pScan.x, pScan.y, 7.2 * scale, pal.teal, pal.bg);
     ctx.restore();
 
     const exactVal = fnObj.anti(b) - fnObj.anti(a);
@@ -656,18 +664,18 @@ export class Engine3c1c {
 
   drawSquareScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
     const xVal = Number(params.xVal ?? 2.2);
     const bVal = Number(params.bVal ?? 1.6);
     const bHalf = bVal / 2;
 
-    const unitPx = Math.min(plotW * (isTall ? 0.65 : 0.42), plotH * 0.68) / (xVal + bHalf + 0.8);
+    const unitPx = Math.min(plotW * (isTall ? 0.65 : 0.42), plotH * (isTall ? 0.45 : 0.68)) / (xVal + bHalf + 0.8);
     const xPx = xVal * unitPx;
     const bHalfPx = bHalf * unitPx;
 
-    const splitProg = spanEase(time, 1.3, 2.8);
-    const gapPx = (1 - splitProg) * 28 * scale + 6 * scale;
-    const cornerProg = spanEase(time, 3.1, 4.4);
+    const splitProg = spanEase(time, 1.0, 3.2);
+    const gapPx = (1 - splitProg) * 28 * scale + (6 + 2.2 * Math.sin(time * 2.1)) * scale;
+    const cornerProg = spanEase(time, 2.6, 5.4);
 
     const originX = padX + Math.round(plotW * (isTall ? 0.18 : 0.08));
     const originY = plotTop + Math.round(plotH * 0.14);
@@ -820,17 +828,17 @@ export class Engine3c1c {
 
   drawUnitCircleScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
     const baseDeg = Number(params.thetaDeg ?? 60);
-    const sweepProg = spanEase(time, 1.6, 4.8);
-    const degNow = baseDeg + sweepProg * 120;
+    const sweepProg = spanEase(time, 0.8, 5.8);
+    const degNow = baseDeg + sweepProg * 120 + 6 * Math.sin(time * 2.0);
     const rad = (degNow * Math.PI) / 180;
     const cosV = Math.cos(rad);
     const sinV = Math.sin(rad);
 
     const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.25));
-    const cy = plotTop + Math.round(plotH * (isTall ? 0.34 : 0.50));
-    const radius = Math.round(Math.min(plotW * 0.22, plotH * 0.38));
+    const cy = plotTop + Math.round(plotH * (isTall ? 0.29 : 0.50));
+    const radius = Math.round(Math.min(plotW * 0.22, plotH * (isTall ? 0.24 : 0.38)));
 
     this.lastPlotMapper = {
       unitCircle: { cx, cy, radius },
@@ -890,7 +898,7 @@ export class Engine3c1c {
     ctx.restore();
 
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : plotTop + Math.round(24 * scale);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.57) : plotTop + Math.round(24 * scale);
     const cardW = isTall ? plotW : Math.round(plotW * 0.46);
     const cardH = Math.round(285 * scale);
 
@@ -968,8 +976,8 @@ export class Engine3c1c {
 
   drawLinAlgScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
-    const warpProg = spanEase(time, 1.0, 4.2);
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const warpProg = clamp01(spanEase(time, 0.6, 5.4) - 0.03 * Math.sin(time * 2.1));
 
     const m11 = 1 + warpProg * (Number(params.m11 ?? 1.8) - 1);
     const m12 = warpProg * Number(params.m12 ?? 0.6);
@@ -978,8 +986,8 @@ export class Engine3c1c {
     const det = m11 * m22 - m12 * m21;
 
     const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.30));
-    const cy = plotTop + Math.round(plotH * (isTall ? 0.34 : 0.52));
-    const unit = Math.min(plotW, plotH) * 0.105;
+    const cy = plotTop + Math.round(plotH * (isTall ? 0.29 : 0.52));
+    const unit = Math.min(plotW, plotH) * (isTall ? 0.08 : 0.105);
 
     const mapVec = (x, y) => ({
       x: cx + (m11 * x + m12 * y) * unit,
@@ -1036,7 +1044,7 @@ export class Engine3c1c {
         : 'Complex eigenvalues (rotation)';
 
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.56);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : plotTop + Math.round(24 * scale);
+    const cardY = isTall ? plotTop + Math.round(plotH * 0.57) : plotTop + Math.round(24 * scale);
     const cardW = isTall ? plotW : Math.round(plotW * 0.44);
     const cardH = Math.round(285 * scale);
 
@@ -1157,13 +1165,14 @@ export class Engine3c1c {
     }
     ctx.restore();
 
-    const xProbe = Number(params.xProbe ?? 3.2);
+    const baseProbe = Number(params.xProbe ?? 3.2);
+    const xProbe = Math.max(-1.0, Math.min(4.45, baseProbe + 0.65 * Math.sin(time * 1.45) * spanEase(time, 1.8, 3.0)));
     const valA = fnA(xProbe);
     const valB = fnB(xProbe);
     const pA = toPx(xProbe, valA);
     const pB = toPx(xProbe, valB);
 
-    if (time > 2.2) {
+    if (time > 1.8) {
       ctx.save();
       ctx.setLineDash([6 * scale, 5 * scale]);
       ctx.strokeStyle = pal.teal;
@@ -1282,7 +1291,8 @@ export class Engine3c1c {
     const { scale, padX, plotW } = bounds;
 
     const maxDeg = Math.max(1, Math.min(9, Number(params.degree ?? 5) | 1));
-    const xEval = Math.max(-5.5, Math.min(5.5, Number(params.xEval ?? 2.2)));
+    const baseEval = Math.max(-5.5, Math.min(5.5, Number(params.xEval ?? 2.2)));
+    const xEval = Math.max(-5.5, Math.min(5.5, baseEval + 0.75 * Math.sin(time * 1.4) * spanEase(time, 2.0, 3.2)));
 
     const fact = (m) => {
       let r = 1;
@@ -1491,10 +1501,11 @@ export class Engine3c1c {
     };
 
     const targetZ = Math.max(0.2, Math.min(3.2, Number(params.zCutoff ?? 1.96)));
-    const sweepProg = spanEase(time, duration * 0.16, duration * 0.78);
-    const z0 = time < duration * 0.16 ? 0.15 : 0.15 + (targetZ - 0.15) * sweepProg;
+    const sweepProg = spanEase(time, duration * 0.14, duration * 0.78);
+    const zBreath = 0.08 * Math.sin(time * 1.8) * spanEase(time, 3.2, 4.6);
+    const z0 = Math.max(0.15, time < duration * 0.12 ? 0.15 + time * 0.4 : 0.15 + (targetZ - 0.15) * sweepProg + zBreath);
 
-    if (time > duration * 0.14) {
+    if (time > duration * 0.05) {
       ctx.save();
       ctx.beginPath();
       const steps = 120;
@@ -1623,10 +1634,11 @@ export class Engine3c1c {
    * ======================================================================== */
   drawCircleThmScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.28;
-    const cy = isTall ? plotTop + plotH * 0.34 : plotTop + plotH * 0.50;
-    const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
+    const cy = isTall ? plotTop + plotH * (isSquare ? 0.30 : 0.34) : plotTop + plotH * 0.50;
+    const radius = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.24 : 0.27) : 0.36);
 
     this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
@@ -1697,7 +1709,7 @@ export class Engine3c1c {
     const inscribedDeg = centralDeg / 2;
 
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
+    const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.58 : 0.64)) : plotTop + Math.round(plotH * 0.14);
     const cardW = isTall ? plotW : padX + plotW - cardX;
     const cardH = Math.round(270 * scale);
 
@@ -1769,16 +1781,17 @@ export class Engine3c1c {
    * ======================================================================== */
   drawComplexScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
-    const isTall = bounds.height > bounds.width * 1.1;
+    const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.28;
-    const cy = isTall ? plotTop + plotH * 0.34 : plotTop + plotH * 0.50;
-    const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
+    const cy = isTall ? plotTop + plotH * (isSquare ? 0.30 : 0.34) : plotTop + plotH * 0.50;
+    const radius = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.24 : 0.27) : 0.36);
 
     this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
     const n = Math.max(3, Math.min(8, Math.round(Number(params.rootsN ?? 5))));
     const basePhaseDeg = Number(params.phaseDeg ?? 18);
-    const animRot = spanEase(time, duration * 0.15, duration * 0.85) * 36;
+    const animRot = spanEase(time, duration * 0.12, duration * 0.85) * 36 + 8 * Math.sin(time * 1.6) * spanEase(time, 3.2, 4.6);
     const phaseDeg = basePhaseDeg + (time > 0.05 && time < duration - 0.05 ? animRot : 0);
     const phaseRad = (phaseDeg * Math.PI) / 180;
 
@@ -1855,7 +1868,7 @@ export class Engine3c1c {
 
     const r0 = roots[0];
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.64) : plotTop + Math.round(plotH * 0.14);
+    const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.58 : 0.64)) : plotTop + Math.round(plotH * 0.14);
     const cardW = isTall ? plotW : padX + plotW - cardX;
     const cardH = Math.round(275 * scale);
 
@@ -1977,19 +1990,32 @@ export class Engine3c1c {
       currX = currX - lr * gVal;
     }
 
-    const stepProg = spanEase(time, duration * 0.2, duration * 0.88);
-    const visibleSteps = Math.max(1, Math.min(totalSteps, Math.ceil(stepProg * totalSteps)));
+    const stepProg = spanEase(time, duration * 0.16, duration * 0.92);
+    const exactStep = stepProg * totalSteps;
+    const visibleSteps = Math.max(1, Math.min(totalSteps, Math.ceil(exactStep)));
+    const fullSteps = Math.min(totalSteps - 1, Math.floor(exactStep));
+    const subFrac = exactStep - fullSteps;
 
     for (let i = 0; i < visibleSteps; i++) {
       const p0 = toPx(trajectory[i].x, trajectory[i].loss);
       const p1 = toPx(trajectory[i + 1].x, trajectory[i + 1].loss);
-      this.drawArrow(ctx, p0.x, p0.y, p1.x, p1.y, pal.amber, 2.6 * scale);
+      const frac = i < fullSteps ? 1 : Math.max(0.15, subFrac);
+      this.drawArrow(
+        ctx,
+        p0.x,
+        p0.y,
+        p0.x + (p1.x - p0.x) * frac,
+        p0.y + (p1.y - p0.y) * frac,
+        pal.amber,
+        2.6 * scale
+      );
       this.drawDot(ctx, p0.x, p0.y, 6.5 * scale, i === 0 ? pal.indigo : pal.amber, pal.bg);
     }
 
     const activeState = trajectory[visibleSteps];
-    const pActive = toPx(activeState.x, activeState.loss);
-    this.drawDot(ctx, pActive.x, pActive.y, 8.5 * scale, pal.teal, pal.bg);
+    const interpX = trajectory[fullSteps].x + (trajectory[fullSteps + 1].x - trajectory[fullSteps].x) * subFrac + 0.04 * Math.sin(time * 2.4) * spanEase(time, 4.2, 5.2);
+    const pActive = toPx(interpX, lossFn(interpX));
+    this.drawDot(ctx, pActive.x, pActive.y, (8.5 + 1.2 * Math.sin(time * 3.0)) * scale, pal.teal, pal.bg);
 
     const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
     const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
