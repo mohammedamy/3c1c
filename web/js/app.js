@@ -259,6 +259,28 @@ function renderDynamicControls() {
     `);
   } else if (preset.id === 'qudrat') {
     parts.push(sliderField('ctrl-xprobe', 'Comparison Probe x₀', p.xProbe, -1.0, 4.5, 0.05));
+  } else if (preset.id === 'taylor') {
+    parts.push(
+      sliderField('ctrl-degree', 'Taylor Degree n (odd)', p.degree, 1, 11, 2),
+      sliderField('ctrl-xeval', 'Probe Point x₀', p.xEval, -3.1, 3.1, 0.05)
+    );
+  } else if (preset.id === 'normal') {
+    parts.push(sliderField('ctrl-zcutoff', 'Z-Score Cutoff z₀', p.zCutoff, 0.2, 3.2, 0.04));
+  } else if (preset.id === 'circle_thm') {
+    parts.push(
+      sliderField('ctrl-central', 'Central Angle ∠AOB (deg)', p.centralDeg, 40, 160, 2),
+      sliderField('ctrl-pangle', 'Point P Arc Position (deg)', p.pAngleDeg, 35, 145, 2)
+    );
+  } else if (preset.id === 'complex') {
+    parts.push(
+      sliderField('ctrl-rootsn', 'Root Order n', p.rootsN, 3, 8, 1),
+      sliderField('ctrl-phase', 'Principal Phase φ (deg)', p.phaseDeg, 0, 360, 5)
+    );
+  } else if (preset.id === 'grad_descent') {
+    parts.push(
+      sliderField('ctrl-xstart', 'Initial Parameter x₀', p.xStart, -2.9, 2.9, 0.05),
+      sliderField('ctrl-lr', 'Learning Rate η', p.lr, 0.05, 0.55, 0.01)
+    );
   }
 
   els.controlsContainer.innerHTML = parts.join('');
@@ -309,6 +331,15 @@ function bindControlListeners() {
   bind('ctrl-m21', 'm21', true);
   bind('ctrl-m22', 'm22', true);
   bind('ctrl-xprobe', 'xProbe', true);
+  bind('ctrl-degree', 'degree', true);
+  bind('ctrl-xeval', 'xEval', true);
+  bind('ctrl-zcutoff', 'zCutoff', true);
+  bind('ctrl-central', 'centralDeg', true);
+  bind('ctrl-pangle', 'pAngleDeg', true);
+  bind('ctrl-rootsn', 'rootsN', true);
+  bind('ctrl-phase', 'phaseDeg', true);
+  bind('ctrl-xstart', 'xStart', true);
+  bind('ctrl-lr', 'lr', true);
 }
 
 function syncPythonEditor() {
@@ -402,15 +433,29 @@ function setupCanvasDragging() {
     const mapper = engine.lastPlotMapper;
     if (!mapper) return;
 
-    if (preset.id === 'unitcircle' && mapper.unitCircle) {
+    if ((preset.id === 'unitcircle' || preset.id === 'complex' || preset.id === 'circle_thm') && mapper.unitCircle) {
       const { cx, cy } = mapper.unitCircle;
       let deg = (Math.atan2(cy - py, px - cx) * 180) / Math.PI;
       if (deg < 0) deg += 360;
-      state.params.thetaDeg = Math.round(deg);
-      const input = document.getElementById('ctrl-theta');
-      const span = document.getElementById('ctrl-theta-val');
-      if (input) input.value = String(state.params.thetaDeg);
-      if (span) span.textContent = String(state.params.thetaDeg);
+      if (preset.id === 'unitcircle') {
+        state.params.thetaDeg = Math.round(deg);
+        const input = document.getElementById('ctrl-theta');
+        const span = document.getElementById('ctrl-theta-val');
+        if (input) input.value = String(state.params.thetaDeg);
+        if (span) span.textContent = String(state.params.thetaDeg);
+      } else if (preset.id === 'complex') {
+        state.params.phaseDeg = Math.round(deg);
+        const input = document.getElementById('ctrl-phase');
+        const span = document.getElementById('ctrl-phase-val');
+        if (input) input.value = String(state.params.phaseDeg);
+        if (span) span.textContent = String(state.params.phaseDeg);
+      } else if (preset.id === 'circle_thm') {
+        state.params.pAngleDeg = Math.max(35, Math.min(145, Math.round(deg)));
+        const input = document.getElementById('ctrl-pangle');
+        const span = document.getElementById('ctrl-pangle-val');
+        if (input) input.value = String(state.params.pAngleDeg);
+        if (span) span.textContent = String(state.params.pAngleDeg);
+      }
       if (!state.codeDirty) syncPythonEditor();
       drawImmediate();
       return;
@@ -436,6 +481,24 @@ function setupCanvasDragging() {
         const span = document.getElementById('ctrl-xprobe-val');
         if (input) input.value = String(state.params.xProbe);
         if (span) span.textContent = state.params.xProbe.toFixed(2);
+      } else if (preset.id === 'taylor') {
+        state.params.xEval = Math.max(-3.1, Math.min(3.1, Number(m.x.toFixed(2))));
+        const input = document.getElementById('ctrl-xeval');
+        const span = document.getElementById('ctrl-xeval-val');
+        if (input) input.value = String(state.params.xEval);
+        if (span) span.textContent = state.params.xEval.toFixed(2);
+      } else if (preset.id === 'normal') {
+        state.params.zCutoff = Math.max(0.2, Math.min(3.2, Number(Math.abs(m.x).toFixed(2))));
+        const input = document.getElementById('ctrl-zcutoff');
+        const span = document.getElementById('ctrl-zcutoff-val');
+        if (input) input.value = String(state.params.zCutoff);
+        if (span) span.textContent = state.params.zCutoff.toFixed(2);
+      } else if (preset.id === 'grad_descent') {
+        state.params.xStart = Math.max(-2.9, Math.min(2.9, Number(m.x.toFixed(2))));
+        const input = document.getElementById('ctrl-xstart');
+        const span = document.getElementById('ctrl-xstart-val');
+        if (input) input.value = String(state.params.xStart);
+        if (span) span.textContent = state.params.xStart.toFixed(2);
       }
       if (!state.codeDirty) syncPythonEditor();
       drawImmediate();

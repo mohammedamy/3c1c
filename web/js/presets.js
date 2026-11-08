@@ -223,6 +223,150 @@ export const SCENE_PRESETS = [
         'When two expressions cross on the domain, the relationship is Indeterminate (Choice D) unless the domain restricts x to one side of the root.',
     },
   },
+  {
+    id: 'taylor',
+    sceneClass: 'TaylorSeriesScene',
+    track: 'AP CALCULUS BC · SERIES',
+    glyph: 'Tₙ(x)',
+    name: 'Taylor Polynomial Convergence',
+    summary: 'Maclaurin partial sums Tₙ(x) progressively hugging sin(x) across [-π, π].',
+    duration: 6.0,
+    dragHint: 'Drag evaluation point x₀ or increase polynomial degree n (1 → 9)',
+    beats: [
+      { label: '01 · Target sin(x)', time: 0.0 },
+      { label: '02 · Linear T₁(x) = x', time: 1.2 },
+      { label: '03 · Cubic & Quintic', time: 2.6 },
+      { label: '04 · Degree-n Fit', time: 4.5 },
+    ],
+    defaults: {
+      track: 'AP CALCULUS BC · POWER SERIES',
+      title: 'Maclaurin Polynomials Tₙ(x) Converging to sin(x)',
+      degree: 7,
+      xEval: 2.1,
+    },
+    rigor: {
+      badge: 'THEOREM · TAYLOR & MACLAURIN SERIES',
+      heading: 'Local Polynomial Approximation',
+      latex: '\\sin(x) = \\sum_{k=0}^{\\infty} \\frac{(-1)^k x^{2k+1}}{(2k+1)!} = x - \\frac{x^3}{3!} + \\frac{x^5}{5!} - \\cdots',
+      prose:
+        'Matching higher-order derivatives at x = 0 bends the Amber polynomial Tₙ(x) onto the true Indigo curve over an expanding radius.',
+    },
+  },
+  {
+    id: 'normal',
+    sceneClass: 'NormalZScoreScene',
+    track: 'AP STATISTICS · PROBABILITY',
+    glyph: 'Φ(z)',
+    name: 'Gaussian Bell Curve & Z-Score',
+    summary: 'Standard normal density φ(z) with shaded central probability P(|Z| ≤ z₀).',
+    duration: 6.0,
+    dragHint: 'Drag cutoff z₀ along the horizontal axis to sweep empirical probabilities',
+    beats: [
+      { label: '01 · Density φ(z)', time: 0.0 },
+      { label: '02 · 68% (±1σ)', time: 1.4 },
+      { label: '03 · 95% (±2σ)', time: 2.9 },
+      { label: '04 · Custom Cutoff z₀', time: 4.5 },
+    ],
+    defaults: {
+      track: 'AP STATISTICS · CONTINUOUS DISTRIBUTIONS',
+      title: 'Standard Normal Distribution & Empirical Rule',
+      zCutoff: 1.96,
+    },
+    rigor: {
+      badge: 'DEFINITION · STANDARD NORMAL CDF',
+      heading: 'Gaussian Density & Z-Score Area',
+      latex: '\\varphi(z) = \\frac{1}{\\sqrt{2\\pi}}e^{-z^2/2}, \\quad P(|Z| \\le z_0) = \\int_{-z_0}^{z_0}\\varphi(z)\\,dz',
+      prose:
+        'The 68–95–99.7 rule benchmarks 1, 2, and 3 standard deviations; z₀ = 1.96 encloses exactly 95.0% of the total probability mass.',
+    },
+  },
+  {
+    id: 'circle_thm',
+    sceneClass: 'InscribedAngleScene',
+    track: 'IGCSE 0580 · GEOMETRY',
+    glyph: '2θ',
+    name: 'Inscribed Angle Circle Theorem',
+    summary: 'Central angle ∠AOB = 2∠APB remains invariant as P glides along the major arc.',
+    duration: 6.0,
+    dragHint: 'Drag point P around the upper arc or adjust chord opening angle',
+    beats: [
+      { label: '01 · Chord AB & Center O', time: 0.0 },
+      { label: '02 · Central Angle 2θ', time: 1.3 },
+      { label: '03 · Inscribed Angle θ', time: 2.5 },
+      { label: '04 · Arc Invariance', time: 4.2 },
+    ],
+    defaults: {
+      track: 'CAMBRIDGE IGCSE 0580 · CIRCLE THEOREMS',
+      title: 'Angle at the Center is Twice the Inscribed Angle',
+      centralDeg: 116,
+      pAngleDeg: 95,
+    },
+    rigor: {
+      badge: 'THEOREM · INSCRIBED ANGLE INVARIANCE',
+      heading: 'Central vs. Circumference Angle',
+      latex: '\\angle AOB = 2\\,\\angle APB \\quad (\\text{for all } P \\text{ on the major arc})',
+      prose:
+        'Splitting ΔOAP and ΔOBP into isosceles triangles of radius R proves the central Amber angle is always twice the Teal angle at P.',
+    },
+  },
+  {
+    id: 'complex',
+    sceneClass: 'DeMoivreRootsScene',
+    track: 'IB MATH HL · COMPLEX',
+    glyph: 'zⁿ=w',
+    name: 'De Moivre & Complex Roots',
+    summary: 'n-th roots of a complex number forming a regular polygon on the Argand plane.',
+    duration: 6.0,
+    dragHint: 'Change root order n (3 → 8) or phase angle φ to rotate the Argand polygon',
+    beats: [
+      { label: '01 · Argand Circle', time: 0.0 },
+      { label: '02 · Principal Root z₀', time: 1.2 },
+      { label: '03 · Uniform Phase 2πk/n', time: 2.5 },
+      { label: '04 · Regular n-gon', time: 4.4 },
+    ],
+    defaults: {
+      track: 'IB MATH AA HL · COMPLEX NUMBERS',
+      title: "De Moivre's Theorem & Symmetric n-th Roots",
+      rootsN: 5,
+      phaseDeg: 24,
+    },
+    rigor: {
+      badge: "THEOREM · DE MOIVRE'S ROOTS FORMULA",
+      heading: 'Symmetric Roots in the Argand Plane',
+      latex: 'z_k = r^{1/n}\\exp\\!\\left(i\\,\\frac{\\varphi + 2\\pi k}{n}\\right), \\quad k = 0,1,\\dots,n-1',
+      prose:
+        'Every non-zero complex number has n distinct n-th roots spaced by Δθ = 2π/n radians, inscribing a regular n-gon.',
+    },
+  },
+  {
+    id: 'grad_descent',
+    sceneClass: 'GradientDescentScene',
+    track: 'MATH FOR AI · OPTIMIZATION',
+    glyph: '−η∇L',
+    name: 'Gradient Descent Trajectory',
+    summary: 'Iterative parameter updates xₜ₊₁ = xₜ − ηL′(xₜ) descending a convex loss bowl.',
+    duration: 6.0,
+    dragHint: 'Drag starting point x₀ on the loss curve or tune learning rate η',
+    beats: [
+      { label: '01 · Loss Landscape L(x)', time: 0.0 },
+      { label: '02 · Initial Gradient L′(x₀)', time: 1.2 },
+      { label: '03 · Step Updates −η∇L', time: 2.4 },
+      { label: '04 · Minimum Convergence', time: 4.6 },
+    ],
+    defaults: {
+      track: 'MATH FOR AI & DATA SCIENCE · OPTIMIZATION',
+      title: 'Gradient Descent xₜ₊₁ = xₜ − η L′(xₜ)',
+      xStart: -2.6,
+      lr: 0.22,
+    },
+    rigor: {
+      badge: 'ALGORITHM · FIRST-ORDER OPTIMIZATION',
+      heading: 'Gradient Descent Update Rule',
+      latex: 'x_{t+1} = x_t - \\eta\\,\\nabla L(x_t), \\quad \\lim_{t\\to\\infty} L\'(x_t) = 0',
+      prose:
+        'Stepping opposite the local derivative L′(xₜ) scaled by learning rate η monotonically decreases loss when 0 < η < 2/L″.',
+    },
+  },
 ];
 
 export function generatePythonSceneCode(preset, params, stageTheme, aspect, watermark) {
@@ -366,7 +510,7 @@ class ${preset.sceneClass}(ClipSATScene):
         self.add(header)
 
         x_len = ${Number(params.xVal).toFixed(2)}
-        b_half = ${ (Number(params.bVal) / 2).toFixed(2) }
+        b_half = ${(Number(params.bVal) / 2).toFixed(2)}
 
         x_sq = Square(side_length=x_len, color=self.theme.indigo)
         x_sq.set_fill(self.theme.indigo, opacity=0.32).shift(LEFT * 2.4 + DOWN * 0.2)
@@ -439,6 +583,132 @@ class ${preset.sceneClass}(ClipSATScene):
         matrix = [[${Number(params.m11).toFixed(2)}, ${Number(params.m12).toFixed(2)}], [${Number(params.m21).toFixed(2)}, ${Number(params.m22).toFixed(2)}]]
         self.play(ShowCreation(grid))
         self.play(grid.animate.apply_matrix(matrix), run_time=2.8)
+        self.wait(1.0)
+`;
+  }
+
+  if (preset.id === 'taylor') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+import math
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${params.track}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${params.track}", "${params.title}")
+        self.add(header)
+
+        axes = Axes(x_range=(-4.0, 4.0, 1.0), y_range=(-2.2, 2.2, 1.0), width=8.6, height=5.2)
+        axes.shift(DOWN * 0.35 + LEFT * 1.2)
+        sine_curve = axes.get_graph(lambda x: np.sin(x), color=self.theme.indigo).set_stroke(width=4)
+
+        def taylor_sin(x, deg=${Number(params.degree ?? 7)}):
+            total = 0.0
+            for k in range((deg + 1) // 2):
+                p = 2 * k + 1
+                total += ((-1) ** k) * (x ** p) / math.factorial(p)
+            return total
+
+        poly_curve = axes.get_graph(taylor_sin, x_range=(-3.6, 3.6), color=self.theme.amber).set_stroke(width=3.5)
+        self.play(ShowCreation(axes), ShowCreation(sine_curve))
+        self.play(ShowCreation(poly_curve), run_time=2.4)
+        self.wait(1.0)
+`;
+  }
+
+  if (preset.id === 'normal') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${params.track}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${params.track}", "${params.title}")
+        self.add(header)
+
+        axes = Axes(x_range=(-3.6, 3.6, 1.0), y_range=(0, 0.45, 0.1), width=8.6, height=5.0)
+        axes.shift(DOWN * 0.4 + LEFT * 1.2)
+        pdf = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+        bell = axes.get_graph(pdf, color=self.theme.indigo).set_stroke(width=4)
+        z0 = ${Number(params.zCutoff ?? 1.96).toFixed(2)}
+        area = axes.get_area_under_graph(bell, x_range=(-z0, z0), fill_color=self.theme.amber, fill_opacity=0.48)
+        self.play(ShowCreation(axes), ShowCreation(bell))
+        self.play(FadeIn(area), run_time=2.0)
+        self.wait(1.0)
+`;
+  }
+
+  if (preset.id === 'circle_thm') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${params.track}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${params.track}", "${params.title}")
+        self.add(header)
+
+        circle = Circle(radius=2.3, color=self.theme.indigo).shift(LEFT * 2.2 + DOWN * 0.25)
+        center_dot = Dot(circle.get_center(), color=self.theme.amber)
+        self.play(ShowCreation(circle), FadeIn(center_dot))
+        self.wait(1.0)
+`;
+  }
+
+  if (preset.id === 'complex') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${params.track}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${params.track}", "${params.title}")
+        self.add(header)
+
+        plane = ComplexPlane(x_range=(-1.6, 1.6, 0.5), y_range=(-1.6, 1.6, 0.5), width=5.4, height=5.4)
+        plane.shift(LEFT * 2.3 + DOWN * 0.25)
+        unit = Circle(radius=plane.c2p(1, 0)[0] - plane.c2p(0, 0)[0], color=self.theme.indigo).move_to(plane.c2p(0, 0))
+        polygon = RegularPolygon(n=${Number(params.rootsN ?? 5)}, color=self.theme.amber).scale(unit.get_radius()).move_to(unit)
+        self.play(FadeIn(plane), ShowCreation(unit), ShowCreation(polygon), run_time=2.4)
+        self.wait(1.0)
+`;
+  }
+
+  if (preset.id === 'grad_descent') {
+    return `# CLI: ${cliFlags}
+from manimlib import *
+
+
+class ${preset.sceneClass}(ClipSATScene):
+    clipsat_mode = ${modeLiteral}
+    clipsat_track = "${params.track}"
+    clipsat_watermark = ${wmLiteral}
+
+    def construct(self):
+        header = self.build_exam_header("${params.track}", "${params.title}")
+        self.add(header)
+
+        axes = Axes(x_range=(-3.2, 3.2, 1.0), y_range=(-0.5, 8.5, 2.0), width=8.5, height=5.2)
+        axes.shift(DOWN * 0.4 + LEFT * 1.2)
+        loss = lambda x: 0.75 * x**2 + 0.3 * np.sin(2.5 * x) + 0.6
+        curve = axes.get_graph(loss, color=self.theme.indigo).set_stroke(width=4)
+        self.play(ShowCreation(axes), ShowCreation(curve))
         self.wait(1.0)
 `;
   }

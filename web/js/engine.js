@@ -167,6 +167,16 @@ export class Engine3c1c {
       telemetry = this.drawLinAlgScene(ctx, pal, bounds, params, time, duration);
     } else if (presetId === 'qudrat') {
       telemetry = this.drawQudratScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'taylor') {
+      telemetry = this.drawTaylorScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'normal') {
+      telemetry = this.drawNormalScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'circle_thm') {
+      telemetry = this.drawCircleThmScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'complex') {
+      telemetry = this.drawComplexScene(ctx, pal, bounds, params, time, duration);
+    } else if (presetId === 'grad_descent') {
+      telemetry = this.drawGradDescentScene(ctx, pal, bounds, params, time, duration);
     }
 
     // 5. ClipSAT · 3c1c Corner Watermark
@@ -1219,6 +1229,741 @@ export class Engine3c1c {
         { key: 'Global Answer', val: 'Choice D' },
       ],
       tableHeaders: ['x', 'Col A: 2ˣ', 'Col B: x²+2', 'Comparison'],
+      tableRows,
+    };
+  }
+
+  /* ========================================================================
+   * 7. TAYLOR SERIES & MACLAURIN POLYNOMIAL APPROXIMATION
+   * ======================================================================== */
+  drawTaylorScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
+    const areaX = padX;
+    const areaY = padTop;
+    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
+    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+
+    const xMin = -6.5;
+    const xMax = 6.5;
+    const yMin = -2.2;
+    const yMax = 2.2;
+    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
+    this.lastPlotMapper = mapper;
+
+    this.drawAxes(ctx, pal, mapper, scale, 'x', 'y');
+
+    const maxDeg = Math.max(1, Math.min(9, Number(params.degree ?? 5) | 1));
+    const xEval = Math.max(-5.5, Math.min(5.5, Number(params.xEval ?? 2.2)));
+
+    const fact = (m) => {
+      let r = 1;
+      for (let i = 2; i <= m; i++) r *= i;
+      return r;
+    };
+    const taylorSin = (x, deg) => {
+      let sum = 0;
+      const terms = Math.floor((deg + 1) / 2);
+      for (let k = 0; k < terms; k++) {
+        const p = 2 * k + 1;
+        sum += (k % 2 === 0 ? 1 : -1) * Math.pow(x, p) / fact(p);
+      }
+      return sum;
+    };
+
+    const pDraw = this.smoothstep(time / (duration * 0.25));
+    this.plotFunction(ctx, mapper, (x) => Math.sin(x), pal.indigo, 4 * scale, pDraw);
+
+    const polyProg = this.smoothstep((time - duration * 0.18) / (duration * 0.62));
+    const oddDegrees = [1, 3, 5, 7, 9].filter((d) => d <= maxDeg);
+    const activeIdx = Math.min(
+      oddDegrees.length - 1,
+      Math.floor(polyProg * oddDegrees.length)
+    );
+    const activeDeg = time >= duration * 0.8 ? maxDeg : oddDegrees[activeIdx] || 1;
+
+    if (time > duration * 0.16) {
+      // Ghost lower-order approximations
+      for (const d of oddDegrees) {
+        if (d < activeDeg) {
+          ctx.save();
+          ctx.globalAlpha = 0.28;
+          this.plotFunction(
+            ctx,
+            mapper,
+            (x) => Math.max(-4, Math.min(4, taylorSin(x, d))),
+            pal.teal,
+            2 * scale,
+            1
+          );
+          ctx.restore();
+        }
+      }
+      this.plotFunction(
+        ctx,
+        mapper,
+        (x) => Math.max(-4, Math.min(4, taylorSin(x, activeDeg))),
+        pal.amber,
+        3.6 * scale,
+        1
+      );
+    }
+
+    const exactVal = Math.sin(xEval);
+    const approxVal = taylorSin(xEval, activeDeg);
+    const absErr = Math.abs(exactVal - approxVal);
+
+    const pExact = mapper.toScreen(xEval, exactVal);
+    const pApprox = mapper.toScreen(xEval, Math.max(yMin, Math.min(yMax, approxVal)));
+
+    ctx.save();
+    ctx.strokeStyle = pal.rose;
+    ctx.lineWidth = 2.4 * scale;
+    ctx.setLineDash([5 * scale, 4 * scale]);
+    ctx.beginPath();
+    ctx.moveTo(pExact.x, pExact.y);
+    ctx.lineTo(pApprox.x, pApprox.y);
+    ctx.stroke();
+    ctx.restore();
+
+    this.drawDot(ctx, pExact.x, pExact.y, 7.5 * scale, pal.indigo, pal.bg);
+    this.drawDot(ctx, pApprox.x, pApprox.y, 7.5 * scale, pal.amber, pal.bg);
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(280 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'MACLAURIN POLYNOMIAL FOR sin(x)',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Active Degree n = ${activeDeg}  (Target ${maxDeg})`,
+          font: `600 ${Math.round(24 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 36 * scale,
+        },
+        {
+          text: `Probe x₀       = ${xEval.toFixed(2)} rad`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `Exact sin(x₀)  = ${exactVal >= 0 ? '+' : ''}${exactVal.toFixed(5)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Poly T_${activeDeg}(x₀)   = ${approxVal >= 0 ? '+' : ''}${approxVal.toFixed(5)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Error |R_${activeDeg}(x₀)| = ${absErr.toExponential(2)}`,
+          font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.rose,
+          gap: 26 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const tableRows = [1, 3, 5, 7, 9].map((d) => {
+      const tv = taylorSin(xEval, d);
+      const err = Math.abs(exactVal - tv);
+      return [`T_${d}(x)`, tv.toFixed(5), exactVal.toFixed(5), err.toExponential(2)];
+    });
+
+    return {
+      readouts: [
+        { key: 'Degree n', val: `${activeDeg}` },
+        { key: 'Probe x₀', val: xEval.toFixed(2) },
+        { key: 'Tₙ(x₀)', val: approxVal.toFixed(4) },
+        { key: '|Error|', val: absErr.toExponential(2) },
+      ],
+      tableHeaders: ['Order', 'Tₙ(x₀)', 'sin(x₀)', '|Error|'],
+      tableRows,
+    };
+  }
+
+  /* ========================================================================
+   * 8. NORMAL DISTRIBUTION & EMPIRICAL Z-SCORE AREA
+   * ======================================================================== */
+  drawNormalScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
+    const areaX = padX;
+    const areaY = padTop;
+    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
+    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+
+    const xMin = -3.6;
+    const xMax = 3.6;
+    const yMin = -0.05;
+    const yMax = 0.46;
+    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
+    this.lastPlotMapper = mapper;
+
+    this.drawAxes(ctx, pal, mapper, scale, 'z', 'φ(z)');
+
+    const pdf = (z) => Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+    const erf = (x) => {
+      const sign = x >= 0 ? 1 : -1;
+      const ax = Math.abs(x);
+      const t = 1 / (1 + 0.3275911 * ax);
+      const y =
+        1 -
+        (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t +
+          0.254829592) *
+          t) *
+          Math.exp(-ax * ax);
+      return sign * y;
+    };
+
+    const targetZ = Math.max(0.2, Math.min(3.2, Number(params.zCutoff ?? 1.96)));
+    const sweepProg = this.smoothstep((time - duration * 0.16) / (duration * 0.62));
+    const z0 = time < duration * 0.16 ? 0.15 : 0.15 + (targetZ - 0.15) * sweepProg;
+
+    if (time > duration * 0.14) {
+      ctx.save();
+      ctx.beginPath();
+      const steps = 120;
+      const pStart = mapper.toScreen(-z0, 0);
+      ctx.moveTo(pStart.x, pStart.y);
+      for (let i = 0; i <= steps; i++) {
+        const z = -z0 + (2 * z0 * i) / steps;
+        const pt = mapper.toScreen(z, pdf(z));
+        ctx.lineTo(pt.x, pt.y);
+      }
+      const pEnd = mapper.toScreen(z0, 0);
+      ctx.lineTo(pEnd.x, pEnd.y);
+      ctx.closePath();
+      ctx.fillStyle = pal.amberSoft;
+      ctx.fill();
+      ctx.strokeStyle = pal.amber;
+      ctx.lineWidth = 2 * scale;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const pCurve = this.smoothstep(time / (duration * 0.28));
+    this.plotFunction(ctx, mapper, pdf, pal.indigo, 4 * scale, pCurve);
+
+    const pLeft = mapper.toScreen(-z0, pdf(-z0));
+    const pRight = mapper.toScreen(z0, pdf(z0));
+    this.drawDot(ctx, pLeft.x, pLeft.y, 7 * scale, pal.amber, pal.bg);
+    this.drawDot(ctx, pRight.x, pRight.y, 7 * scale, pal.amber, pal.bg);
+
+    const centralProb = erf(z0 / Math.sqrt(2));
+    const tailProb = 1 - centralProb;
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(280 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'STANDARD NORMAL Z-SCORE TABLE',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Bounds: [−${z0.toFixed(2)}σ, +${z0.toFixed(2)}σ]`,
+          font: `600 ${Math.round(24 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 36 * scale,
+        },
+        {
+          text: `P(|Z| ≤ z₀)   = ${(centralProb * 100).toFixed(2)}%`,
+          font: `600 ${Math.round(21 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 35 * scale,
+        },
+        {
+          text: `Cumulative Φ  = ${(0.5 + 0.5 * centralProb).toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `Two-Tail Area = ${(tailProb * 100).toFixed(2)}%`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: 'Empirical Rule: 68.27% (1σ) · 95.45% (2σ) · 99.73% (3σ)',
+          font: `500 ${Math.round(16 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 26 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const benchmarks = [0.67, 1.0, 1.645, 1.96, 2.576, 3.0];
+    const tableRows = benchmarks.map((bz) => {
+      const cp = erf(bz / Math.sqrt(2));
+      return [`±${bz.toFixed(2)}`, `${(cp * 100).toFixed(2)}%`, (0.5 + 0.5 * cp).toFixed(4), `${((1 - cp) * 100).toFixed(2)}%`];
+    });
+
+    return {
+      readouts: [
+        { key: 'Cutoff z₀', val: `±${z0.toFixed(2)}` },
+        { key: 'P(|Z| ≤ z₀)', val: `${(centralProb * 100).toFixed(2)}%` },
+        { key: 'Φ(z₀)', val: (0.5 + 0.5 * centralProb).toFixed(4) },
+        { key: '2-Tail α', val: `${(tailProb * 100).toFixed(2)}%` },
+      ],
+      tableHeaders: ['±z₀', 'Central %', 'Φ(z₀)', 'Two-Tail %'],
+      tableRows,
+    };
+  }
+
+  /* ========================================================================
+   * 9. CIRCLE INSCRIBED vs. CENTRAL ANGLE THEOREM
+   * ======================================================================== */
+  drawCircleThmScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
+    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.31;
+    const cy = isTall ? padTop + plotH * 0.34 : padTop + plotH * 0.52;
+    const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
+
+    this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
+
+    const centralDeg = Math.max(40, Math.min(160, Number(params.centralDeg ?? 110)));
+    const basePDeg = Number(params.pAngleDeg ?? 95);
+    const sweep = Math.sin((time / duration) * Math.PI * 2) * 32;
+    const pDeg = time > 0.05 && time < duration - 0.05 ? basePDeg + sweep : basePDeg;
+
+    // Chord endpoints A and B placed symmetrically around -90° (bottom arc)
+    const halfRad = ((centralDeg / 2) * Math.PI) / 180;
+    const angA = -Math.PI / 2 - halfRad;
+    const angB = -Math.PI / 2 + halfRad;
+    const angP = (pDeg * Math.PI) / 180;
+
+    const ptA = { x: cx + radius * Math.cos(angA), y: cy - radius * Math.sin(angA) };
+    const ptB = { x: cx + radius * Math.cos(angB), y: cy - radius * Math.sin(angB) };
+    const ptP = { x: cx + radius * Math.cos(angP), y: cy - radius * Math.sin(angP) };
+
+    // Circle outline
+    ctx.save();
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 3.5 * scale;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Central sector OA - OB
+    ctx.fillStyle = pal.amberSoft;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(ptA.x, ptA.y);
+    ctx.lineTo(ptB.x, ptB.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = pal.amber;
+    ctx.lineWidth = 3 * scale;
+    ctx.beginPath();
+    ctx.moveTo(ptA.x, ptA.y);
+    ctx.lineTo(cx, cy);
+    ctx.lineTo(ptB.x, ptB.y);
+    ctx.stroke();
+
+    // Inscribed chords PA and PB
+    ctx.strokeStyle = pal.teal;
+    ctx.lineWidth = 3.5 * scale;
+    ctx.beginPath();
+    ctx.moveTo(ptA.x, ptA.y);
+    ctx.lineTo(ptP.x, ptP.y);
+    ctx.lineTo(ptB.x, ptB.y);
+    ctx.stroke();
+
+    // Labels
+    ctx.font = `700 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = pal.ink;
+    ctx.fillText('O', cx + 10 * scale, cy - 8 * scale);
+    ctx.fillText('A', ptA.x - 24 * scale, ptA.y + 18 * scale);
+    ctx.fillText('B', ptB.x + 12 * scale, ptB.y + 18 * scale);
+    ctx.fillStyle = pal.teal;
+    ctx.fillText(`P (θ = ${(centralDeg / 2).toFixed(1)}°)`, ptP.x - 45 * scale, ptP.y - 16 * scale);
+    ctx.restore();
+
+    this.drawDot(ctx, cx, cy, 6.5 * scale, pal.amber, pal.bg);
+    this.drawDot(ctx, ptA.x, ptA.y, 7.5 * scale, pal.indigo, pal.bg);
+    this.drawDot(ctx, ptB.x, ptB.y, 7.5 * scale, pal.indigo, pal.bg);
+    this.drawDot(ctx, ptP.x, ptP.y, 8.5 * scale, pal.teal, pal.bg);
+
+    const inscribedDeg = centralDeg / 2;
+
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.58);
+    const cardY = isTall ? padTop + Math.round(plotH * 0.66) : padTop + Math.round(plotH * 0.14);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(270 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'INSCRIBED ANGLE THEOREM',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `∠AOB = 2θ = ${centralDeg.toFixed(1)}°`,
+          font: `600 ${Math.round(25 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.amber,
+          gap: 38 * scale,
+        },
+        {
+          text: `∠APB = θ  = ${inscribedDeg.toFixed(1)}°`,
+          font: `600 ${Math.round(22 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 35 * scale,
+        },
+        {
+          text: `Vertex P Position = ${((pDeg % 360 + 360) % 360).toFixed(1)}°`,
+          font: `600 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Ratio ∠AOB / ∠APB = 2.000 (Constant)`,
+          font: `500 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 28 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const sampleArcs = [60, 90, 110, 120, 150, 180];
+    const tableRows = sampleArcs.map((cDeg) => [
+      `${cDeg}°`,
+      `${(cDeg / 2).toFixed(1)}°`,
+      '2.000',
+      cDeg === 180 ? 'Thales Right ∠ (90°)' : 'Constant on Major Arc',
+    ]);
+
+    return {
+      readouts: [
+        { key: 'Central ∠AOB', val: `${centralDeg.toFixed(1)}°` },
+        { key: 'Inscribed ∠APB', val: `${inscribedDeg.toFixed(1)}°` },
+        { key: 'Vertex P Arc', val: `${pDeg.toFixed(0)}°` },
+        { key: 'Ratio 2θ / θ', val: '2.000' },
+      ],
+      tableHeaders: ['Central ∠AOB', 'Inscribed ∠APB', 'Ratio', 'Geometric Note'],
+      tableRows,
+    };
+  }
+
+  /* ========================================================================
+   * 10. COMPLEX PLANE & DE MOIVRE n-TH ROOTS OF UNITY
+   * ======================================================================== */
+  drawComplexScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
+    const cx = isTall ? padX + plotW * 0.5 : padX + plotW * 0.31;
+    const cy = isTall ? padTop + plotH * 0.34 : padTop + plotH * 0.52;
+    const radius = Math.min(plotW, plotH) * (isTall ? 0.27 : 0.36);
+
+    this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
+
+    const n = Math.max(3, Math.min(8, Math.round(Number(params.rootsN ?? 5))));
+    const basePhaseDeg = Number(params.phaseDeg ?? 18);
+    const animRot = this.smoothstep((time - duration * 0.15) / (duration * 0.7)) * 36;
+    const phaseDeg = basePhaseDeg + (time > 0.05 && time < duration - 0.05 ? animRot : 0);
+    const phaseRad = (phaseDeg * Math.PI) / 180;
+
+    // Axes
+    ctx.save();
+    ctx.strokeStyle = pal.axis;
+    ctx.lineWidth = 1.8 * scale;
+    ctx.beginPath();
+    ctx.moveTo(cx - radius * 1.25, cy);
+    ctx.lineTo(cx + radius * 1.25, cy);
+    ctx.moveTo(cx, cy - radius * 1.25);
+    ctx.lineTo(cx, cy + radius * 1.25);
+    ctx.stroke();
+
+    // Unit Circle |z| = 1
+    ctx.strokeStyle = pal.indigo;
+    ctx.lineWidth = 3 * scale;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const roots = [];
+    for (let k = 0; k < n; k++) {
+      const ang = (phaseRad + 2 * Math.PI * k) / n;
+      roots.push({
+        k,
+        ang,
+        re: Math.cos(ang),
+        im: Math.sin(ang),
+        x: cx + radius * Math.cos(ang),
+        y: cy - radius * Math.sin(ang),
+      });
+    }
+
+    // Regular n-gon connecting roots
+    ctx.fillStyle = pal.amberSoft;
+    ctx.strokeStyle = pal.amber;
+    ctx.lineWidth = 2.8 * scale;
+    ctx.beginPath();
+    roots.forEach((rt, idx) => {
+      if (idx === 0) ctx.moveTo(rt.x, rt.y);
+      else ctx.lineTo(rt.x, rt.y);
+    });
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Phasor spokes from origin
+    roots.forEach((rt, idx) => {
+      this.drawArrow(
+        ctx,
+        cx,
+        cy,
+        rt.x,
+        rt.y,
+        idx === 0 ? pal.teal : pal.indigo,
+        (idx === 0 ? 3.2 : 2) * scale
+      );
+      this.drawDot(
+        ctx,
+        rt.x,
+        rt.y,
+        (idx === 0 ? 8 : 6.5) * scale,
+        idx === 0 ? pal.teal : pal.amber,
+        pal.bg
+      );
+      ctx.font = `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`;
+      ctx.fillStyle = idx === 0 ? pal.teal : pal.ink;
+      const lx = cx + (radius + 24 * scale) * Math.cos(rt.ang) - 10 * scale;
+      const ly = cy - (radius + 24 * scale) * Math.sin(rt.ang) + 5 * scale;
+      ctx.fillText(`z${idx}`, lx, ly);
+    });
+    ctx.restore();
+
+    const r0 = roots[0];
+    const cardX = isTall ? padX : padX + Math.round(plotW * 0.58);
+    const cardY = isTall ? padTop + Math.round(plotH * 0.66) : padTop + Math.round(plotH * 0.14);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(275 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'DE MOIVRE n-TH ROOTS ON ARGAND PLANE',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Order n = ${n}   (Δθ = ${(360 / n).toFixed(1)}°)`,
+          font: `600 ${Math.round(24 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 36 * scale,
+        },
+        {
+          text: `Principal z₀ = ${r0.re.toFixed(3)} ${r0.im >= 0 ? '+' : '−'} ${Math.abs(r0.im).toFixed(3)}i`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `Phase φ      = ${((phaseDeg % 360 + 360) % 360).toFixed(1)}°`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Symmetry Sum ∑ zₖ = 0.000 + 0.000i`,
+          font: `600 ${Math.round(19 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 32 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const tableRows = roots.map((rt) => [
+      `z_${rt.k}`,
+      `${(((rt.ang * 180) / Math.PI) % 360).toFixed(1)}°`,
+      rt.re.toFixed(4),
+      `${rt.im >= 0 ? '+' : ''}${rt.im.toFixed(4)}i`,
+    ]);
+
+    return {
+      readouts: [
+        { key: 'Roots n', val: `${n}` },
+        { key: 'Angular Step', val: `${(360 / n).toFixed(1)}°` },
+        { key: 'z₀ = cos+i sin', val: `${r0.re.toFixed(2)}+${r0.im.toFixed(2)}i` },
+        { key: '∑ zₖ', val: '0' },
+      ],
+      tableHeaders: ['Root', 'Angle θₖ', 'Re(zₖ)', 'Im(zₖ)'],
+      tableRows,
+    };
+  }
+
+  /* ========================================================================
+   * 11. GRADIENT DESCENT OPTIMIZATION TRAJECTORY
+   * ======================================================================== */
+  drawGradDescentScene(ctx, pal, bounds, params, time, duration) {
+    const { padX, padTop, plotW, plotH, scale, isTall } = bounds;
+    const areaX = padX;
+    const areaY = padTop;
+    const areaW = isTall ? plotW : Math.round(plotW * 0.62);
+    const areaH = isTall ? Math.round(plotH * 0.56) : plotH;
+
+    const xMin = -3.2;
+    const xMax = 3.2;
+    const yMin = -0.4;
+    const yMax = 8.2;
+    const mapper = this.createPlotMapper(areaX, areaY, areaW, areaH, xMin, xMax, yMin, yMax);
+    this.lastPlotMapper = mapper;
+
+    this.drawAxes(ctx, pal, mapper, scale, 'x', 'L(x)');
+
+    const lossFn = (x) => 0.75 * x * x + 0.3 * Math.sin(2.5 * x) + 0.6;
+    const gradFn = (x) => 1.5 * x + 0.75 * Math.cos(2.5 * x);
+
+    const pCurve = this.smoothstep(time / (duration * 0.25));
+    this.plotFunction(ctx, mapper, lossFn, pal.indigo, 4 * scale, pCurve);
+
+    const xStart = Math.max(-2.8, Math.min(2.8, Number(params.xStart ?? -2.4)));
+    const lr = Math.max(0.05, Math.min(0.85, Number(params.lr ?? 0.28)));
+    const totalSteps = 8;
+
+    const trajectory = [];
+    let currX = xStart;
+    for (let s = 0; s <= totalSteps; s++) {
+      const lVal = lossFn(currX);
+      const gVal = gradFn(currX);
+      trajectory.push({ step: s, x: currX, loss: lVal, grad: gVal });
+      currX = currX - lr * gVal;
+    }
+
+    const stepProg = this.smoothstep((time - duration * 0.2) / (duration * 0.68));
+    const visibleSteps = Math.max(1, Math.min(totalSteps, Math.ceil(stepProg * totalSteps)));
+
+    for (let i = 0; i < visibleSteps; i++) {
+      const p0 = mapper.toScreen(trajectory[i].x, trajectory[i].loss);
+      const p1 = mapper.toScreen(trajectory[i + 1].x, trajectory[i + 1].loss);
+      this.drawArrow(ctx, p0.x, p0.y, p1.x, p1.y, pal.amber, 2.6 * scale);
+      this.drawDot(ctx, p0.x, p0.y, 6.5 * scale, i === 0 ? pal.indigo : pal.amber, pal.bg);
+    }
+
+    const activeState = trajectory[visibleSteps];
+    const pActive = mapper.toScreen(activeState.x, activeState.loss);
+    this.drawDot(ctx, pActive.x, pActive.y, 8.5 * scale, pal.teal, pal.bg);
+
+    const cardX = isTall ? padX : areaX + areaW + Math.round(34 * scale);
+    const cardY = isTall ? areaY + areaH + Math.round(28 * scale) : areaY + Math.round(14 * scale);
+    const cardW = isTall ? plotW : padX + plotW - cardX;
+    const cardH = Math.round(280 * scale);
+
+    this.drawCalloutCard(
+      ctx,
+      pal,
+      cardX,
+      cardY,
+      cardW,
+      cardH,
+      scale,
+      [
+        {
+          text: 'GRADIENT DESCENT: xₜ₊₁ = xₜ − η ∇L(xₜ)',
+          font: `700 ${Math.round(15 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: `Step t = ${activeState.step} / ${totalSteps}   (η = ${lr.toFixed(2)})`,
+          font: `600 ${Math.round(24 * scale)}px "Newsreader", Georgia, serif`,
+          color: pal.ink,
+          gap: 36 * scale,
+        },
+        {
+          text: `Current xₜ    = ${activeState.x >= 0 ? '+' : ''}${activeState.x.toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.teal,
+          gap: 34 * scale,
+        },
+        {
+          text: `Loss L(xₜ)    = ${activeState.loss.toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.indigo,
+          gap: 34 * scale,
+        },
+        {
+          text: `Grad L'(xₜ)   = ${activeState.grad >= 0 ? '+' : ''}${activeState.grad.toFixed(4)}`,
+          font: `600 ${Math.round(20 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.amber,
+          gap: 34 * scale,
+        },
+        {
+          text: Math.abs(activeState.grad) < 0.08 ? 'Status: Converged to Local Minimum' : 'Status: Descending along −∇L',
+          font: `500 ${Math.round(17 * scale)}px "JetBrains Mono", monospace`,
+          color: pal.inkSub,
+          gap: 26 * scale,
+        },
+      ],
+      pal.panelBorder
+    );
+
+    const tableRows = trajectory.slice(0, 7).map((st) => [
+      `t = ${st.step}`,
+      st.x.toFixed(4),
+      st.loss.toFixed(4),
+      st.grad.toFixed(4),
+    ]);
+
+    return {
+      readouts: [
+        { key: 'Learning Rate η', val: lr.toFixed(2) },
+        { key: 'Current xₜ', val: activeState.x.toFixed(3) },
+        { key: 'Loss L(xₜ)', val: activeState.loss.toFixed(3) },
+        { key: "Grad L'(xₜ)", val: activeState.grad.toFixed(3) },
+      ],
+      tableHeaders: ['Step t', 'Parameter xₜ', 'Loss L(xₜ)', "Gradient L'(xₜ)"],
       tableRows,
     };
   }

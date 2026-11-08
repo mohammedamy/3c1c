@@ -271,3 +271,128 @@ class QudratComparisonScene(ClipSATScene):
 
         self.play(ShowCreation(axes), ShowCreation(col_a), ShowCreation(col_b), run_time=2.2)
         self.wait(1.0)
+
+
+class TaylorSeriesScene(ClipSATScene):
+    """AP Calculus BC — Maclaurin polynomials T_n(x) converging to sin(x)."""
+
+    clipsat_track = "AP Calculus BC · Power Series"
+
+    def construct(self):
+        import math
+
+        header = self.build_exam_header(
+            "AP Calculus BC · Power Series",
+            "Maclaurin Polynomials Converging to sin(x)",
+        )
+        self.add(header)
+
+        axes = Axes(
+            x_range=(-4.0, 4.0, 1.0),
+            y_range=(-2.2, 2.2, 1.0),
+            width=8.6,
+            height=5.2,
+            axis_config={"stroke_color": self.theme.muted, "stroke_width": 2},
+        ).shift(DOWN * 0.35 + LEFT * 1.2)
+
+        sine_curve = axes.get_graph(lambda x: np.sin(x), color=self.theme.indigo).set_stroke(width=4)
+
+        def taylor_sin(x, deg=7):
+            return sum(
+                ((-1) ** k) * (x ** (2 * k + 1)) / math.factorial(2 * k + 1)
+                for k in range((deg + 1) // 2)
+            )
+
+        poly_curve = axes.get_graph(lambda x: taylor_sin(x, 7), x_range=(-3.6, 3.6), color=self.theme.amber).set_stroke(width=3.5)
+        self.play(ShowCreation(axes), ShowCreation(sine_curve))
+        self.play(ShowCreation(poly_curve), run_time=2.4)
+        self.wait(1.0)
+
+
+class NormalZScoreScene(ClipSATScene):
+    """AP Statistics — Standard normal density phi(z) and empirical rule probability area."""
+
+    clipsat_track = "AP Statistics · Continuous Distributions"
+
+    def construct(self):
+        header = self.build_exam_header(
+            "AP Statistics · Continuous Distributions",
+            "Standard Normal Distribution & Empirical Rule",
+        )
+        self.add(header)
+
+        axes = Axes(
+            x_range=(-3.6, 3.6, 1.0),
+            y_range=(0.0, 0.45, 0.1),
+            width=8.6,
+            height=5.0,
+            axis_config={"stroke_color": self.theme.muted, "stroke_width": 2},
+        ).shift(DOWN * 0.4 + LEFT * 1.2)
+
+        pdf = lambda z: np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
+        bell = axes.get_graph(pdf, color=self.theme.indigo).set_stroke(width=4)
+        self.play(ShowCreation(axes), ShowCreation(bell), run_time=2.0)
+        self.wait(1.0)
+
+
+class InscribedAngleScene(ClipSATScene):
+    """Cambridge IGCSE 0580 — Angle at the center is twice the inscribed angle (2*theta)."""
+
+    clipsat_track = "Cambridge IGCSE 0580 · Circle Theorems"
+
+    def construct(self):
+        header = self.build_exam_header(
+            "Cambridge IGCSE 0580 · Circle Theorems",
+            "Angle at the Center is Twice the Inscribed Angle",
+        )
+        self.add(header)
+
+        circle = Circle(radius=2.3, color=self.theme.indigo).shift(LEFT * 2.2 + DOWN * 0.25)
+        center = Dot(circle.get_center(), color=self.theme.amber)
+        self.play(ShowCreation(circle), FadeIn(center))
+        self.wait(1.0)
+
+
+class DeMoivreRootsScene(ClipSATScene):
+    """IB Math AA HL — Symmetric n-th roots of a complex number on the Argand plane."""
+
+    clipsat_track = "IB Math AA HL · Complex Numbers"
+
+    def construct(self):
+        header = self.build_exam_header(
+            "IB Math AA HL · Complex Numbers",
+            "De Moivre's Theorem & Symmetric n-th Roots",
+        )
+        self.add(header)
+
+        plane = NumberPlane(x_range=(-1.6, 1.6, 0.5), y_range=(-1.6, 1.6, 0.5), width=5.4, height=5.4)
+        plane.shift(LEFT * 2.3 + DOWN * 0.25)
+        unit = Circle(radius=plane.c2p(1, 0)[0] - plane.c2p(0, 0)[0], color=self.theme.indigo).move_to(plane.c2p(0, 0))
+        polygon = RegularPolygon(n=5, color=self.theme.amber).scale(unit.get_radius()).move_to(unit)
+        self.play(FadeIn(plane), ShowCreation(unit), ShowCreation(polygon), run_time=2.4)
+        self.wait(1.0)
+
+
+class GradientDescentScene(ClipSATScene):
+    """Math for AI & Data Science — Iterative gradient descent optimization trajectory."""
+
+    clipsat_track = "Math for AI & Data Science · Optimization"
+
+    def construct(self):
+        header = self.build_exam_header(
+            "Math for AI & Data Science · Optimization",
+            "Gradient Descent x_{t+1} = x_t - eta L'(x_t)",
+        )
+        self.add(header)
+
+        axes = Axes(
+            x_range=(-3.2, 3.2, 1.0),
+            y_range=(-0.5, 8.5, 2.0),
+            width=8.5,
+            height=5.2,
+            axis_config={"stroke_color": self.theme.muted, "stroke_width": 2},
+        ).shift(DOWN * 0.4 + LEFT * 1.2)
+        loss = lambda x: 0.75 * x**2 + 0.3 * np.sin(2.5 * x) + 0.6
+        curve = axes.get_graph(loss, color=self.theme.indigo).set_stroke(width=4)
+        self.play(ShowCreation(axes), ShowCreation(curve), run_time=2.0)
+        self.wait(1.0)

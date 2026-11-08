@@ -211,6 +211,30 @@ def render_mp4_headless(
                 _draw_linalg_frame(
                     draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
                 )
+            elif preset_id == "qudrat":
+                _draw_qudrat_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
+            elif preset_id == "taylor":
+                _draw_taylor_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
+            elif preset_id == "normal":
+                _draw_normal_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
+            elif preset_id == "circle_thm":
+                _draw_circle_thm_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
+            elif preset_id == "complex":
+                _draw_complex_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
+            elif preset_id == "grad_descent":
+                _draw_grad_descent_frame(
+                    draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small
+                )
             else:
                 _draw_derivative_frame(
                     draw, palette, pad_x, pad_top, plot_w, plot_h, progress, fn_id, params, font_formula, font_small
@@ -245,6 +269,12 @@ def _default_title(preset_id: str) -> str:
         "square": "Completing the Square — Geometric Proof",
         "unitcircle": "Unit Circle & Exact Trigonometric Ratios",
         "linalg": "Linear Transformation & Invariant Eigenvectors",
+        "qudrat": "Quantitative Comparison: 2^x vs. x^2 + 2",
+        "taylor": "Taylor & Maclaurin Polynomial Approximation",
+        "normal": "Normal Distribution & Empirical Z-Score Area",
+        "circle_thm": "Inscribed Angle Theorem: ∠AOB = 2∠APB",
+        "complex": "De Moivre's Theorem & Roots of Unity",
+        "grad_descent": "Gradient Descent Optimization Trajectory",
     }.get(preset_id, "ClipSAT 3c1c Mathematical Animation")
 
 
@@ -481,3 +511,152 @@ def _draw_qudrat_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, 
         fill=palette["ink"],
         font=font_small,
     )
+
+
+def _draw_taylor_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small):
+    x_min, x_max, y_min, y_max = -6.5, 6.5, -2.2, 2.2
+    to_px = _make_mapper(pad_x, pad_top, plot_w, plot_h, x_min, x_max, y_min, y_max)
+    _draw_axes(draw, palette, to_px, x_min, x_max, y_min, y_max)
+
+    xs = np.linspace(x_min, x_max, 180)
+    pts_sin = [to_px(float(x), math.sin(float(x))) for x in xs]
+    draw.line(pts_sin, fill=palette["indigo"], width=4)
+
+    max_deg = int(params.get("degree", 5))
+    odds = [d for d in (1, 3, 5, 7, 9) if d <= max_deg] or [1]
+    idx = min(len(odds) - 1, int(_smoothstep(progress) * len(odds)))
+    deg = odds[idx]
+
+    def taylor_sin(x: float, n: int) -> float:
+        s = 0.0
+        for k in range((n + 1) // 2):
+            p = 2 * k + 1
+            s += ((-1.0) ** k) * (x**p) / math.factorial(p)
+        return max(-2.2, min(2.2, s))
+
+    pts_poly = [to_px(float(x), taylor_sin(float(x), deg)) for x in xs]
+    draw.line(pts_poly, fill=palette["amber"], width=3)
+    draw.text(
+        (pad_x + int(plot_w * 0.58), pad_top + 24),
+        f"Maclaurin Degree n = {deg}",
+        fill=palette["amber"],
+        font=font_formula,
+    )
+
+
+def _draw_normal_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small):
+    x_min, x_max, y_min, y_max = -3.6, 3.6, -0.04, 0.45
+    to_px = _make_mapper(pad_x, pad_top, plot_w, plot_h, x_min, x_max, y_min, y_max)
+    _draw_axes(draw, palette, to_px, x_min, x_max, y_min, y_max)
+
+    def pdf(z: float) -> float:
+        return math.exp(-0.5 * z * z) / math.sqrt(2.0 * math.pi)
+
+    z_target = float(params.get("zCutoff", 1.96))
+    z0 = 0.2 + (z_target - 0.2) * _smoothstep(progress)
+
+    zs_fill = np.linspace(-z0, z0, 90)
+    poly = [to_px(-z0, 0.0)] + [to_px(float(z), pdf(float(z))) for z in zs_fill] + [to_px(z0, 0.0)]
+    draw.polygon(poly, fill=(*palette["amber"], 110), outline=palette["amber"])
+
+    xs = np.linspace(x_min, x_max, 180)
+    pts = [to_px(float(x), pdf(float(x))) for x in xs]
+    draw.line(pts, fill=palette["indigo"], width=4)
+
+    prob = math.erf(z0 / math.sqrt(2.0)) * 100.0
+    draw.text(
+        (pad_x + int(plot_w * 0.56), pad_top + 24),
+        f"z₀ = ±{z0:.2f}  |  Area = {prob:.2f}%",
+        fill=palette["amber"],
+        font=font_formula,
+    )
+
+
+def _draw_circle_thm_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small):
+    cx = pad_x + int(plot_w * 0.36)
+    cy = pad_top + int(plot_h * 0.52)
+    r = int(min(plot_w, plot_h) * 0.36)
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline=palette["indigo"], width=3)
+
+    central_deg = float(params.get("centralDeg", 110.0))
+    p_deg = float(params.get("pAngleDeg", 95.0)) + 28.0 * math.sin(progress * math.pi * 2.0)
+
+    half_rad = math.radians(central_deg / 2.0)
+    ang_a = -math.pi / 2.0 - half_rad
+    ang_b = -math.pi / 2.0 + half_rad
+    ang_p = math.radians(p_deg)
+
+    pa = (cx + r * math.cos(ang_a), cy - r * math.sin(ang_a))
+    pb = (cx + r * math.cos(ang_b), cy - r * math.sin(ang_b))
+    pp = (cx + r * math.cos(ang_p), cy - r * math.sin(ang_p))
+
+    draw.line([pa, (cx, cy), pb], fill=palette["amber"], width=3)
+    draw.line([pa, pp, pb], fill=palette["teal"], width=4)
+    draw.text(
+        (pad_x + int(plot_w * 0.58), pad_top + int(plot_h * 0.32)),
+        f"∠AOB = {central_deg:.1f}°   ∠APB = {central_deg/2.0:.1f}°",
+        fill=palette["ink"],
+        font=font_formula,
+    )
+
+
+def _draw_complex_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small):
+    cx = pad_x + int(plot_w * 0.36)
+    cy = pad_top + int(plot_h * 0.52)
+    r = int(min(plot_w, plot_h) * 0.36)
+    draw.line((cx - int(r * 1.25), cy, cx + int(r * 1.25), cy), fill=palette["axis"], width=2)
+    draw.line((cx, cy - int(r * 1.25), cx, cy + int(r * 1.25)), fill=palette["axis"], width=2)
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline=palette["indigo"], width=3)
+
+    n = max(3, min(8, int(params.get("rootsN", 5))))
+    phase = math.radians(float(params.get("phaseDeg", 18.0)) + 36.0 * _smoothstep(progress))
+    pts = [
+        (cx + r * math.cos((phase + 2.0 * math.pi * k) / n), cy - r * math.sin((phase + 2.0 * math.pi * k) / n))
+        for k in range(n)
+    ]
+    draw.polygon(pts, fill=(*palette["amber"], 75), outline=palette["amber"])
+    for pt in pts:
+        draw.line([(cx, cy), pt], fill=palette["teal"], width=2)
+        draw.ellipse((pt[0] - 5, pt[1] - 5, pt[0] + 5, pt[1] + 5), fill=palette["amber"])
+
+    draw.text(
+        (pad_x + int(plot_w * 0.60), pad_top + int(plot_h * 0.32)),
+        f"De Moivre n = {n} Roots (∑ zₖ = 0)",
+        fill=palette["ink"],
+        font=font_formula,
+    )
+
+
+def _draw_grad_descent_frame(draw, palette, pad_x, pad_top, plot_w, plot_h, progress, params, font_formula, font_small):
+    x_min, x_max, y_min, y_max = -3.2, 3.2, -0.4, 8.2
+    to_px = _make_mapper(pad_x, pad_top, plot_w, plot_h, x_min, x_max, y_min, y_max)
+    _draw_axes(draw, palette, to_px, x_min, x_max, y_min, y_max)
+
+    def loss_fn(x: float) -> float:
+        return 0.75 * x * x + 0.3 * math.sin(2.5 * x) + 0.6
+
+    def grad_fn(x: float) -> float:
+        return 1.5 * x + 0.75 * math.cos(2.5 * x)
+
+    xs = np.linspace(x_min, x_max, 180)
+    pts = [to_px(float(x), loss_fn(float(x))) for x in xs]
+    draw.line(pts, fill=palette["indigo"], width=4)
+
+    curr_x = float(params.get("xStart", -2.4))
+    lr = float(params.get("lr", 0.28))
+    steps = max(1, int(round(8 * _smoothstep(progress))))
+    for _ in range(steps):
+        nxt_x = curr_x - lr * grad_fn(curr_x)
+        p0 = to_px(curr_x, loss_fn(curr_x))
+        p1 = to_px(nxt_x, loss_fn(nxt_x))
+        draw.line([p0, p1], fill=palette["amber"], width=3)
+        draw.ellipse((p1[0] - 5, p1[1] - 5, p1[0] + 5, p1[1] + 5), fill=palette["teal"])
+        curr_x = nxt_x
+
+    draw.text(
+        (pad_x + int(plot_w * 0.56), pad_top + 24),
+        f"Step {steps}: x = {curr_x:+.3f}, L(x) = {loss_fn(curr_x):.3f}",
+        fill=palette["teal"],
+        font=font_formula,
+    )
+

@@ -18,12 +18,18 @@
    - **ClipSAT Color Tokens**: `CLIPSAT_INDIGO` (`#132746` / `#7DA4E8` for primary curves & derivatives), `CLIPSAT_AMBER` (`#9E6515` / `#F59E0B` for integrals, Riemann partitions & secants), `CLIPSAT_TEAL` (`#0C7A6F` / `#2DD4BF` for exact convergence & basis vectors), and `COLORMAP_CLIPSAT`.
    - **Multi-Format Aspect Presets**: `16:9` Lesson (`1920×1080`), `9:16` Vertical Short (`--short`, `1080×1920`), and `1:1` Exam Card (`--square`, `1080×1080`).
    - **`ClipSATScene` Base Class ([`manimlib/clipsat.py`](manimlib/clipsat.py))**: Built-in `build_exam_header(track, title)`, `build_clipsat_watermark()`, and `highlight_callout(mobject)`.
-3. **Curated Curriculum Scenes ([`clipsat_scenes.py`](clipsat_scenes.py))**:
+3. **Curated Curriculum Scenes ([`clipsat_scenes.py`](clipsat_scenes.py) — 11 Scenes)**:
    - `DerivativeTangentScene` — Secant line converging to the Indigo derivative tangent $f'(a)$.
    - `RiemannIntegralScene` — Amber Riemann partition converging to $\int_a^b f(x)\,dx = F(b)-F(a)$.
    - `CompletingTheSquareScene` — Geometric area decomposition of $x^2 + bx + (b/2)^2 = (x + b/2)^2$.
    - `UnitCircleExactTrigScene` — Rotating terminal ray $P(\cos\theta, \sin\theta)$ and $\cos^2\theta + \sin^2\theta = 1$.
    - `EigenLinearTransformScene` — $2\times 2$ linear transformation $A\vec{v} = \lambda\vec{v}$ and determinant scaling.
+   - `QudratComparisonScene` — Quantitative Comparison of Column A ($2^x$) vs Column B ($x^2 + 2$).
+   - `TaylorSeriesScene` — Maclaurin partial sums $T_n(x)$ progressively converging to $\sin(x)$.
+   - `NormalZScoreScene` — Standard normal Gaussian density $\varphi(z)$ and empirical Z-score probability.
+   - `InscribedAngleScene` — Circle theorem: central angle $\angle AOB = 2\angle APB$ arc invariance.
+   - `DeMoivreRootsScene` — Symmetric $n$-th complex roots of unity on the Argand plane.
+   - `GradientDescentScene` — Iterative optimization $x_{t+1} = x_t - \eta \nabla L(x_t)$ on a loss landscape.
 
 ---
 
