@@ -239,24 +239,24 @@ export const SCENES_3D_PRESETS = [
     }
   ),
   s3d(
-    'gaussian_bell_3d',
-    '3D Bivariate Normal Density & Mahalanobis Ellipse',
-    'MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF',
-    'f(x,y)',
-    'BivariateNormal3DScene',
-    'gaussian_bell_3d',
-    '3D Gaussian bell surface with correlation ρ and 1σ elliptical covariance contour on the floor.',
-    'Drag to orbit the 3D Gaussian bell and adjust correlation ρ',
-    { rho: 0.45, sigmaRatio: 1.1 },
+    'hopf_fibration_3d',
+    '3D Hopf Fibration S³ → S² Linked Villarceau Circles',
+    'DIFFERENTIAL TOPOLOGY · HOPF BUNDLE S¹ → S³ → S²',
+    'S³→S²',
+    'HopfFibrationS3Scene',
+    'hopf_fibration_3d',
+    'Stereographic projection of the Hopf fibration S³ → S² into ℝ³ forming nested Clifford tori of linked Villarceau circles.',
+    'Drag to orbit the 3D Hopf fibration or adjust latitude η and fiber count',
+    { etaLat: 0.85, nFibers: 10 },
     [
-      { id: 'ctrl-rho', key: 'rho', label: 'Correlation Coefficient ρ', min: -0.8, max: 0.8, step: 0.05 },
-      { id: 'ctrl-sratio', key: 'sigmaRatio', label: 'Spread Ratio σ_x / σ_y', min: 0.6, max: 1.6, step: 0.05 },
+      { id: 'ctrl-etalat', key: 'etaLat', label: 'Clifford Torus Latitude η', min: 0.35, max: 1.25, step: 0.05 },
+      { id: 'ctrl-nfibers', key: 'nFibers', label: 'Linked Fiber Circles M', min: 4, max: 16, step: 1 },
     ],
     {
-      badge: 'JOINT PROBABILITY DENSITY · COVARIANCE MATRIX',
-      heading: 'Bivariate Normal Distribution',
-      latex: 'f(\\vec{x}) = \\frac{1}{2\\pi|\\Sigma|^{1/2}}\\exp\\!\\left(-\\tfrac{1}{2}\\vec{x}^T\\Sigma^{-1}\\vec{x}\\right), \\quad \\iint_{\\mathbb{R}^2} f\\,dx\\,dy = 1',
-      prose: 'Non-zero correlation ρ tilts the principal axes of the constant-density Mahalanobis ellipses along x = ±y.',
+      badge: 'ALGEBRAIC TOPOLOGY · HOPF INVARIANT 1',
+      heading: 'Stereographic Projection of the Hopf Fibration',
+      latex: '\\pi : S^3 \\subset \\mathbb{C}^2 \\to S^2, \\quad (z_1, z_2) \\mapsto \\frac{z_1}{z_2}, \\quad \\operatorname{lk}(F_p, F_q) = 1',
+      prose: 'Every point on the base 2-sphere S² lifts to a great circle fiber in S³; stereographic projection maps any two distinct fibers to linked circles in ℝ³.',
     }
   ),
   s3d(
@@ -281,7 +281,7 @@ export const SCENES_3D_PRESETS = [
     }
   ),
 
-  // ── 111–120: Multivariable Differential Calculus ──
+  // ── 111–120: Multivariable Differential Calculus & Riemannian Geometry ──
   s3d(
     'tangent_plane_3d',
     '3D Tangent Plane & Surface Normal Vector',
@@ -346,24 +346,24 @@ export const SCENES_3D_PRESETS = [
     }
   ),
   s3d(
-    'gradient_ascent_3d',
-    '3D Gradient Ascent & Orthogonal Contour Path',
-    'OPTIMIZATION & CALCULUS III · STEEPEST ASCENT',
-    'x+η∇f',
-    'GradientAscent3DScene',
-    'gradient_ascent_3d',
-    '3D trajectory climbing a mountain peak z = f(x,y) while its floor shadow crosses every contour line at 90°.',
-    'Drag to rotate the 3D peak or move starting angle and step size η',
-    { startDeg: 215, lr: 0.25 },
+    'geodesic_sphere_3d',
+    '3D Spherical Triangle & Girard Geodesic Excess',
+    'RIEMANNIAN GEOMETRY · GAUSS-BONNET ON S²',
+    'α+β+γ−π',
+    'SphericalGeodesicTriangleScene',
+    'geodesic_sphere_3d',
+    'Three great-circle geodesics on a sphere of radius R forming a spherical triangle with angle sum α + β + γ > π.',
+    'Drag to orbit the 3D sphere or widen the longitudinal wedge angle Δλ',
+    { wedgeDeg: 90, sphereR: 1.35 },
     [
-      { id: 'ctrl-sdeg', key: 'startDeg', label: 'Start Azimuth on Slope (°)', min: 0, max: 360, step: 5 },
-      { id: 'ctrl-lr', key: 'lr', label: 'Step Rate η', min: 0.08, max: 0.45, step: 0.02 },
+      { id: 'ctrl-wdeg', key: 'wedgeDeg', label: 'Equatorial Longitude Span Δλ (°)', min: 30, max: 150, step: 5 },
+      { id: 'ctrl-sphr', key: 'sphereR', label: 'Sphere Radius R', min: 0.85, max: 1.65, step: 0.05 },
     ],
     {
-      badge: 'ORTHOGONAL TRAJECTORY · STEEPEST CLIMB',
-      heading: 'Gradient Orthogonality to Level Curves',
-      latex: '\\frac{d\\vec{x}}{dt} = \\nabla f(\\vec{x}) \\perp \\{\\vec{x} : f(\\vec{x}) = c\\}',
-      prose: 'Because the directional derivative along a level curve is zero, ∇f is perpendicular to every contour line.',
+      badge: 'THEOREM · GIRARD SPHERICAL EXCESS & GAUSS-BONNET',
+      heading: 'Great-Circle Geodesics & Positive Curvature Excess',
+      latex: '\\operatorname{Area}(\\Delta_{S^2}) = R^2(\\alpha + \\beta + \\gamma - \\pi) = \\iint_{\\Delta} K\\,dA',
+      prose: 'On a sphere of Gaussian curvature K = 1/R², the interior angles of a geodesic triangle exceed 180° by ΔE = Area/R².',
     }
   ),
   s3d(
@@ -381,7 +381,7 @@ export const SCENES_3D_PRESETS = [
       { id: 'ctrl-fyy', key: 'fyy', label: 'Curvature f_yy', min: -1.6, max: 1.6, step: 0.1 },
     ],
     {
-      badge: 'THEOREM · SECOND PARTIALS DISCRIMINANT',
+      badge: 'THEOREM · SECOND PARTIALS DISCRIMANT',
       heading: 'Hessian Determinant Classification',
       latex: 'D = f_{xx}f_{yy} - f_{xy}^2 = \\det(H_f)',
       prose: 'At a critical point ∇f = 0: D > 0, f_xx > 0 is a local minimum; D > 0, f_xx < 0 is a local maximum; D < 0 is a saddle.',
@@ -409,45 +409,45 @@ export const SCENES_3D_PRESETS = [
     }
   ),
   s3d(
-    'taylor_2d_surface_3d',
-    '3D Quadratic Taylor Paraboloid Approximation',
-    'MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES',
-    'T₂(x,y)',
-    'Taylor2DSurface3DScene',
-    'taylor_2d_surface_3d',
-    'Comparing cos(x)cos(y) in 3D against its osculating quadratic Taylor paraboloid T₂(x,y) = 1 − ½(x²+y²).',
-    'Drag to orbit in 3D and compare the true surface with its quadratic Taylor dome',
-    { freq: 1.15, probeR: 0.9 },
+    'enneper_minimal_3d',
+    '3D Enneper Self-Intersecting Minimal Surface',
+    'WEIERSTRASS-ENNEPER REPRESENTATION · H = 0',
+    'H = 0',
+    'EnneperMinimalSurfaceScene',
+    'enneper_minimal_3d',
+    'Polynomial minimal surface X(u,v) = (u − u³/3 + uv², v − v³/3 + u²v, u² − v²) with zero mean curvature everywhere.',
+    'Drag to orbit the 3D Enneper minimal surface or expand radial domain R',
+    { radBound: 1.25, orderK: 1.0 },
     [
-      { id: 'ctrl-freq', key: 'freq', label: 'Surface Spatial Frequency k', min: 0.7, max: 1.6, step: 0.05 },
-      { id: 'ctrl-prober', key: 'probeR', label: 'Comparison Radius r', min: 0.3, max: 1.4, step: 0.05 },
+      { id: 'ctrl-radb', key: 'radBound', label: 'Domain Radius R_max', min: 0.7, max: 1.55, step: 0.05 },
+      { id: 'ctrl-ordk', key: 'orderK', label: 'Flaring Amplitude Scale', min: 0.6, max: 1.4, step: 0.05 },
     ],
     {
-      badge: 'SECOND-ORDER MULTIVARIABLE TAYLOR POLYNOMIAL',
-      heading: 'Osculating Quadratic Paraboloid',
-      latex: 'T_2(\\vec{x}) = f(\\vec{a}) + \\nabla f(\\vec{a})^T(\\vec{x}-\\vec{a}) + \\tfrac{1}{2}(\\vec{x}-\\vec{a})^T H_f(\\vec{a})(\\vec{x}-\\vec{a})',
-      prose: 'The quadratic Taylor surface matches the value, tangent plane, and all directional curvatures of f(x,y) at the expansion point.',
+      badge: 'WEIERSTRASS-ENNEPER PARAMETERIZATION · H = 0',
+      heading: 'Enneper Minimal Surface & Principal Curvatures',
+      latex: '\\vec{X}(u,v) = \\left(u - \\tfrac{u^3}{3} + uv^2,\\; v - \\tfrac{v^3}{3} + u^2v,\\; u^2 - v^2\\right), \\quad \\kappa_1 + \\kappa_2 = 0',
+      prose: 'Generated by Weierstrass data f(z) = 1, g(z) = z, Enneper’s surface has equal and opposite principal curvatures at every point.',
     }
   ),
   s3d(
-    'envelope_planes_3d',
-    '3D Tangent Plane Family Envelope',
-    'DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES',
-    '∂F/∂u=0',
-    'EnvelopePlanes3DScene',
-    'envelope_planes_3d',
-    'A 1-parameter family of tangent planes wrapping around a 3D paraboloid envelope along characteristic rulings.',
-    'Drag to orbit in 3D or sweep the tangent plane parameter θ',
-    { sweepDeg: 60, radius: 1.1 },
+    'oloid_developable_3d',
+    '3D Developable Oloid Convex Hull & Ruled Generators',
+    'CONVEX & KINEMATIC 3D GEOMETRY · PAUL SCHATZ OLOID',
+    'Oloid',
+    'OloidDevelopableHullScene',
+    'oloid_developable_3d',
+    'Convex hull of two linked perpendicular circles in 3D space forming a developable ruled surface that rolls over its entire area.',
+    'Drag to orbit the 3D Oloid and inspect its perpendicular generating circles and rulings',
+    { circleR: 1.15, rulCount: 18 },
     [
-      { id: 'ctrl-sdeg', key: 'sweepDeg', label: 'Active Tangent Plane Angle (°)', min: 0, max: 360, step: 5 },
-      { id: 'ctrl-rad', key: 'radius', label: 'Contact Circle Radius r', min: 0.5, max: 1.4, step: 0.05 },
+      { id: 'ctrl-circr', key: 'circleR', label: 'Generating Circle Radius r', min: 0.75, max: 1.45, step: 0.05 },
+      { id: 'ctrl-rulc', key: 'rulCount', label: 'Tangent Ruling Struts N', min: 8, max: 28, step: 2 },
     ],
     {
-      badge: 'DUAL PROJECTIVE GEOMETRY · ENVELOPE SURFACE',
-      heading: 'Surface as Envelope of its Tangent Planes',
-      latex: 'F(x,y,z,u) = 0, \\qquad \\frac{\\partial F}{\\partial u}(x,y,z,u) = 0',
-      prose: 'A smooth convex surface is uniquely determined as the envelope of its family of supporting tangent planes.',
+      badge: 'DEVELOPABLE CONVEX HULL · ZERO GAUSSIAN CURVATURE',
+      heading: 'The Oloid: Developable Hull of Two Perpendicular Circles',
+      latex: 'A_{\\text{oloid}} = 4\\pi r^2 = A_{\\text{sphere}}(r), \\qquad K \\equiv 0',
+      prose: 'Discovered by Paul Schatz in 1929, the oloid has the exact same surface area 4πr² as a sphere of the same radius and flattens onto a plane without stretching.',
     }
   ),
   s3d(
@@ -581,24 +581,24 @@ export const SCENES_3D_PRESETS = [
     }
   ),
   s3d(
-    'washer_shell_3d',
-    '3D Solid of Revolution — Washers & Cylindrical Shells',
-    'AP CALCULUS BC · 3D SOLIDS OF REVOLUTION',
-    'π(R²−r²)',
-    'WasherShell3DScene',
-    'washer_shell_3d',
-    'Full 3D revolved paraboloid goblet showing an animated 3D washer ring and nested cylindrical shell.',
-    'Drag to orbit the 3D solid of revolution or move sample slice x₀',
-    { xSlice: 0.95, sweepFrac: 0.85 },
+    'steinmetz_bicylinder_3d',
+    "3D Archimedes' Bicylinder (Steinmetz Solid V = 16r³/3)",
+    'ARCHIMEDEAN SOLID GEOMETRY · INTERSECTING CYLINDERS',
+    '16r³/3',
+    'SteinmetzBicylinderScene',
+    'steinmetz_bicylinder_3d',
+    'Intersection of two orthogonal cylinders x²+z² ≤ r² and y²+z² ≤ r² whose horizontal cross-sections at height z are squares!',
+    'Drag to orbit the 3D Steinmetz bicylinder or slide horizontal square cross-section z₀',
+    { cylR: 1.25, zSlice: 0.55 },
     [
-      { id: 'ctrl-xslice', key: 'xSlice', label: 'Sample Washer Position x₀', min: 0.25, max: 1.45, step: 0.05 },
-      { id: 'ctrl-sweep', key: 'sweepFrac', label: 'Revolution Sweep Fraction', min: 0.35, max: 1.0, step: 0.05 },
+      { id: 'ctrl-cylr', key: 'cylR', label: 'Cylinder Radius r', min: 0.75, max: 1.5, step: 0.05 },
+      { id: 'ctrl-zslice', key: 'zSlice', label: 'Square Cross-Section Height z₀', min: -1.1, max: 1.1, step: 0.05 },
     ],
     {
-      badge: 'WASHER VS. SHELL METHOD IN 3D',
-      heading: 'Volume by Cross-Sectional Washers & Shells',
-      latex: 'V = \\int_a^b \\pi\\!\\left(R(x)^2 - r(x)^2\\right)dx = \\int_c^d 2\\pi y\\,h(y)\\,dy',
-      prose: 'Slicing perpendicular to the axis yields annular washers of area π(R²−r²), while slicing parallel yields cylindrical shells.',
+      badge: 'THEOREM · ARCHIMEDES & ZU CHONGZHI BICYLINDER',
+      heading: 'Steinmetz Solid Volume & Square Cross-Sections',
+      latex: 'A(z) = 4(r^2 - z^2), \\qquad V = \\int_{-r}^{r} 4(r^2 - z^2)\\,dz = \\frac{16}{3}r^3',
+      prose: 'Every horizontal slice of two perpendicular cylinders of radius r is a square of side 2√(r²−z²), giving volume 16r³/3 without π!',
     }
   ),
   s3d(
@@ -1752,62 +1752,56 @@ export function attach3DRenderers(EngineClass) {
         sincZ(r).toFixed(4),
       ]);
     }
-    // ── 109: Bivariate Normal 3D Bell ──
-    else if (sub === 'gaussian_bell_3d') {
-      const rho = Number(params.rho ?? 0.45);
-      const sr = Number(params.sigmaRatio ?? 1.1);
-      const pdf = (x, y) => {
-        const u = x / sr;
-        const v = y;
-        const q = (u * u - 2 * rho * u * v + v * v) / (2 * (1 - rho * rho));
-        return 1.55 * Math.exp(-q) - 0.5;
-      };
-      this.draw3DSurfaceQuads(
-        ctx,
-        pal,
-        project,
-        scale,
-        (x, y) => ({ x, y, z: pdf(x, y) }),
-        -1.45,
-        1.45,
-        -1.45,
-        1.45,
-        18,
-        18
-      );
-      // 1-sigma Mahalanobis ellipse on floor
-      this.draw3DCurve(
-        ctx,
-        project,
-        scale,
-        (t) => {
-          const u = Math.cos(t);
-          const v = rho * Math.cos(t) + Math.sqrt(1 - rho * rho) * Math.sin(t);
-          return { x: sr * u, y: v, z: zFloor };
-        },
-        0,
-        Math.PI * 2,
-        80,
-        pal.amber,
-        3.5
-      );
+    // ── 109: 3D Hopf Fibration S³ → S² (Linked Villarceau Circles) ──
+    else if (sub === 'hopf_fibration_3d') {
+      const eta = Number(params.torusEta ?? 0.65);
+      const nFibers = Math.max(4, Math.min(20, Math.round(Number(params.nFibers ?? 10))));
+      const denom0 = Math.sin(eta);
+      const Rmaj = 1 / Math.max(0.25, denom0);
+      const rMin = Math.cos(eta) / Math.max(0.25, denom0);
+      const scaleH = 0.55;
+
+      for (let k = 0; k < nFibers; k++) {
+        const phi0 = (k / nFibers) * Math.PI * 2;
+        const col = k % 3 === 0 ? pal.amber : k % 3 === 1 ? pal.teal : pal.indigo;
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (t) => {
+            const denom = 1 - Math.cos(eta) * Math.sin(t);
+            const s = scaleH / Math.max(0.25, denom);
+            return {
+              x: s * (Math.cos(eta) * Math.cos(t) * Math.cos(phi0) - Math.sin(eta) * Math.sin(t - phi0)),
+              y: s * (Math.cos(eta) * Math.cos(t) * Math.sin(phi0) + Math.sin(eta) * Math.cos(t - phi0)),
+              z: s * Math.sin(eta) * Math.sin(t + phi0),
+            };
+          },
+          0,
+          Math.PI * 2 * Math.max(0.35, prog),
+          90,
+          col,
+          3.2
+        );
+      }
+
       lines = [
-        { text: '3D BIVARIATE NORMAL DENSITY & COVARIANCE', color: pal.amber },
-        { text: `Correlation ρ = ${rho.toFixed(2)}  ·  Spread σ_x/σ_y = ${sr.toFixed(2)}`, color: pal.ink },
-        { text: `Covariance det |Σ| = σ_x²σ_y²(1 − ρ²) = ${(sr * sr * (1 - rho * rho)).toFixed(3)}`, color: pal.teal },
-        { text: `Amber Floor Contour: 1σ Mahalanobis Ellipse`, color: pal.indigo },
+        { text: '3D HOPF FIBRATION (S³ → S² LINKED CIRCLES)', color: pal.amber },
+        { text: `Clifford Torus Latitude η = ${eta.toFixed(2)} rad  ·  Fibers N = ${nFibers}`, color: pal.ink },
+        { text: `Stereographic Torus Radii: R = ${Rmaj.toFixed(2)}, r = ${rMin.toFixed(2)}`, color: pal.teal },
+        { text: `Hopf Invariant H = 1: Every Pair of S¹ Fibers Links Once`, color: pal.indigo },
       ];
       readouts = [
-        { key: 'Correlation ρ', val: rho.toFixed(2) },
-        { key: 'det(Σ)', val: (sr * sr * (1 - rho * rho)).toFixed(3) },
-        { key: 'Peak Density', val: (1 / (2 * Math.PI * sr * Math.sqrt(1 - rho * rho))).toFixed(3) },
-        { key: 'Total Volume', val: '1.0000' },
+        { key: 'Clifford Angle η', val: `${eta.toFixed(2)} rad` },
+        { key: 'Hopf Fibers N', val: String(nFibers) },
+        { key: 'Linking Number', val: 'lk(C₁, C₂) = 1' },
+        { key: 'Ratio R / r', val: (Rmaj / Math.max(0.05, rMin)).toFixed(2) },
       ];
-      tableRows = [-0.6, -0.3, 0.0, 0.3, 0.6].map((r) => [
-        `ρ = ${r.toFixed(1)}`,
-        `det(Σ) = ${(sr * sr * (1 - r * r)).toFixed(3)}`,
-        (1 / (2 * Math.PI * sr * Math.sqrt(1 - r * r))).toFixed(4),
-        '∬ f(x,y)dxdy = 1',
+      tableRows = [0.35, 0.55, 0.75, 0.95, 1.15].map((e) => [
+        `η = ${e.toFixed(2)}`,
+        `R = ${(1 / Math.sin(e)).toFixed(2)}`,
+        `r = ${(Math.cos(e) / Math.sin(e)).toFixed(2)}`,
+        'Linked S¹ Villarceau',
       ]);
     }
     // ── 110: Helicoid to Catenoid Minimal Surface Morph ──
@@ -1852,12 +1846,96 @@ export function attach3DRenderers(EngineClass) {
         `K(0) = ${(-1 / (c * c)).toFixed(3)}`,
       ]);
     }
-    // ── 111–115: Tangent Plane, Partials, Directional Derivative, Gradient Ascent, Hessian ──
+    // ── 114: 3D Spherical Geodesic Triangle & Girard's Excess ──
+    else if (sub === 'geodesic_sphere_3d') {
+      const R = Number(params.sphereR ?? 1.15);
+      const spanDeg = Number(params.octantAngle ?? 90);
+      const spanRad = (spanDeg * Math.PI) / 180;
+      this.draw3DSurfaceQuads(
+        ctx,
+        pal,
+        project,
+        scale,
+        (u, v) => ({
+          x: R * Math.sin(u) * Math.cos(v),
+          y: R * Math.sin(u) * Math.sin(v),
+          z: R * Math.cos(u),
+        }),
+        0,
+        Math.PI,
+        0,
+        Math.PI * 2,
+        12,
+        20
+      );
+      // Draw 3 great-circle arcs forming a right spherical triangle with apex angle = spanRad
+      // Arc 1: Meridian phi = 0 from North Pole (0,0,R) to Equator (R,0,0)
+      this.draw3DCurve(
+        ctx,
+        project,
+        scale,
+        (u) => ({ x: R * Math.sin(u), y: 0, z: R * Math.cos(u) }),
+        0,
+        Math.PI / 2,
+        50,
+        pal.amber,
+        4.2
+      );
+      // Arc 2: Meridian phi = spanRad from North Pole to Equator
+      this.draw3DCurve(
+        ctx,
+        project,
+        scale,
+        (u) => ({ x: R * Math.sin(u) * Math.cos(spanRad), y: R * Math.sin(u) * Math.sin(spanRad), z: R * Math.cos(u) }),
+        0,
+        Math.PI / 2,
+        50,
+        pal.amber,
+        4.2
+      );
+      // Arc 3: Equatorial great circle u = pi/2 from phi = 0 to phi = spanRad
+      this.draw3DCurve(
+        ctx,
+        project,
+        scale,
+        (ph) => ({ x: R * Math.cos(ph), y: R * Math.sin(ph), z: 0 }),
+        0,
+        spanRad,
+        50,
+        pal.teal,
+        4.2
+      );
+      const pN = project(0, 0, R);
+      const pA = project(R, 0, 0);
+      const pB = project(R * Math.cos(spanRad), R * Math.sin(spanRad), 0);
+      this.drawDot(ctx, pN.x, pN.y, 7.5 * scale, pal.amber, pal.bg);
+      this.drawDot(ctx, pA.x, pA.y, 7.5 * scale, pal.teal, pal.bg);
+      this.drawDot(ctx, pB.x, pB.y, 7.5 * scale, pal.teal, pal.bg);
+
+      const angleSumDeg = 180 + spanDeg;
+      const areaTri = R * R * spanRad;
+      lines = [
+        { text: "3D SPHERICAL GEODESIC TRIANGLE & GIRARD'S THEOREM", color: pal.amber },
+        { text: `Interior Angles: 90° + 90° + ${Math.round(spanDeg)}° = ${Math.round(angleSumDeg)}° > 180°`, color: pal.ink },
+        { text: `Spherical Excess E = α + β + γ − π = ${spanRad.toFixed(3)} rad (${Math.round(spanDeg)}°)`, color: pal.teal },
+        { text: `Geodesic Triangle Area = R² · E = ${areaTri.toFixed(3)}`, color: pal.indigo },
+      ];
+      readouts = [
+        { key: 'Angle Sum', val: `${Math.round(angleSumDeg)}°` },
+        { key: 'Excess E', val: `${Math.round(spanDeg)}° (${spanRad.toFixed(2)} rad)` },
+        { key: 'Sphere Radius R', val: R.toFixed(2) },
+        { key: 'Area R²·E', val: areaTri.toFixed(3) },
+      ];
+      tableRows = [45, 60, 90, 120, 135].map((deg) => {
+        const rad = (deg * Math.PI) / 180;
+        return [`γ = ${deg}°`, `Sum = ${180 + deg}°`, `E = ${rad.toFixed(3)} rad`, `Area = ${(R * R * rad).toFixed(3)}`];
+      });
+    }
+    // ── 111–113 & 115: Tangent Plane, Partials, Directional Derivative, Hessian ──
     else if (
       sub === 'tangent_plane_3d' ||
       sub === 'partial_derivatives_3d' ||
       sub === 'directional_derivative_3d' ||
-      sub === 'gradient_ascent_3d' ||
       sub === 'hessian_classification_3d'
     ) {
       const fxx = Number(params.fxx ?? -0.75);
@@ -1891,7 +1969,6 @@ export function attach3DRenderers(EngineClass) {
       const pPt = project(x0, y0, z0);
 
       if (sub === 'tangent_plane_3d') {
-        // Draw local tangent patch & normal vector
         this.draw3DSurfaceQuads(
           ctx,
           pal,
@@ -1926,7 +2003,6 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Normal ‖n‖', val: Math.hypot(fx, fy, 1).toFixed(3) },
         ];
       } else if (sub === 'partial_derivatives_3d') {
-        // Draw slicing curves y = y0 (Amber) and x = x0 (Teal) + tangent arrows
         this.draw3DCurve(ctx, project, scale, (x) => ({ x, y: y0, z: surfZ(x, y0) }), -1.35, 1.35, 60, pal.amber, 4.0);
         this.draw3DCurve(ctx, project, scale, (y) => ({ x: x0, y, z: surfZ(x0, y) }), -1.35, 1.35, 60, pal.teal, 4.0);
         const pxTan = project(x0 + 0.55, y0, z0 + fx * 0.55);
@@ -1951,6 +2027,18 @@ export function attach3DRenderers(EngineClass) {
         const ux = Math.cos(dirRad);
         const uy = Math.sin(dirRad);
         const duf = fx * ux + fy * uy;
+        // Draw vertical slicing ribbon along direction u
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (s) => ({ x: x0 + s * ux, y: y0 + s * uy, z: surfZ(x0 + s * ux, y0 + s * uy) }),
+          -0.9,
+          0.9,
+          50,
+          pal.teal,
+          3.6
+        );
         const pDir = project(x0 + 0.65 * ux, y0 + 0.65 * uy, z0 + 0.65 * duf);
         this.drawArrow(ctx, pPt.x, pPt.y, pDir.x, pDir.y, pal.amber, 3.5 * scale);
         this.drawDot(ctx, pPt.x, pPt.y, 7.5 * scale, pal.teal, pal.bg);
@@ -1965,35 +2053,6 @@ export function attach3DRenderers(EngineClass) {
           { key: 'D_u f', val: duf.toFixed(3) },
           { key: 'Max ‖∇f‖', val: Math.hypot(fx, fy).toFixed(3) },
           { key: 'Min −‖∇f‖', val: (-Math.hypot(fx, fy)).toFixed(3) },
-        ];
-      } else if (sub === 'gradient_ascent_3d') {
-        const sRad = (Number(params.startDeg ?? 215) * Math.PI) / 180;
-        const lr = Number(params.lr ?? 0.25);
-        let cx = 1.25 * Math.cos(sRad);
-        let cy = 1.25 * Math.sin(sRad);
-        for (let k = 0; k < 8; k++) {
-          const nx = cx * (1 - lr * 1.04);
-          const ny = cy * (1 - lr * 1.04);
-          const p0 = project(cx, cy, surfZ(cx, cy));
-          const p1 = project(nx, ny, surfZ(nx, ny));
-          this.drawArrow(ctx, p0.x, p0.y, p1.x, p1.y, pal.amber, 2.8 * scale);
-          const f0 = project(cx, cy, zFloor);
-          const f1 = project(nx, ny, zFloor);
-          this.drawArrow(ctx, f0.x, f0.y, f1.x, f1.y, pal.teal, 2.2 * scale);
-          cx = nx;
-          cy = ny;
-        }
-        lines = [
-          { text: '3D GRADIENT ASCENT & ORTHOGONAL CONTOURS', color: pal.amber },
-          { text: `Update Rule: x_{t+1} = x_t + η ∇f(x_t)  (η = ${lr.toFixed(2)})`, color: pal.ink },
-          { text: `Floor Trajectory Crosses Contours at 90°`, color: pal.teal },
-          { text: `Converges to Summit (0, 0, 1.05)`, color: pal.indigo },
-        ];
-        readouts = [
-          { key: 'Step Rate η', val: lr.toFixed(2) },
-          { key: 'Start Angle', val: `${Math.round(Number(params.startDeg ?? 215))}°` },
-          { key: 'Final Altitude', val: surfZ(cx, cy).toFixed(3) },
-          { key: 'Contour Angle', val: '90.0° (⊥)' },
         ];
       } else {
         const detH = fxx * fyy;
@@ -2018,16 +2077,10 @@ export function attach3DRenderers(EngineClass) {
         `z = ${surfZ(u, u).toFixed(3)}`,
       ]);
     }
-    // ── 116–120: Lagrange 3D, Taylor 2D, Envelope, Implicit Level, Chain Rule Path ──
-    else if (
-      sub === 'lagrange_3d' ||
-      sub === 'taylor_2d_surface_3d' ||
-      sub === 'envelope_planes_3d' ||
-      sub === 'implicit_surface_level_3d' ||
-      sub === 'chain_rule_path_3d'
-    ) {
-      const rVal = Number(params.cylR ?? params.probeR ?? params.radius ?? params.levelC ?? 1.05);
-      const tilt = Number(params.tilt ?? params.freq ?? params.aniso ?? 0.75);
+    // ── 116: 3D Lagrange Multipliers on Cylinder ──
+    else if (sub === 'lagrange_3d') {
+      const rVal = Number(params.cylR ?? 1.05);
+      const tilt = Number(params.tilt ?? 0.75);
       this.draw3DSurfaceQuads(
         ctx,
         pal,
@@ -2041,6 +2094,8 @@ export function attach3DRenderers(EngineClass) {
         15,
         15
       );
+      // Draw constraint cylinder ring on floor and lifted curve on surface
+      this.draw3DCurve(ctx, project, scale, (t) => ({ x: rVal * Math.cos(t), y: rVal * Math.sin(t), z: zFloor }), 0, Math.PI * 2, 70, pal.teal, 2.8, true);
       this.draw3DCurve(
         ctx,
         project,
@@ -2059,16 +2114,18 @@ export function attach3DRenderers(EngineClass) {
       const zMax = 0.45 * rVal * rVal + 0.45 * tilt * rVal;
       const zMin = -0.45 * rVal * rVal - 0.45 * tilt * rVal;
       const pMax = project(rVal, 0, zMax);
+      const pGrad = project(rVal + 0.45, 0, zMax);
+      this.drawArrow(ctx, pMax.x, pMax.y, pGrad.x, pGrad.y, pal.teal, 3.2 * scale);
       this.drawDot(ctx, pMax.x, pMax.y, 8 * scale, pal.amber, pal.bg);
       lines = [
-        { text: preset.name.toUpperCase(), color: pal.amber },
-        { text: `Characteristic Radius / Level = ${rVal.toFixed(2)}`, color: pal.ink },
-        { text: `Maximum on 3D Curve z_max = +${zMax.toFixed(3)}`, color: pal.teal },
-        { text: `Gradient Alignment: ∇f = λ ∇g at Extrema`, color: pal.indigo },
+        { text: '3D LAGRANGE MULTIPLIERS (∇f = λ ∇g)', color: pal.amber },
+        { text: `Constraint Cylinder x² + y² = R² (R = ${rVal.toFixed(2)})`, color: pal.ink },
+        { text: `Constrained Maximum z_max = +${zMax.toFixed(3)}`, color: pal.teal },
+        { text: `Parallel Gradients: ∇f = λ⟨2x, 2y⟩ at Extrema`, color: pal.indigo },
       ];
       readouts = [
-        { key: 'Radius / Level', val: rVal.toFixed(2) },
-        { key: 'Scale / Tilt', val: tilt.toFixed(2) },
+        { key: 'Cylinder R', val: rVal.toFixed(2) },
+        { key: 'Linear Tilt', val: tilt.toFixed(2) },
         { key: 'Peak z_max', val: zMax.toFixed(3) },
         { key: 'Min z_min', val: zMin.toFixed(3) },
       ];
@@ -2078,6 +2135,239 @@ export function attach3DRenderers(EngineClass) {
         const y = rVal * Math.sin(rad);
         const z = 0.45 * (x * x - y * y) + 0.45 * tilt * x;
         return [`θ = ${deg}°`, x.toFixed(3), y.toFixed(3), z.toFixed(3)];
+      });
+    }
+    // ── 117: 3D Enneper Self-Intersecting Minimal Surface ──
+    else if (sub === 'enneper_minimal_3d') {
+      const rMax = Number(params.orderR ?? 1.15);
+      const scaleE = 0.42;
+      this.draw3DSurfaceQuads(
+        ctx,
+        pal,
+        project,
+        scale,
+        (r, th) => {
+          const u = r * Math.cos(th);
+          const v = r * Math.sin(th);
+          return {
+            x: scaleE * (u - (u * u * u) / 3 + u * v * v),
+            y: scaleE * (v - (v * v * v) / 3 + u * u * v),
+            z: scaleE * (u * u - v * v),
+          };
+        },
+        0,
+        rMax,
+        0,
+        Math.PI * 2,
+        12,
+        28
+      );
+      this.draw3DCurve(
+        ctx,
+        project,
+        scale,
+        (th) => {
+          const u = rMax * Math.cos(th);
+          const v = rMax * Math.sin(th);
+          return {
+            x: scaleE * (u - (u * u * u) / 3 + u * v * v),
+            y: scaleE * (v - (v * v * v) / 3 + u * u * v),
+            z: scaleE * (u * u - v * v),
+          };
+        },
+        0,
+        Math.PI * 2,
+        100,
+        pal.amber,
+        3.8
+      );
+      const kGauss = -4 / Math.pow(1 + rMax * rMax, 4);
+      lines = [
+        { text: '3D ENNEPER SELF-INTERSECTING MINIMAL SURFACE', color: pal.amber },
+        { text: `Weierstrass Pair (f, g) = (1, z)  ·  Radius R = ${rMax.toFixed(2)}`, color: pal.ink },
+        { text: `Mean Curvature H = ½(κ₁ + κ₂) = 0.000 Everywhere`, color: pal.teal },
+        { text: `Rim Gaussian Curvature K(R) = −4/(1+R²)⁴ = ${kGauss.toFixed(4)}`, color: pal.indigo },
+      ];
+      readouts = [
+        { key: 'Domain Radius R', val: rMax.toFixed(2) },
+        { key: 'Mean Curvature H', val: '0.000 (Minimal)' },
+        { key: 'Rim K(R)', val: kGauss.toFixed(4) },
+        { key: 'Self-Intersects?', val: rMax > 1.0 ? 'Yes (R > 1)' : 'No (Embedded)' },
+      ];
+      tableRows = [0.4, 0.7, 1.0, 1.2, 1.4].map((r) => [
+        `r = ${r.toFixed(1)}`,
+        'H = 0.000',
+        `K = ${(-4 / Math.pow(1 + r * r, 4)).toFixed(4)}`,
+        r > 1.0 ? 'Self-Intersecting' : 'Embedded Minimal',
+      ]);
+    }
+    // ── 118: 3D Oloid Developable Convex Hull ──
+    else if (sub === 'oloid_developable_3d') {
+      const R = Number(params.radius ?? 1.0);
+      const nRulings = Math.max(8, Math.min(40, Math.round(Number(params.nPlanes ?? 20))));
+      // Circle A in XY plane centered at (-R/2, 0, 0)
+      const circA = (t) => ({ x: -0.35 * R + R * Math.cos(t), y: R * Math.sin(t), z: 0 });
+      // Circle B in XZ plane centered at (+R/2, 0, 0)
+      const circB = (s) => ({ x: 0.35 * R - R * Math.cos(s), y: 0, z: R * Math.sin(s) });
+
+      this.draw3DCurve(ctx, project, scale, circA, 0, Math.PI * 2, 80, pal.amber, 4.0);
+      this.draw3DCurve(ctx, project, scale, circB, 0, Math.PI * 2, 80, pal.teal, 4.0);
+
+      // Draw developable ruling lines connecting the two perpendicular circles
+      ctx.save();
+      ctx.lineWidth = 2.0 * scale;
+      for (let k = 0; k < nRulings; k++) {
+        const t = (k / nRulings) * Math.PI * 2;
+        const cosS = Math.cos(t) / (1 + Math.abs(Math.cos(t)) * 0.5);
+        const s1 = Math.acos(Math.max(-1, Math.min(1, cosS)));
+        for (const sign of [-1, 1]) {
+          const pA = circA(t);
+          const pB = circB(sign * s1);
+          const projA = project(pA.x, pA.y, pA.z);
+          const projB = project(pB.x, pB.y, pB.z);
+          ctx.strokeStyle = sign > 0 ? pal.indigo : pal.teal;
+          ctx.beginPath();
+          ctx.moveTo(projA.x, projA.y);
+          ctx.lineTo(projB.x, projB.y);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+
+      const surfArea = 4 * Math.PI * R * R;
+      lines = [
+        { text: '3D DEVELOPABLE OLOID CONVEX HULL', color: pal.amber },
+        { text: `Two Linked Perpendicular Circles (Radius R = ${R.toFixed(2)})`, color: pal.ink },
+        { text: `Exact Surface Area S = 4πR² = ${surfArea.toFixed(3)} (Matches Sphere!)`, color: pal.teal },
+        { text: `Gaussian Curvature K = 0  ·  Flattens Onto Plane Without Tear`, color: pal.indigo },
+      ];
+      readouts = [
+        { key: 'Circle Radius R', val: R.toFixed(2) },
+        { key: 'Ruling Struts N', val: String(nRulings * 2) },
+        { key: 'Surface 4πR²', val: surfArea.toFixed(3) },
+        { key: 'Gaussian K', val: '0.000 (Developable)' },
+      ];
+      tableRows = [0.6, 0.8, 1.0, 1.2, 1.4].map((r) => [
+        `R = ${r.toFixed(1)}`,
+        `S = ${(4 * Math.PI * r * r).toFixed(3)}`,
+        `V ≈ ${(3.0524 * Math.pow(r, 3)).toFixed(3)}`,
+        'K = 0 (Ruled Hull)',
+      ]);
+    }
+    // ── 119: 3D Implicit Surface F(x,y,z)=c & Orthogonal Gradient Field ──
+    else if (sub === 'implicit_surface_level_3d') {
+      const cVal = Number(params.levelC ?? 1.15);
+      const aniso = Number(params.aniso ?? 1.2);
+      const rx = Math.sqrt(cVal);
+      const rz = Math.sqrt(cVal / Math.max(0.25, aniso));
+      this.draw3DSurfaceQuads(
+        ctx,
+        pal,
+        project,
+        scale,
+        (u, v) => ({
+          x: rx * Math.sin(u) * Math.cos(v),
+          y: rx * Math.sin(u) * Math.sin(v),
+          z: rz * Math.cos(u),
+        }),
+        0,
+        Math.PI,
+        0,
+        Math.PI * 2,
+        12,
+        20
+      );
+      // Draw outward gradient vectors ∇F = ⟨2x, 2y, 2a·z⟩ orthogonal to surface
+      for (let k = 0; k < 8; k++) {
+        const v = (k / 8) * Math.PI * 2;
+        const u = Math.PI * 0.38;
+        const x = rx * Math.sin(u) * Math.cos(v);
+        const y = rx * Math.sin(u) * Math.sin(v);
+        const z = rz * Math.cos(u);
+        const gx = x * 0.42;
+        const gy = y * 0.42;
+        const gz = aniso * z * 0.42;
+        const p0 = project(x, y, z);
+        const p1 = project(x + gx, y + gy, z + gz);
+        this.drawArrow(ctx, p0.x, p0.y, p1.x, p1.y, k % 2 === 0 ? pal.amber : pal.teal, 2.8 * scale);
+        this.drawDot(ctx, p0.x, p0.y, 5.5 * scale, pal.amber, pal.bg);
+      }
+      lines = [
+        { text: '3D IMPLICIT LEVEL SURFACE F(x,y,z) = c', color: pal.amber },
+        { text: `Level Set: x² + y² + ${aniso.toFixed(2)}z² = ${cVal.toFixed(2)}`, color: pal.ink },
+        { text: `3D Gradient ∇F = ⟨2x, 2y, ${(2 * aniso).toFixed(2)}z⟩ ⊥ Surface`, color: pal.teal },
+        { text: `Implicit Partial: ∂z/∂x = −F_x / F_z = −x / (${aniso.toFixed(2)}z)`, color: pal.indigo },
+      ];
+      readouts = [
+        { key: 'Level Constant c', val: cVal.toFixed(2) },
+        { key: 'Anisotropy a', val: aniso.toFixed(2) },
+        { key: 'Equatorial R', val: rx.toFixed(3) },
+        { key: 'Polar Z-Radius', val: rz.toFixed(3) },
+      ];
+      tableRows = [0.6, 0.9, 1.2, 1.5, 1.8].map((c) => [
+        `c = ${c.toFixed(1)}`,
+        `R_xy = ${Math.sqrt(c).toFixed(3)}`,
+        `R_z = ${Math.sqrt(c / aniso).toFixed(3)}`,
+        '∇F ⊥ Level Surface',
+      ]);
+    }
+    // ── 120: 3D Multivariable Chain Rule Along Space Path ──
+    else if (sub === 'chain_rule_path_3d') {
+      const freq = Math.max(1, Math.round(Number(params.freq ?? 2)));
+      const rad = Number(params.radius ?? 1.05);
+      const surfFn = (x, y) => 0.95 - 0.48 * (x * x + y * y);
+      this.draw3DSurfaceQuads(
+        ctx,
+        pal,
+        project,
+        scale,
+        (x, y) => ({ x, y, z: surfFn(x, y) }),
+        -1.3,
+        1.3,
+        -1.3,
+        1.3,
+        14,
+        14
+      );
+      const pathFn = (t) => {
+        const x = rad * Math.cos(t);
+        const y = rad * Math.sin(freq * t);
+        return { x, y, z: surfFn(x, y) };
+      };
+      // Floor curve (x(t), y(t)) and lifted surface curve
+      this.draw3DCurve(ctx, project, scale, (t) => ({ x: rad * Math.cos(t), y: rad * Math.sin(freq * t), z: zFloor }), 0, Math.PI * 2, 100, pal.teal, 2.8, true);
+      this.draw3DCurve(ctx, project, scale, pathFn, 0, Math.PI * 2, 120, pal.amber, 4.0);
+
+      const tNow = prog * Math.PI * 2;
+      const pt = pathFn(tNow);
+      const dx = -rad * Math.sin(tNow);
+      const dy = freq * rad * Math.cos(freq * tNow);
+      const fx = -0.96 * pt.x;
+      const fy = -0.96 * pt.y;
+      const dzdt = fx * dx + fy * dy;
+
+      const pSurf = project(pt.x, pt.y, pt.z);
+      const pFloor = project(pt.x, pt.y, zFloor);
+      const pTan = project(pt.x + dx * 0.25, pt.y + dy * 0.25, pt.z + dzdt * 0.25);
+      this.drawArrow(ctx, pSurf.x, pSurf.y, pTan.x, pTan.y, pal.amber, 3.4 * scale);
+      this.drawDot(ctx, pSurf.x, pSurf.y, 7.5 * scale, pal.amber, pal.bg);
+      this.drawDot(ctx, pFloor.x, pFloor.y, 6.5 * scale, pal.teal, pal.bg);
+
+      lines = [
+        { text: '3D MULTIVARIABLE CHAIN RULE (dz/dt = ∇f · r′(t))', color: pal.amber },
+        { text: `Lissajous Path: x(t) = R cos(t), y(t) = R sin(${freq}t)`, color: pal.ink },
+        { text: `∇f = ⟨${fx.toFixed(2)}, ${fy.toFixed(2)}⟩  ·  r′(t) = ⟨${dx.toFixed(2)}, ${dy.toFixed(2)}⟩`, color: pal.teal },
+        { text: `Total Rate dz/dt = f_x x′ + f_y y′ = ${dzdt.toFixed(3)}`, color: pal.indigo },
+      ];
+      readouts = [
+        { key: 'Path Freq ω', val: String(freq) },
+        { key: 'Amplitude R', val: rad.toFixed(2) },
+        { key: 'Altitude z(t)', val: pt.z.toFixed(3) },
+        { key: 'Rate dz/dt', val: dzdt.toFixed(3) },
+      ];
+      tableRows = [0, 1, 2, 3, 4, 5].map((t) => {
+        const p = pathFn(t);
+        return [`t = ${t.toFixed(1)}`, p.x.toFixed(3), p.y.toFixed(3), p.z.toFixed(3)];
       });
     }
     // ── 121: Double Integral 3D Riemann Columns ──
@@ -2116,7 +2406,6 @@ export function attach3DRenderers(EngineClass) {
           project(c.x0, c.y0 + c.dx, zFloor),
         ];
         ctx.save();
-        // Vertical walls
         ctx.fillStyle = pal.indigoFill;
         ctx.strokeStyle = pal.indigo;
         ctx.lineWidth = 1.2 * scale;
@@ -2131,7 +2420,6 @@ export function attach3DRenderers(EngineClass) {
           ctx.fill();
           ctx.stroke();
         }
-        // Top cap in Amber
         ctx.fillStyle = pal.amberFill;
         ctx.strokeStyle = pal.amber;
         ctx.beginPath();
@@ -2164,17 +2452,285 @@ export function attach3DRenderers(EngineClass) {
         `V ≈ ${exactVol.toFixed(3)}`,
       ]);
     }
-    // ── 122–128: Fubini, Cylindrical, Spherical, Washer/Shell, Pappus Torus, Cavalieri, Tetrahedron ──
+    // ── 122–128: Fubini, Cylindrical, Spherical, Steinmetz Bicylinder, Pappus Torus, Cavalieri, Tetrahedron ──
     else if (
       sub === 'fubini_iterated_slices_3d' ||
       sub === 'cylindrical_coords_3d' ||
       sub === 'spherical_coords_3d' ||
-      sub === 'washer_shell_3d' ||
+      sub === 'steinmetz_bicylinder_3d' ||
       sub === 'pappus_centroid_torus_3d' ||
       sub === 'cavalieri_3d_solids_3d' ||
       sub === 'triple_integral_tetrahedron_3d'
     ) {
-      if (sub === 'pappus_centroid_torus_3d') {
+      if (sub === 'fubini_iterated_slices_3d') {
+        const xSlice = Number(params.xSlice ?? 0.35);
+        const surfZ = (x, y) => Math.max(zFloor, 1.15 - 0.45 * (x * x + y * y));
+        this.draw3DSurfaceQuads(ctx, pal, project, scale, (x, y) => ({ x, y, z: surfZ(x, y) }), -1.25, 1.25, -1.25, 1.25, 14, 14);
+        // Draw vertical slice curtain at x = xSlice
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (y, s) => ({ x: xSlice, y, z: zFloor + s * (surfZ(xSlice, y) - zFloor) }),
+          -1.25,
+          1.25,
+          0,
+          1,
+          14,
+          4,
+          { fillColor: pal.amberFill, strokeColor: pal.amber, lineWidth: 1.8 }
+        );
+        const sliceArea = 2.5 * (1.15 - zFloor - 0.45 * xSlice * xSlice) - 0.45 * (2 * Math.pow(1.25, 3)) / 3;
+        lines = [
+          { text: "FUBINI'S THEOREM & 3D ITERATED SLICING", color: pal.amber },
+          { text: `Active Cross-Section Curtain at x = ${xSlice.toFixed(2)}`, color: pal.ink },
+          { text: `Slice Area A(x) = ∫ f(x, y) dy = ${sliceArea.toFixed(3)}`, color: pal.teal },
+          { text: `Volume V = ∫ A(x) dx = ∬_R f(x,y) dy dx`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Slice Position x₀', val: xSlice.toFixed(2) },
+          { key: 'Slice Area A(x₀)', val: sliceArea.toFixed(3) },
+          { key: 'Order of Integ.', val: '∫∫ f dy dx = ∫∫ f dx dy' },
+          { key: 'Fubini Identity', val: 'Verified' },
+        ];
+      } else if (sub === 'cylindrical_coords_3d') {
+        const rVal = Number(params.rVal ?? 1.15);
+        const thMax = (Number(params.thetaDeg ?? 240) * Math.PI) / 180;
+        const zVal = Number(params.zVal ?? 1.2);
+        // Cylindrical outer wall
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (th, z) => ({ x: rVal * Math.cos(th), y: rVal * Math.sin(th), z }),
+          0,
+          thMax,
+          zFloor,
+          zFloor + zVal,
+          18,
+          8
+        );
+        // Top sector cap
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (r, th) => ({ x: r * Math.cos(th), y: r * Math.sin(th), z: zFloor + zVal }),
+          0,
+          rVal,
+          0,
+          thMax,
+          6,
+          18,
+          { fillColor: pal.amberFill, strokeColor: pal.amber }
+        );
+        const vol = 0.5 * rVal * rVal * thMax * zVal;
+        lines = [
+          { text: '3D CYLINDRICAL COORDINATES (r, θ, z)', color: pal.amber },
+          { text: `Radius r = ${rVal.toFixed(2)}, Azimuth θ = ${Math.round((thMax * 180) / Math.PI)}°, Height z = ${zVal.toFixed(2)}`, color: pal.ink },
+          { text: `Volume Element dV = r dr dθ dz (Jacobian J = r = ${rVal.toFixed(2)})`, color: pal.teal },
+          { text: `Wedge Volume V = ½ r² θ z = ${vol.toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Radius r', val: rVal.toFixed(2) },
+          { key: 'Azimuth θ', val: `${Math.round((thMax * 180) / Math.PI)}°` },
+          { key: 'Jacobian ∂(x,y,z)', val: `r = ${rVal.toFixed(2)}` },
+          { key: 'Wedge Volume', val: vol.toFixed(3) },
+        ];
+      } else if (sub === 'spherical_coords_3d') {
+        const rho = Number(params.rhoVal ?? 1.25);
+        const phiMax = (Number(params.phiMaxDeg ?? 65) * Math.PI) / 180;
+        const thMax = (Number(params.thetaMaxDeg ?? 250) * Math.PI) / 180;
+        // Spherical cap surface
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (phi, th) => ({
+            x: rho * Math.sin(phi) * Math.cos(th),
+            y: rho * Math.sin(phi) * Math.sin(th),
+            z: rho * Math.cos(phi),
+          }),
+          0,
+          phiMax,
+          0,
+          thMax,
+          10,
+          18
+        );
+        // Polar cone wall at phi = phiMax
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (r, th) => ({
+            x: r * Math.sin(phiMax) * Math.cos(th),
+            y: r * Math.sin(phiMax) * Math.sin(th),
+            z: r * Math.cos(phiMax),
+          }),
+          0,
+          rho,
+          0,
+          thMax,
+          6,
+          16,
+          { fillColor: pal.amberFill, strokeColor: pal.amber }
+        );
+        const jac = rho * rho * Math.sin(phiMax);
+        const vol = (Math.pow(rho, 3) / 3) * (1 - Math.cos(phiMax)) * thMax;
+        lines = [
+          { text: '3D SPHERICAL COORDINATES (ρ, φ, θ) & JACOBIAN', color: pal.amber },
+          { text: `Radius ρ = ${rho.toFixed(2)}, Polar Cone φ = ${Math.round((phiMax * 180) / Math.PI)}°`, color: pal.ink },
+          { text: `Spherical Jacobian J = ρ² sin φ = ${jac.toFixed(3)}`, color: pal.teal },
+          { text: `Spherical Sector Volume V = ⅓ ρ³(1−cos φ)θ = ${vol.toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Radius ρ', val: rho.toFixed(2) },
+          { key: 'Polar Cone φ', val: `${Math.round((phiMax * 180) / Math.PI)}°` },
+          { key: 'Jacobian ρ²sinφ', val: jac.toFixed(3) },
+          { key: 'Sector Volume', val: vol.toFixed(3) },
+        ];
+      } else if (sub === 'steinmetz_bicylinder_3d') {
+        const r = Number(params.cylR ?? 1.15);
+        const z0 = Math.max(-r * 0.92, Math.min(r * 0.92, Number(params.sliceZ ?? 0.45)));
+        // Steinmetz solid surface: 4 cylindrical vault faces z = ±sqrt(r^2 - x^2) and z = ±sqrt(r^2 - y^2)
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (u, v) => {
+            const x = u * r;
+            const y = v * r;
+            const zTop = Math.sqrt(Math.max(0, r * r - Math.max(x * x, y * y)));
+            return { x, y, z: zTop };
+          },
+          -0.98,
+          0.98,
+          -0.98,
+          0.98,
+          14,
+          14
+        );
+        // Highlight horizontal SQUARE cross section at z = z0
+        const halfSide = Math.sqrt(Math.max(0.02, r * r - z0 * z0));
+        const sqPts = [
+          project(-halfSide, -halfSide, z0),
+          project(halfSide, -halfSide, z0),
+          project(halfSide, halfSide, z0),
+          project(-halfSide, halfSide, z0),
+        ];
+        ctx.save();
+        ctx.fillStyle = pal.amberFill;
+        ctx.strokeStyle = pal.amber;
+        ctx.lineWidth = 3.5 * scale;
+        ctx.beginPath();
+        ctx.moveTo(sqPts[0].x, sqPts[0].y);
+        ctx.lineTo(sqPts[1].x, sqPts[1].y);
+        ctx.lineTo(sqPts[2].x, sqPts[2].y);
+        ctx.lineTo(sqPts[3].x, sqPts[3].y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        const sqArea = 4 * (r * r - z0 * z0);
+        const vol = (16 / 3) * Math.pow(r, 3);
+        lines = [
+          { text: "ARCHIMEDES' BICYLINDER (STEINMETZ SOLID)", color: pal.amber },
+          { text: `Two Orthogonal Cylinders: x²+z² ≤ r²  ∩  y²+z² ≤ r² (r = ${r.toFixed(2)})`, color: pal.ink },
+          { text: `Square Slice at z = ${z0.toFixed(2)}: Side 2√(r²−z²) → Area = ${sqArea.toFixed(3)}`, color: pal.teal },
+          { text: `Exact Volume V = ∫ 4(r²−z²) dz = (16/3)r³ = ${vol.toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Cylinder Radius r', val: r.toFixed(2) },
+          { key: 'Slice Height z₀', val: z0.toFixed(2) },
+          { key: 'Square Area A(z₀)', val: sqArea.toFixed(3) },
+          { key: 'Volume (16/3)r³', val: vol.toFixed(3) },
+        ];
+      } else if (sub === 'cavalieri_3d_solids_3d') {
+        const R = Number(params.radiusR ?? 1.0);
+        const h = Math.max(0.05, Math.min(R * 0.95, Number(params.sliceZ ?? 0.55) * R));
+        // Left solid: Hemisphere centered at x = -0.85
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (u, v) => ({
+            x: -0.85 + 0.72 * R * Math.sin(u) * Math.cos(v),
+            y: 0.72 * R * Math.sin(u) * Math.sin(v),
+            z: zFloor + 0.72 * R * Math.cos(u),
+          }),
+          0,
+          Math.PI / 2,
+          0,
+          Math.PI * 2,
+          8,
+          16
+        );
+        // Right solid: Cylinder centered at x = +0.85
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (z, v) => ({
+            x: 0.85 + 0.72 * R * Math.cos(v),
+            y: 0.72 * R * Math.sin(v),
+            z: zFloor + 0.72 * z,
+          }),
+          0,
+          R,
+          0,
+          Math.PI * 2,
+          6,
+          16
+        );
+        // Highlight equal-area rings at z = zFloor + 0.72*h
+        const rDisc = Math.sqrt(Math.max(0.02, R * R - h * h));
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (v) => ({ x: -0.85 + 0.72 * rDisc * Math.cos(v), y: 0.72 * rDisc * Math.sin(v), z: zFloor + 0.72 * h }),
+          0,
+          Math.PI * 2,
+          60,
+          pal.amber,
+          3.8
+        );
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (v) => ({ x: 0.85 + 0.72 * h * Math.cos(v), y: 0.72 * h * Math.sin(v), z: zFloor + 0.72 * h }),
+          0,
+          Math.PI * 2,
+          60,
+          pal.amber,
+          3.8
+        );
+        const areaSlice = Math.PI * (R * R - h * h);
+        const volHemi = (2 / 3) * Math.PI * Math.pow(R, 3);
+        lines = [
+          { text: "CAVALIERI'S 3D PRINCIPLE (SPHERE VS PUNCTURED CYLINDER)", color: pal.amber },
+          { text: `Slice Height h = ${h.toFixed(2)}  ·  Sphere Radius R = ${R.toFixed(2)}`, color: pal.ink },
+          { text: `Disk Area π(R²−h²) = Annulus Area πR²−πh² = ${areaSlice.toFixed(3)}`, color: pal.teal },
+          { text: `Hemisphere Volume = Cylinder − Cone = ⅔πR³ = ${volHemi.toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Radius R', val: R.toFixed(2) },
+          { key: 'Slice Height h', val: h.toFixed(2) },
+          { key: 'Slice Area π(R²−h²)', val: areaSlice.toFixed(3) },
+          { key: 'Hemisphere ⅔πR³', val: volHemi.toFixed(3) },
+        ];
+      } else if (sub === 'pappus_centroid_torus_3d') {
         const R = Number(params.majorR ?? 1.15);
         const r = Number(params.minorR ?? 0.42);
         this.draw3DSurfaceQuads(
@@ -2209,7 +2765,7 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Volume 2π²Rr²', val: vol.toFixed(3) },
           { key: 'Surface 4π²Rr', val: area.toFixed(3) },
         ];
-      } else if (sub === 'triple_integral_tetrahedron_3d') {
+      } else {
         const a = Number(params.intA ?? 1.5);
         const b = Number(params.intB ?? 1.4);
         const c = Number(params.intC ?? 1.5);
@@ -2245,51 +2801,6 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Base Area ½ab', val: (0.5 * a * b).toFixed(3) },
           { key: 'Volume ⅙abc', val: vol.toFixed(3) },
           { key: 'Centroid (a/4..)', val: `${(a / 4).toFixed(2)},${(b / 4).toFixed(2)},${(c / 4).toFixed(2)}` },
-        ];
-      } else {
-        const r = Number(params.rVal ?? params.rhoVal ?? params.xSlice ?? params.radiusR ?? 1.15);
-        this.draw3DSurfaceQuads(
-          ctx,
-          pal,
-          project,
-          scale,
-          (u, v) => ({
-            x: r * Math.sin(u) * Math.cos(v),
-            y: r * Math.sin(u) * Math.sin(v),
-            z: r * Math.cos(u),
-          }),
-          0,
-          Math.PI * 0.75,
-          0,
-          Math.PI * 2 * Math.max(0.35, Number(params.sweepFrac ?? 1)),
-          12,
-          22
-        );
-        const hSlice = Number(params.zVal ?? params.sliceZ ?? 0.55);
-        const rRing = Math.sqrt(Math.max(0.05, r * r - hSlice * hSlice));
-        this.draw3DCurve(
-          ctx,
-          project,
-          scale,
-          (th) => ({ x: rRing * Math.cos(th), y: rRing * Math.sin(th), z: hSlice }),
-          0,
-          Math.PI * 2,
-          80,
-          pal.amber,
-          4.0
-        );
-        const vol = (4 / 3) * Math.PI * Math.pow(r, 3);
-        lines = [
-          { text: preset.name.toUpperCase(), color: pal.amber },
-          { text: `Characteristic Radius R = ${r.toFixed(2)}  ·  Slice z = ${hSlice.toFixed(2)}`, color: pal.ink },
-          { text: `Cross-Section Ring Radius r(z) = ${rRing.toFixed(3)}`, color: pal.teal },
-          { text: `3D Volume Integral V = ${vol.toFixed(3)}`, color: pal.indigo },
-        ];
-        readouts = [
-          { key: 'Radius R', val: r.toFixed(2) },
-          { key: 'Slice Height z', val: hSlice.toFixed(2) },
-          { key: 'Slice Area πr²', val: (Math.PI * rRing * rRing).toFixed(3) },
-          { key: 'Total Volume', val: vol.toFixed(3) },
         ];
       }
       tableRows = [0.2, 0.4, 0.6, 0.8, 1.0].map((f) => [
@@ -2349,47 +2860,219 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Strip Width 2w', val: (2 * w).toFixed(2) },
           { key: 'Euler χ', val: '0' },
         ];
-      } else {
-        const R = Number(params.helixR ?? params.radiusA ?? params.majorR ?? 1.05);
-        const c = Number(params.pitchC ?? params.driftVz ?? params.minorR ?? 0.35);
+      } else if (sub === 'viviani_curve_3d') {
+        const a = Number(params.radiusA ?? 0.62);
+        const R = 2 * a;
+        // Translucent offset cylinder (x - a)^2 + y^2 = a^2
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (th, z) => ({ x: a + a * Math.cos(th), y: a * Math.sin(th), z }),
+          0,
+          Math.PI * 2,
+          -R,
+          R,
+          18,
+          8
+        );
+        // Viviani temple window curve r(t) = (a(1+cos t), a sin t, 2a sin(t/2))
+        const vivFn = (t) => ({
+          x: a * (1 + Math.cos(t)),
+          y: a * Math.sin(t),
+          z: 2 * a * Math.sin(t / 2),
+        });
+        this.draw3DCurve(ctx, project, scale, vivFn, -Math.PI * 2, Math.PI * 2, 160, pal.amber, 4.2);
+        const pt = vivFn(prog * Math.PI * 2);
+        const p0 = project(pt.x, pt.y, pt.z);
+        this.drawDot(ctx, p0.x, p0.y, 8 * scale, pal.amber, pal.bg);
+        lines = [
+          { text: "VIVIANI'S 3D TEMPLE WINDOW INTERSECTION CURVE", color: pal.amber },
+          { text: `Sphere x²+y²+z² = ${(R * R).toFixed(2)}  ∩  Cylinder (x−a)²+y² = ${(a * a).toFixed(2)}`, color: pal.ink },
+          { text: `Parametric 3D Figure-Eight: z(t) = 2a sin(t/2)`, color: pal.teal },
+          { text: `Remaining Dome Surface Area = 4a² = ${(4 * a * a).toFixed(3)} (Squarable!)`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Cylinder Radius a', val: a.toFixed(2) },
+          { key: 'Sphere Radius 2a', val: R.toFixed(2) },
+          { key: 'Remaining Area 4a²', val: (4 * a * a).toFixed(3) },
+          { key: 'Self-Crossing', val: `(2a, 0, 0)` },
+        ];
+      } else if (sub === 'torus_villarceau_3d') {
+        const R = Number(params.majorR ?? 1.1);
+        const r = Number(params.minorR ?? 0.45);
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (u, v) => ({
+            x: (R + r * Math.cos(v)) * Math.cos(u),
+            y: (R + r * Math.cos(v)) * Math.sin(u),
+            z: r * Math.sin(v),
+          }),
+          0,
+          Math.PI * 2,
+          0,
+          Math.PI * 2,
+          22,
+          12
+        );
+        // Two linked Villarceau circles on the torus: v = ±u
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (u) => ({
+            x: (R + r * Math.cos(u)) * Math.cos(u),
+            y: (R + r * Math.cos(u)) * Math.sin(u),
+            z: r * Math.sin(u),
+          }),
+          0,
+          Math.PI * 2,
+          100,
+          pal.amber,
+          4.2
+        );
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (u) => ({
+            x: (R + r * Math.cos(u)) * Math.cos(u),
+            y: (R + r * Math.cos(u)) * Math.sin(u),
+            z: -r * Math.sin(u),
+          }),
+          0,
+          Math.PI * 2,
+          100,
+          pal.teal,
+          4.2
+        );
+        const tiltDeg = (Math.asin(Math.min(0.99, r / R)) * 180) / Math.PI;
+        lines = [
+          { text: '3D TORUS & VILLARCEAU BITANGENT CIRCLES', color: pal.amber },
+          { text: `Torus Radii: Major R = ${R.toFixed(2)}, Minor r = ${r.toFixed(2)}`, color: pal.ink },
+          { text: `Bitangent Plane Tilt Angle α = arcsin(r/R) = ${tiltDeg.toFixed(1)}°`, color: pal.teal },
+          { text: `4 Circles Through Every Point: 2 Standard + 2 Villarceau`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Major Radius R', val: R.toFixed(2) },
+          { key: 'Tube Radius r', val: r.toFixed(2) },
+          { key: 'Bitangent Tilt α', val: `${tiltDeg.toFixed(1)}°` },
+          { key: 'Villarceau Radius', val: R.toFixed(2) },
+        ];
+      } else if (sub === 'trefoil_knot_3d') {
         const p = Math.round(Number(params.windP ?? 2));
         const q = Math.round(Number(params.windQ ?? 3));
-
-        const curveFn = (t) => {
-          if (sub === 'viviani_curve_3d') {
-            return { x: R * (1 + Math.cos(t)), y: R * Math.sin(t), z: 2 * R * Math.sin(t / 2) - 0.6 };
-          }
-          if (sub === 'trefoil_knot_3d' || sub === 'torus_villarceau_3d') {
-            const rad = 1.05 + 0.42 * Math.cos(q * t);
-            return { x: rad * Math.cos(p * t), y: rad * Math.sin(p * t), z: 0.42 * Math.sin(q * t) };
-          }
-          return { x: R * Math.cos(t), y: R * Math.sin(t), z: c * (t - Math.PI) };
+        const knotFn = (t) => {
+          const rad = 1.05 + 0.42 * Math.cos(q * t);
+          return { x: rad * Math.cos(p * t), y: rad * Math.sin(p * t), z: 0.42 * Math.sin(q * t) };
         };
-
+        // Host torus meridian rings
+        for (let k = 0; k < 8; k++) {
+          const u0 = (k / 8) * Math.PI * 2;
+          this.draw3DCurve(
+            ctx,
+            project,
+            scale,
+            (v) => ({
+              x: (1.05 + 0.42 * Math.cos(v)) * Math.cos(u0),
+              y: (1.05 + 0.42 * Math.cos(v)) * Math.sin(u0),
+              z: 0.42 * Math.sin(v),
+            }),
+            0,
+            Math.PI * 2,
+            40,
+            pal.teal,
+            1.4,
+            true
+          );
+        }
+        this.draw3DCurve(ctx, project, scale, knotFn, 0, Math.PI * 2, 180, pal.amber, 4.4);
+        const pt = knotFn(prog * Math.PI * 2);
+        const p0 = project(pt.x, pt.y, pt.z);
+        this.drawDot(ctx, p0.x, p0.y, 8 * scale, pal.amber, pal.bg);
+        const genus = ((p - 1) * (q - 1)) / 2;
+        lines = [
+          { text: `3D (${p}, ${q}) TORUS KNOT & SEIFERT GENUS`, color: pal.amber },
+          { text: `Longitudinal Winding p = ${p}  ·  Meridional Winding q = ${q}`, color: pal.ink },
+          { text: `Crossing Number c(K) = min(p(q−1), q(p−1)) = ${Math.min(p * (q - 1), q * (p - 1))}`, color: pal.teal },
+          { text: `Seifert Surface Genus g = (p−1)(q−1)/2 = ${genus.toFixed(1)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Winding (p, q)', val: `(${p}, ${q})` },
+          { key: 'Crossing Number', val: String(Math.min(p * (q - 1), q * (p - 1))) },
+          { key: 'Seifert Genus g', val: genus.toFixed(1) },
+          { key: 'Chirality', val: 'Chiral (K ≠ −K)' },
+        ];
+      } else if (sub === 'magnetic_helix_3d') {
+        const B = Number(params.bField ?? 1.2);
+        const vz = Number(params.driftVz ?? 0.35);
+        const rL = 1.15 / Math.max(0.35, B);
+        // Vertical uniform B-field arrows
+        for (const [bx, by] of [
+          [-0.95, -0.95],
+          [0.95, -0.95],
+          [-0.95, 0.95],
+          [0.95, 0.95],
+        ]) {
+          const pBot = project(bx, by, -1.1);
+          const pTop = project(bx, by, 1.1);
+          this.drawArrow(ctx, pBot.x, pBot.y, pTop.x, pTop.y, pal.teal, 2.2 * scale);
+        }
+        const cycFn = (t) => ({ x: rL * Math.cos(t), y: rL * Math.sin(t), z: vz * (t - Math.PI) });
+        this.draw3DCurve(ctx, project, scale, cycFn, 0, Math.PI * 2, 150, pal.indigo, 4.0);
+        const tNow = prog * Math.PI * 2;
+        const pt = cycFn(tNow);
+        const p0 = project(pt.x, pt.y, pt.z);
+        const pCenter = project(0, 0, pt.z);
+        // Centripetal Lorentz force F = q(v × B) pointing radially inward
+        this.drawArrow(ctx, p0.x, p0.y, pCenter.x, pCenter.y, pal.amber, 3.4 * scale);
+        this.drawDot(ctx, p0.x, p0.y, 8 * scale, pal.amber, pal.bg);
+        lines = [
+          { text: '3D LORENTZ CYCLOTRON HELIX (F = q v × B)', color: pal.amber },
+          { text: `Magnetic Field B = ${B.toFixed(2)} ẑ  ·  Drift Velocity v_z = ${vz.toFixed(2)}`, color: pal.ink },
+          { text: `Larmor Gyroradius r_L = mv_⊥/(|q|B) = ${rL.toFixed(3)}`, color: pal.teal },
+          { text: `Magnetic Work dK/dt = v · (q v × B) = 0 (Speed Constant!)`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'B-Field Strength', val: B.toFixed(2) },
+          { key: 'Larmor Radius r_L', val: rL.toFixed(3) },
+          { key: 'Helical Pitch p', val: (2 * Math.PI * vz).toFixed(3) },
+          { key: 'Magnetic Work', val: '0.000 J (F ⊥ v)' },
+        ];
+      } else {
+        const R = Number(params.helixR ?? 1.05);
+        const c = Number(params.pitchC ?? 0.35);
+        const curveFn = (t) => ({ x: R * Math.cos(t), y: R * Math.sin(t), z: c * (t - Math.PI) });
         this.draw3DCurve(ctx, project, scale, curveFn, 0, Math.PI * 2, 160, pal.indigo, 4.2);
         const tNow = prog * Math.PI * 2;
         const pt = curveFn(tNow);
-        const ptNext = curveFn(tNow + 0.05);
         const p0 = project(pt.x, pt.y, pt.z);
-        const pT = project(pt.x + (ptNext.x - pt.x) * 10, pt.y + (ptNext.y - pt.y) * 10, pt.z + (ptNext.z - pt.z) * 10);
-        const pN = project(pt.x * 0.45, pt.y * 0.45, pt.z);
+        // Tangent T, Normal N (inward), Binormal B
+        const pT = project(pt.x - 0.55 * Math.sin(tNow), pt.y + 0.55 * Math.cos(tNow), pt.z + 0.55 * c);
+        const pN = project(pt.x * 0.35, pt.y * 0.35, pt.z);
+        const pB = project(pt.x + 0.35 * c * Math.sin(tNow), pt.y - 0.35 * c * Math.cos(tNow), pt.z + 0.55);
         this.drawArrow(ctx, p0.x, p0.y, pT.x, pT.y, pal.amber, 3.2 * scale);
         this.drawArrow(ctx, p0.x, p0.y, pN.x, pN.y, pal.teal, 3.0 * scale);
+        this.drawArrow(ctx, p0.x, p0.y, pB.x, pB.y, pal.indigoBright, 3.0 * scale);
         this.drawDot(ctx, p0.x, p0.y, 8 * scale, pal.amber, pal.bg);
 
         const kappa = R / (R * R + c * c);
         const tau = c / (R * R + c * c);
         lines = [
-          { text: preset.name.toUpperCase(), color: pal.amber },
+          { text: '3D FRENET-SERRET MOVING TRIAD (T, N, B)', color: pal.amber },
           { text: `Active Point r(t) = (${pt.x.toFixed(2)}, ${pt.y.toFixed(2)}, ${pt.z.toFixed(2)})`, color: pal.ink },
-          { text: `Curvature κ = ${kappa.toFixed(3)}  ·  Torsion τ = ${tau.toFixed(3)}`, color: pal.teal },
-          { text: `Orthonormal Frenet Triad: T (Amber) ⊥ N (Teal) ⊥ B`, color: pal.indigo },
+          { text: `Curvature κ = R/(R²+c²) = ${kappa.toFixed(3)}  ·  Torsion τ = c/(R²+c²) = ${tau.toFixed(3)}`, color: pal.teal },
+          { text: `Orthonormal Triad: T (Amber) ⊥ N (Teal) ⊥ B (Indigo)`, color: pal.indigo },
         ];
         readouts = [
           { key: 'Curvature κ', val: kappa.toFixed(3) },
           { key: 'Torsion τ', val: tau.toFixed(3) },
-          { key: 'Radius R', val: R.toFixed(2) },
-          { key: 'Pitch / Winding', val: sub === 'trefoil_knot_3d' ? `(${p},${q}) Knot` : c.toFixed(2) },
+          { key: 'Helix Radius R', val: R.toFixed(2) },
+          { key: 'Vertical Pitch c', val: c.toFixed(2) },
         ];
       }
       tableRows = [0, 1.2, 2.4, 3.6, 4.8, 6.0].map((t) => [
@@ -2447,9 +3130,24 @@ export function attach3DRenderers(EngineClass) {
           20
         );
         this.draw3DCurve(ctx, project, scale, (th) => ({ x: R * Math.cos(th), y: R * Math.sin(th), z: 0 }), 0, Math.PI * 2, 80, pal.amber, 4.2);
+      } else {
+        // For vector_field_3d_rot_div: draw a 3D streamline vortex spiral through the vector lattice
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (t) => {
+            const rad = 0.35 * Math.exp(0.14 * alpha * t);
+            return { x: rad * Math.cos(swirl * t * 2), y: rad * Math.sin(swirl * t * 2), z: -0.9 + 0.3 * t };
+          },
+          0,
+          6,
+          100,
+          pal.amber,
+          3.5
+        );
       }
 
-      // Draw 3D vector arrows
       for (let k = 0; k < 12; k++) {
         const th = (k / 12) * Math.PI * 2;
         for (const zLev of [-0.6, 0.0, 0.6]) {
@@ -2540,9 +3238,178 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Condition κ(A)', val: (s1 / s3).toFixed(2) },
           { key: '|det A| = σ₁σ₂σ₃', val: detA.toFixed(3) },
         ];
+      } else if (sub === 'scalar_triple_parallelepiped_3d') {
+        const hC = Number(params.heightC ?? 1.15);
+        const shear = Number(params.shearC ?? 0.45);
+        const a = { x: 1.25, y: 0, z: 0 };
+        const b = { x: 0.35, y: 1.15, z: 0 };
+        const c = { x: shear, y: 0.25, z: hC };
+        const v3 = (s1, s2, s3) =>
+          project(
+            -0.5 + s1 * a.x + s2 * b.x + s3 * c.x,
+            -0.5 + s1 * a.y + s2 * b.y + s3 * c.y,
+            zFloor + 0.3 + s1 * a.z + s2 * b.z + s3 * c.z
+          );
+        const p000 = v3(0, 0, 0);
+        const p100 = v3(1, 0, 0);
+        const p010 = v3(0, 1, 0);
+        const p110 = v3(1, 1, 0);
+        const p001 = v3(0, 0, 1);
+        const p101 = v3(1, 0, 1);
+        const p011 = v3(0, 1, 1);
+        const p111 = v3(1, 1, 1);
+
+        ctx.save();
+        // Bottom face and top face
+        for (const [fPts, fill, stroke] of [
+          [[p000, p100, p110, p010], pal.indigoFill, pal.indigo],
+          [[p001, p101, p111, p011], pal.amberFill, pal.amber],
+        ]) {
+          ctx.fillStyle = fill;
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = 2.2 * scale;
+          ctx.beginPath();
+          ctx.moveTo(fPts[0].x, fPts[0].y);
+          ctx.lineTo(fPts[1].x, fPts[1].y);
+          ctx.lineTo(fPts[2].x, fPts[2].y);
+          ctx.lineTo(fPts[3].x, fPts[3].y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // Vertical slanted struts
+        ctx.strokeStyle = pal.teal;
+        ctx.lineWidth = 2.2 * scale;
+        for (const [bot, top] of [
+          [p000, p001],
+          [p100, p101],
+          [p110, p111],
+          [p010, p011],
+        ]) {
+          ctx.beginPath();
+          ctx.moveTo(bot.x, bot.y);
+          ctx.lineTo(top.x, top.y);
+          ctx.stroke();
+        }
+        ctx.restore();
+        this.drawArrow(ctx, p000.x, p000.y, p100.x, p100.y, pal.indigoBright, 3.4 * scale);
+        this.drawArrow(ctx, p000.x, p000.y, p010.x, p010.y, pal.teal, 3.4 * scale);
+        this.drawArrow(ctx, p000.x, p000.y, p001.x, p001.y, pal.amber, 3.6 * scale);
+        const vol = a.x * b.y * hC;
+        lines = [
+          { text: 'SCALAR TRIPLE PRODUCT & 3D PARALLELEPIPED', color: pal.amber },
+          { text: `Base Area ‖a × b‖ = ${(a.x * b.y).toFixed(3)}  ·  Altitude h = ${hC.toFixed(2)}`, color: pal.ink },
+          { text: `det [a b c] = a · (b × c) = ${vol.toFixed(3)} (Shear Invariant!)`, color: pal.teal },
+          { text: `Horizontal Shear s = ${shear.toFixed(2)} Preserves 3D Volume`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Altitude c_z', val: hC.toFixed(2) },
+          { key: 'Shear Offset s', val: shear.toFixed(2) },
+          { key: 'Base Area ‖a×b‖', val: (a.x * b.y).toFixed(3) },
+          { key: 'Volume |a·(b×c)|', val: vol.toFixed(3) },
+        ];
+      } else if (sub === 'plane_normal_eq_3d') {
+        const nx = Number(params.nx ?? 0.7);
+        const ny = Number(params.ny ?? 0.6);
+        const d0 = Number(params.dVal ?? 0.5);
+        this.draw3DSurfaceQuads(
+          ctx,
+          pal,
+          project,
+          scale,
+          (x, y) => ({ x, y, z: d0 - nx * x - ny * y }),
+          -1.15,
+          1.15,
+          -1.15,
+          1.15,
+          8,
+          8,
+          { fillColor: pal.indigoFill, strokeColor: pal.indigo, lineWidth: 1.5 }
+        );
+        const pAnchor = project(0, 0, d0);
+        const pNorm = project(nx * 0.85, ny * 0.85, d0 + 0.85);
+        const pTangent = project(0.9, 0, d0 - nx * 0.9);
+        this.drawArrow(ctx, pAnchor.x, pAnchor.y, pNorm.x, pNorm.y, pal.amber, 3.8 * scale);
+        this.drawArrow(ctx, pAnchor.x, pAnchor.y, pTangent.x, pTangent.y, pal.teal, 3.2 * scale);
+        this.drawDot(ctx, pAnchor.x, pAnchor.y, 7.5 * scale, pal.amber, pal.bg);
+        const distOrig = Math.abs(d0) / Math.hypot(nx, ny, 1);
+        lines = [
+          { text: '3D PLANE EQUATION n · (r − r₀) = 0', color: pal.amber },
+          { text: `Plane: ${nx.toFixed(2)}x + ${ny.toFixed(2)}y + 1.00z = ${d0.toFixed(2)}`, color: pal.ink },
+          { text: `Normal Vector n = ⟨${nx.toFixed(2)}, ${ny.toFixed(2)}, 1.00⟩ ⊥ Plane`, color: pal.teal },
+          { text: `Origin Distance D = |d| / ‖n‖ = ${distOrig.toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Normal (n_x, n_y)', val: `${nx.toFixed(2)}, ${ny.toFixed(2)}` },
+          { key: 'Offset d', val: d0.toFixed(2) },
+          { key: 'Norm ‖n‖', val: Math.hypot(nx, ny, 1).toFixed(3) },
+          { key: 'Origin Dist D', val: distOrig.toFixed(3) },
+        ];
+      } else if (sub === 'skew_lines_distance_3d') {
+        const sepZ = Number(params.sepZ ?? 1.1);
+        const skewRad = (Number(params.skewDeg ?? 65) * Math.PI) / 180;
+        // Line 1 along X at z = -sepZ/2
+        this.draw3DCurve(ctx, project, scale, (s) => ({ x: s, y: 0, z: -0.5 * sepZ }), -1.35, 1.35, 40, pal.indigoBright, 4.0);
+        // Line 2 rotated by skewRad at z = +sepZ/2
+        this.draw3DCurve(
+          ctx,
+          project,
+          scale,
+          (t) => ({ x: t * Math.cos(skewRad), y: t * Math.sin(skewRad), z: 0.5 * sepZ }),
+          -1.35,
+          1.35,
+          40,
+          pal.teal,
+          4.0
+        );
+        // Common perpendicular bridge along Z from (0,0,-sepZ/2) to (0,0,+sepZ/2)
+        const p1 = project(0, 0, -0.5 * sepZ);
+        const p2 = project(0, 0, 0.5 * sepZ);
+        this.drawArrow(ctx, p1.x, p1.y, p2.x, p2.y, pal.amber, 3.8 * scale);
+        this.drawDot(ctx, p1.x, p1.y, 7.5 * scale, pal.indigoBright, pal.bg);
+        this.drawDot(ctx, p2.x, p2.y, 7.5 * scale, pal.teal, pal.bg);
+        lines = [
+          { text: '3D SKEW LINES & SHORTEST PERPENDICULAR BRIDGE', color: pal.amber },
+          { text: `Skew Angle θ = ${Math.round((skewRad * 180) / Math.PI)}°  ·  Bridge Axis n = u₁ × u₂`, color: pal.ink },
+          { text: `Shortest Distance D = |(P₂−P₁)·(u₁×u₂)| / ‖u₁×u₂‖ = ${sepZ.toFixed(3)}`, color: pal.teal },
+          { text: `Bridge Segment Orthogonal to Both L₁ and L₂`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Shortest Dist D', val: sepZ.toFixed(3) },
+          { key: 'Skew Angle θ', val: `${Math.round((skewRad * 180) / Math.PI)}°` },
+          { key: '‖u₁ × u₂‖', val: Math.sin(skewRad).toFixed(3) },
+          { key: 'Bridge Direction', val: 'u₁ × u₂ (⊥ Both)' },
+        ];
+      } else if (sub === 'rodrigues_rotation_3d') {
+        const rotRad = (Number(params.rotDeg ?? 110) * Math.PI) / 180;
+        const coneRad = (Number(params.coneDeg ?? 48) * Math.PI) / 180;
+        const rCone = 1.2 * Math.sin(coneRad);
+        const zCone = 1.2 * Math.cos(coneRad);
+        const o = project(0, 0, 0);
+        const pAxis = project(0, 0, 1.45);
+        // Swept cone circle at height zCone
+        this.draw3DCurve(ctx, project, scale, (t) => ({ x: rCone * Math.cos(t), y: rCone * Math.sin(t), z: zCone }), 0, Math.PI * 2, 70, pal.indigo, 2.4, true);
+        this.draw3DCurve(ctx, project, scale, (t) => ({ x: rCone * Math.cos(t), y: rCone * Math.sin(t), z: zCone }), 0, rotRad, 50, pal.amber, 4.2);
+        const pV0 = project(rCone, 0, zCone);
+        const pVrot = project(rCone * Math.cos(rotRad), rCone * Math.sin(rotRad), zCone);
+        this.drawArrow(ctx, o.x, o.y, pAxis.x, pAxis.y, pal.teal, 3.4 * scale);
+        this.drawArrow(ctx, o.x, o.y, pV0.x, pV0.y, pal.indigoBright, 3.2 * scale);
+        this.drawArrow(ctx, o.x, o.y, pVrot.x, pVrot.y, pal.amber, 3.8 * scale);
+        lines = [
+          { text: "RODRIGUES' 3D AXIS-ANGLE ROTATION FORMULA", color: pal.amber },
+          { text: `Rotation Angle θ = ${Math.round((rotRad * 180) / Math.PI)}°  ·  Cone Half-Angle = ${Math.round((coneRad * 180) / Math.PI)}°`, color: pal.ink },
+          { text: `v_rot = v cos θ + (k × v) sin θ + k(k · v)(1 − cos θ)`, color: pal.teal },
+          { text: `Trace tr(R(k,θ)) = 1 + 2 cos θ = ${(1 + 2 * Math.cos(rotRad)).toFixed(3)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Rotation Angle θ', val: `${Math.round((rotRad * 180) / Math.PI)}°` },
+          { key: 'Parallel (k·v)', val: zCone.toFixed(3) },
+          { key: 'Cone Radius r_⊥', val: rCone.toFixed(3) },
+          { key: 'tr(R) = 1+2cosθ', val: (1 + 2 * Math.cos(rotRad)).toFixed(3) },
+        ];
       } else {
-        const angRad = (Number(params.angleDeg ?? params.skewDeg ?? params.rotDeg ?? 65) * Math.PI) / 180;
-        const lenB = Number(params.lenB ?? params.heightC ?? params.sepZ ?? 1.25);
+        const angRad = (Number(params.angleDeg ?? 65) * Math.PI) / 180;
+        const lenB = Number(params.lenB ?? 1.25);
         const o = project(0, 0, 0);
         const ax = 1.3;
         const bx = lenB * Math.cos(angRad);
@@ -2553,7 +3420,6 @@ export function attach3DRenderers(EngineClass) {
         const pAB = project(ax + bx, by, 0);
         const pCross = project(0, 0, cz * 0.75);
 
-        // Spanned parallelogram in xy-plane
         ctx.save();
         ctx.fillStyle = pal.indigoFill;
         ctx.strokeStyle = pal.indigo;
@@ -2765,15 +3631,16 @@ export function attach3DRenderers(EngineClass) {
     }
     // ── 144 & 150: Stereographic Projection & Quantum Bloch Sphere ──
     else if (sub === 'stereographic_projection_3d' || sub === 'bloch_sphere_qubit_3d') {
+      const R = 1.05;
       this.draw3DSurfaceQuads(
         ctx,
         pal,
         project,
         scale,
         (u, v) => ({
-          x: 1.15 * Math.sin(u) * Math.cos(v),
-          y: 1.15 * Math.sin(u) * Math.sin(v),
-          z: 1.15 * Math.cos(u),
+          x: R * Math.sin(u) * Math.cos(v),
+          y: R * Math.sin(u) * Math.sin(v),
+          z: R * Math.cos(u),
         }),
         0,
         Math.PI,
@@ -2782,30 +3649,87 @@ export function attach3DRenderers(EngineClass) {
         12,
         20
       );
-      const th = (Number(params.thetaDeg ?? params.latDeg ?? 60) * Math.PI) / 180;
-      const ph = (Number(params.phiDeg ?? params.tiltDeg ?? 45) * Math.PI) / 180;
-      const sx = 1.15 * Math.sin(th) * Math.cos(ph);
-      const sy = 1.15 * Math.sin(th) * Math.sin(ph);
-      const sz = 1.15 * Math.cos(th);
-      const pO = project(0, 0, 0);
-      const pState = project(sx, sy, sz);
-      this.drawArrow(ctx, pO.x, pO.y, pState.x, pState.y, pal.amber, 3.8 * scale);
-      this.drawDot(ctx, pState.x, pState.y, 8 * scale, pal.amber, pal.bg);
 
-      const prob0 = Math.pow(Math.cos(th / 2), 2);
-      const prob1 = Math.pow(Math.sin(th / 2), 2);
-      lines = [
-        { text: preset.name.toUpperCase(), color: pal.amber },
-        { text: `Bloch / Sphere Vector r = (${(sx / 1.15).toFixed(2)}, ${(sy / 1.15).toFixed(2)}, ${(sz / 1.15).toFixed(2)})`, color: pal.ink },
-        { text: `P(|0⟩) = cos²(θ/2) = ${(prob0 * 100).toFixed(1)}%  ·  P(|1⟩) = ${(prob1 * 100).toFixed(1)}%`, color: pal.teal },
-        { text: `Pure State Norm ‖r‖² = x² + y² + z² = 1.000`, color: pal.indigo },
-      ];
-      readouts = [
-        { key: 'Polar θ', val: `${Math.round((th * 180) / Math.PI)}°` },
-        { key: 'Azimuth φ', val: `${Math.round((ph * 180) / Math.PI)}°` },
-        { key: 'Prob P(|0⟩)', val: `${(prob0 * 100).toFixed(1)}%` },
-        { key: 'Prob P(|1⟩)', val: `${(prob1 * 100).toFixed(1)}%` },
-      ];
+      if (sub === 'stereographic_projection_3d') {
+        const latRad = (Number(params.latDeg ?? 45) * Math.PI) / 180;
+        const tiltRad = (Number(params.tiltDeg ?? 20) * Math.PI) / 180;
+        const pNorth = project(0, 0, R);
+        this.drawDot(ctx, pNorth.x, pNorth.y, 7.5 * scale, pal.amber, pal.bg);
+
+        // Circle on the sphere and its stereographic image on zFloor
+        const sphCircle = (t) => {
+          const x0 = R * Math.sin(latRad) * Math.cos(t);
+          const y0 = R * Math.sin(latRad) * Math.sin(t);
+          const z0 = R * Math.cos(latRad);
+          return {
+            x: x0,
+            y: y0 * Math.cos(tiltRad) - z0 * Math.sin(tiltRad),
+            z: y0 * Math.sin(tiltRad) + z0 * Math.cos(tiltRad),
+          };
+        };
+        const planeCircle = (t) => {
+          const p = sphCircle(t);
+          const factor = (R - zFloor) / Math.max(0.25, R - p.z);
+          return { x: p.x * factor * 0.65, y: p.y * factor * 0.65, z: zFloor };
+        };
+        this.draw3DCurve(ctx, project, scale, sphCircle, 0, Math.PI * 2, 70, pal.teal, 3.8);
+        this.draw3DCurve(ctx, project, scale, planeCircle, 0, Math.PI * 2, 70, pal.amber, 3.8);
+        // Projection rays from North Pole through sphere circle down to plane
+        ctx.save();
+        ctx.strokeStyle = pal.amber;
+        ctx.lineWidth = 1.6 * scale;
+        ctx.setLineDash([5 * scale, 4 * scale]);
+        for (let k = 0; k < 6; k++) {
+          const t = (k / 6) * Math.PI * 2;
+          const pFloor = project(planeCircle(t).x, planeCircle(t).y, zFloor);
+          ctx.beginPath();
+          ctx.moveTo(pNorth.x, pNorth.y);
+          ctx.lineTo(pFloor.x, pFloor.y);
+          ctx.stroke();
+        }
+        ctx.restore();
+        const rProj = Math.sin(latRad) / Math.max(0.15, 1 - Math.cos(latRad));
+        lines = [
+          { text: '3D STEREOGRAPHIC PROJECTION (S² \\ {N} → C)', color: pal.amber },
+          { text: `Projection Map: (X, Y) = (x/(1−z), y/(1−z))`, color: pal.ink },
+          { text: `Conformal Property: Preserves Angles & Maps Circles → Circles`, color: pal.teal },
+          { text: `Projected Image Radius R_plane = sin θ/(1−cos θ) = ${rProj.toFixed(2)}`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Circle Colatitude', val: `${Math.round((latRad * 180) / Math.PI)}°` },
+          { key: 'Circle Tilt', val: `${Math.round((tiltRad * 180) / Math.PI)}°` },
+          { key: 'Image Radius', val: rProj.toFixed(2) },
+          { key: 'Conformality', val: 'Angle-Preserving' },
+        ];
+      } else {
+        const th = (Number(params.thetaDeg ?? 60) * Math.PI) / 180;
+        const ph = (Number(params.phiDeg ?? 45) * Math.PI) / 180;
+        const sx = R * Math.sin(th) * Math.cos(ph);
+        const sy = R * Math.sin(th) * Math.sin(ph);
+        const sz = R * Math.cos(th);
+        const pO = project(0, 0, 0);
+        const pState = project(sx, sy, sz);
+        const pEq = project(sx, sy, 0);
+        this.draw3DCurve(ctx, project, scale, (t) => ({ x: R * Math.cos(t), y: R * Math.sin(t), z: 0 }), 0, Math.PI * 2, 70, pal.teal, 2.4, true);
+        this.drawArrow(ctx, pO.x, pO.y, pEq.x, pEq.y, pal.teal, 2.5 * scale);
+        this.drawArrow(ctx, pO.x, pO.y, pState.x, pState.y, pal.amber, 4.0 * scale);
+        this.drawDot(ctx, pState.x, pState.y, 8 * scale, pal.amber, pal.bg);
+
+        const prob0 = Math.pow(Math.cos(th / 2), 2);
+        const prob1 = Math.pow(Math.sin(th / 2), 2);
+        lines = [
+          { text: '3D QUANTUM BLOCH SPHERE & QUBIT STATE |ψ⟩', color: pal.amber },
+          { text: `|ψ⟩ = cos(θ/2)|0⟩ + e^{iφ} sin(θ/2)|1⟩`, color: pal.ink },
+          { text: `Born Probabilities: P(|0⟩) = ${(prob0 * 100).toFixed(1)}%, P(|1⟩) = ${(prob1 * 100).toFixed(1)}%`, color: pal.teal },
+          { text: `Bloch Vector r = (${(sx / R).toFixed(2)}, ${(sy / R).toFixed(2)}, ${(sz / R).toFixed(2)})  ·  ‖r‖ = 1`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Polar Angle θ', val: `${Math.round((th * 180) / Math.PI)}°` },
+          { key: 'Relative Phase φ', val: `${Math.round((ph * 180) / Math.PI)}°` },
+          { key: 'Prob P(|0⟩)', val: `${(prob0 * 100).toFixed(1)}%` },
+          { key: 'Prob P(|1⟩)', val: `${(prob1 * 100).toFixed(1)}%` },
+        ];
+      }
       tableRows = [0, 45, 90, 135, 180].map((deg) => {
         const r = (deg * Math.PI) / 180;
         return [`θ = ${deg}°`, `cos(θ/2)=${Math.cos(r / 2).toFixed(3)}`, `sin(θ/2)=${Math.sin(r / 2).toFixed(3)}`, `P(|0⟩)=${(Math.cos(r / 2) ** 2 * 100).toFixed(1)}%`];
@@ -2876,8 +3800,42 @@ export function attach3DRenderers(EngineClass) {
           { key: 'Periapsis r_p', val: (1.15 * (1 - e)).toFixed(2) },
           { key: 'Apoapsis r_a', val: (1.15 * (1 + e)).toFixed(2) },
         ];
+      } else if (sub === 'rossler_attractor_3d') {
+        const cParam = Number(params.cParam ?? 5.7);
+        const aParam = Number(params.aParam ?? 0.2);
+        const bParam = 0.2;
+        let rx = 1.0;
+        let ry = 0.0;
+        let rz = 0.0;
+        const pts = [];
+        for (let i = 0; i < 900; i++) {
+          const dt = 0.045;
+          const dx = -ry - rz;
+          const dy = rx + aParam * ry;
+          const dz = bParam + rz * (rx - cParam);
+          rx += dx * dt;
+          ry += dy * dt;
+          rz += dz * dt;
+          pts.push({ x: rx * 0.11, y: ry * 0.11, z: -0.75 + Math.min(2.2, rz * 0.11) });
+        }
+        const vis = Math.max(50, Math.floor(pts.length * Math.max(0.25, prog)));
+        this.draw3DCurve(ctx, project, scale, (idx) => pts[Math.min(pts.length - 1, Math.round(idx))], 0, vis - 1, vis - 1, pal.teal, 3.0);
+        const head = pts[vis - 1];
+        const pHead = project(head.x, head.y, head.z);
+        this.drawDot(ctx, pHead.x, pHead.y, 7.5 * scale, pal.amber, pal.bg);
+        lines = [
+          { text: '3D RÖSSLER FOLDED-BAND CHAOTIC ATTRACTOR', color: pal.amber },
+          { text: `ODEs: ẋ = −y − z,  ẏ = x + ay,  ż = b + z(x − c)`, color: pal.ink },
+          { text: `Parameters: a = ${aParam.toFixed(2)}, b = 0.20, c = ${cParam.toFixed(2)}`, color: pal.teal },
+          { text: `Period-Doubling Cascade → Single-Scroll Stretch & Fold`, color: pal.indigo },
+        ];
+        readouts = [
+          { key: 'Threshold c', val: cParam.toFixed(2) },
+          { key: 'Expansion a', val: aParam.toFixed(2) },
+          { key: 'Scroll Topology', val: 'Single-Band Fold' },
+          { key: 'Fractal Dim D', val: '2.01' },
+        ];
       } else {
-        // 3D Lorenz / Rössler Chaotic Strange Attractor integration
         const rho = Number(params.rhoVal ?? 28);
         const sigma = Number(params.sigmaVal ?? 10);
         let lx = 0.1;
@@ -2900,7 +3858,7 @@ export function attach3DRenderers(EngineClass) {
         const pHead = project(head.x, head.y, head.z);
         this.drawDot(ctx, pHead.x, pHead.y, 7.5 * scale, pal.amber, pal.bg);
         lines = [
-          { text: preset.name.toUpperCase(), color: pal.amber },
+          { text: '3D LORENZ BUTTERFLY STRANGE ATTRACTOR', color: pal.amber },
           { text: `Parameters: ρ = ${rho.toFixed(1)}, σ = ${sigma.toFixed(1)}, β = 2.67`, color: pal.ink },
           { text: `Phase Space Contraction ∇·F = −(σ+1+β) = ${(-(sigma + 1 + 8 / 3)).toFixed(2)} < 0`, color: pal.teal },
           { text: `Lyapunov Exponent λ₁ > 0 (Exponential Sensitivity)`, color: pal.indigo },

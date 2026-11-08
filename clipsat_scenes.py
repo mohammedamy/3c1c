@@ -398,16 +398,17 @@ class GradientDescentScene(ClipSATScene):
         self.wait(1.0)
 
 
-# ── Extended 89 Interactive Curriculum Scenes (#12–#100) ──
+
+# ── Extended 89 Interactive 2D Curriculum Scenes (#12–#100) ──
 
 
 class MeanValueTheoremScene(ClipSATScene):
-    """AP Calculus AB · Theorem — Finds point c ∈ (a,b) where instantaneous tangent slope equals average secant slope."""
+    """AP Calculus AB · Theorem — """
 
     clipsat_track = "AP Calculus AB · Theorem"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB · Theorem", "Lagrange's Mean Value Theorem: f'(c) = [f(b) − f(a)] / (b − a)")
+        header = self.build_exam_header("AP Calculus AB · Theorem", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -422,12 +423,12 @@ class MeanValueTheoremScene(ClipSATScene):
 
 
 class FTCAccumulationScene(ClipSATScene):
-    """AP Calculus AB/BC · FTC Part 1 — Links the signed area function A(x) = ∫₀ˣ f(t) dt directly to its derivative A′(x) = f(x)."""
+    """AP Calculus AB/BC · FTC Part 1 — """
 
     clipsat_track = "AP Calculus AB/BC · FTC Part 1"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB/BC · FTC Part 1", "Accumulation Function A(x) = ∫ f(t) dt & Rate A′(x) = f(x)")
+        header = self.build_exam_header("AP Calculus AB/BC · FTC Part 1", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -442,12 +443,12 @@ class FTCAccumulationScene(ClipSATScene):
 
 
 class LHopitalLocalZoomScene(ClipSATScene):
-    """AP Calculus BC · Limits — Zooms into an indeterminate 0/0 limit at x = a to reveal the ratio of tangent slopes f′(a)/g′(a)."""
+    """AP Calculus BC · Limits — """
 
     clipsat_track = "AP Calculus BC · Limits"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Limits", "Indeterminate 0/0 Limit via Local Tangent Linearization")
+        header = self.build_exam_header("AP Calculus BC · Limits", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -462,12 +463,12 @@ class LHopitalLocalZoomScene(ClipSATScene):
 
 
 class ArcLengthRectificationScene(ClipSATScene):
-    """AP Calculus BC · Integration — Approximates curve length using N hypotenuse chords √(Δx² + Δy²) converging to ∫√(1 + f′(x)²) dx."""
+    """AP Calculus BC · Integration — """
 
     clipsat_track = "AP Calculus BC · Integration"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Integration", "Polygonal Chord Rectification: ds = √(1 + [f′(x)]²) dx")
+        header = self.build_exam_header("AP Calculus BC · Integration", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -481,13 +482,13 @@ class ArcLengthRectificationScene(ClipSATScene):
         self.wait(1.0)
 
 
-class SolidOfRevolutionScene(ClipSATScene):
-    """AP Calculus AB/BC · Volumes — Revolves y = √x around the x-axis with 3D perspective cross-sectional discs π[R(x)]² Δx."""
+class WeierstrassFractalScene(ClipSATScene):
+    """Real Analysis · Pathological Functions — """
 
-    clipsat_track = "AP Calculus AB/BC · Volumes"
+    clipsat_track = "Real Analysis · Pathological Functions"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB/BC · Volumes", "Method of Discs: V = π ∫ [R(x)]² dx")
+        header = self.build_exam_header("Real Analysis · Pathological Functions", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -502,12 +503,12 @@ class SolidOfRevolutionScene(ClipSATScene):
 
 
 class ImplicitFoliumScene(ClipSATScene):
-    """AP Calculus AB · Derivatives — Traces tangent vectors along the level curve x² + 2xy + 3y² = C where y is not a single function of x."""
+    """AP Calculus AB · Derivatives — """
 
     clipsat_track = "AP Calculus AB · Derivatives"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB · Derivatives", "Implicit Curve Tangents: dy/dx = −(∂F/∂x) / (∂F/∂y)")
+        header = self.build_exam_header("AP Calculus AB · Derivatives", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -521,13 +522,13 @@ class ImplicitFoliumScene(ClipSATScene):
         self.wait(1.0)
 
 
-class LagrangeMultipliersScene(ClipSATScene):
-    """Multivariable Calculus · Optimization — Optimizes f(x,y) subject to constraint g(x,y) = c by aligning normal gradients ∇f = λ∇g."""
+class EpsilonDeltaLimitScene(ClipSATScene):
+    """AP Calculus BC · Foundations of Analysis — """
 
-    clipsat_track = "Multivariable Calculus · Optimization"
+    clipsat_track = "AP Calculus BC · Foundations of Analysis"
 
     def construct(self):
-        header = self.build_exam_header("Multivariable Calculus · Optimization", "Lagrange Multipliers: ∇f(x, y) = λ ∇g(x, y)")
+        header = self.build_exam_header("AP Calculus BC · Foundations of Analysis", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -541,13 +542,13 @@ class LagrangeMultipliersScene(ClipSATScene):
         self.wait(1.0)
 
 
-class RollesTheoremScene(ClipSATScene):
-    """AP Calculus AB · Theorems — Shows that equal boundary values f(a) = f(b) guarantee at least one horizontal tangent f′(c) = 0."""
+class DarbouxSumsSqueezeScene(ClipSATScene):
+    """Real Analysis · Riemann Integrability — """
 
-    clipsat_track = "AP Calculus AB · Theorems"
+    clipsat_track = "Real Analysis · Riemann Integrability"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB · Theorems", "Rolle's Theorem: f(a) = f(b) ⟹ ∃ c ∈ (a,b) with f'(c) = 0")
+        header = self.build_exam_header("Real Analysis · Riemann Integrability", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -561,13 +562,13 @@ class RollesTheoremScene(ClipSATScene):
         self.wait(1.0)
 
 
-class GabrielsHornScene(ClipSATScene):
-    """AP Calculus BC · Improper Integrals — Contrasts converging volume V = π(1 − 1/b) → π with diverging surface area S > 2π ln(b) → ∞ for y = 1/x."""
+class CantorDevilsStaircaseScene(ClipSATScene):
+    """Real Analysis · Measure Theory & Fractals — """
 
-    clipsat_track = "AP Calculus BC · Improper Integrals"
+    clipsat_track = "Real Analysis · Measure Theory & Fractals"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Improper Integrals", "Torricelli's Trumpet: Finite Volume π vs. Infinite Surface Area")
+        header = self.build_exam_header("Real Analysis · Measure Theory & Fractals", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -581,13 +582,13 @@ class GabrielsHornScene(ClipSATScene):
         self.wait(1.0)
 
 
-class DirectionalDerivativeScene(ClipSATScene):
-    """Multivariable Calculus · Gradients — Projects the gradient vector ∇f onto unit direction u = (cos θ, sin θ) to compute D_u f = ‖∇f‖ cos φ."""
+class GreensTheoremCurlScene(ClipSATScene):
+    """Vector Calculus · Circulation & Curl — """
 
-    clipsat_track = "Multivariable Calculus · Gradients"
+    clipsat_track = "Vector Calculus · Circulation & Curl"
 
     def construct(self):
-        header = self.build_exam_header("Multivariable Calculus · Gradients", "Directional Rate of Change: Dᵤf(x,y) = ∇f · u = ‖∇f‖ cos φ")
+        header = self.build_exam_header("Vector Calculus · Circulation & Curl", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -602,12 +603,12 @@ class DirectionalDerivativeScene(ClipSATScene):
 
 
 class NewtonRaphsonScene(ClipSATScene):
-    """Numerical Analysis · Calculus — Iterates xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ) via tangent x-intercepts with quadratic convergence."""
+    """Numerical Analysis · Calculus — """
 
     clipsat_track = "Numerical Analysis · Calculus"
 
     def construct(self):
-        header = self.build_exam_header("Numerical Analysis · Calculus", "Newton's Method: xₙ₊₁ = xₙ − f(xₙ) / f′(xₙ)")
+        header = self.build_exam_header("Numerical Analysis · Calculus", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -622,12 +623,12 @@ class NewtonRaphsonScene(ClipSATScene):
 
 
 class SecantRootMethodScene(ClipSATScene):
-    """Numerical Analysis · Roots — Finds roots without derivatives using two-point secant chords xₙ₊₁ = xₙ − f(xₙ)(xₙ−xₙ₋₁)/(f(xₙ)−f(xₙ₋₁))."""
+    """Numerical Analysis · Roots — """
 
     clipsat_track = "Numerical Analysis · Roots"
 
     def construct(self):
-        header = self.build_exam_header("Numerical Analysis · Roots", "Derivative-Free Secant Iteration (Order φ ≈ 1.618)")
+        header = self.build_exam_header("Numerical Analysis · Roots", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -642,12 +643,12 @@ class SecantRootMethodScene(ClipSATScene):
 
 
 class BisectionIVTScene(ClipSATScene):
-    """AP Calculus · IVT & Roots — Repeatedly halves bracket [a,b] where f(a)·f(b) < 0, cutting the maximum error in half every step."""
+    """AP Calculus · IVT & Roots — """
 
     clipsat_track = "AP Calculus · IVT & Roots"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus · IVT & Roots", "Bisection Bracket Halving: f(a)·f(b) < 0 ⟹ |eₙ| ≤ (b−a)/2ⁿ")
+        header = self.build_exam_header("AP Calculus · IVT & Roots", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -662,12 +663,12 @@ class BisectionIVTScene(ClipSATScene):
 
 
 class SimpsonsQuadratureScene(ClipSATScene):
-    """AP Calculus BC · Numerical Integration — Fits quadratic parabolas through triples of points with weights (1, 4, 1) × Δx/3 for fourth-order accuracy."""
+    """AP Calculus BC · Numerical Integration — """
 
     clipsat_track = "AP Calculus BC · Numerical Integration"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Numerical Integration", "Simpson's Parabolic Rule: (Δx/3)[f(x₀) + 4f(x₁) + f(x₂)]")
+        header = self.build_exam_header("AP Calculus BC · Numerical Integration", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -682,12 +683,12 @@ class SimpsonsQuadratureScene(ClipSATScene):
 
 
 class EulerODEScene(ClipSATScene):
-    """AP Calculus BC · Differential Equations — Steps along tangent slopes yₙ₊₁ = yₙ + h·f(xₙ, yₙ) and compares against the exact analytical solution."""
+    """AP Calculus BC · Differential Equations — """
 
     clipsat_track = "AP Calculus BC · Differential Equations"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Differential Equations", "Euler's Polygonal ODE Approximation: yₙ₊₁ = yₙ + h·f(xₙ, yₙ)")
+        header = self.build_exam_header("AP Calculus BC · Differential Equations", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -702,12 +703,12 @@ class EulerODEScene(ClipSATScene):
 
 
 class RungeKuttaRK4Scene(ClipSATScene):
-    """Differential Equations · Scientific Computing — Combines four trial slopes (k₁, k₂, k₃, k₄) with weights (1,2,2,1)/6 to achieve fourth-order accuracy."""
+    """Differential Equations · Scientific Computing — """
 
     clipsat_track = "Differential Equations · Scientific Computing"
 
     def construct(self):
-        header = self.build_exam_header("Differential Equations · Scientific Computing", "Fourth-Order Runge-Kutta: yₙ₊₁ = yₙ + (h/6)(k₁ + 2k₂ + 2k₃ + k₄)")
+        header = self.build_exam_header("Differential Equations · Scientific Computing", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -722,12 +723,12 @@ class RungeKuttaRK4Scene(ClipSATScene):
 
 
 class FixedPointCobwebScene(ClipSATScene):
-    """Dynamical Systems · Numerical Analysis — Traces the staircase/spiral cobweb between y = g(x) and y = x converging to the Dottie number x* ≈ 0.739085."""
+    """Dynamical Systems · Numerical Analysis — """
 
     clipsat_track = "Dynamical Systems · Numerical Analysis"
 
     def construct(self):
-        header = self.build_exam_header("Dynamical Systems · Numerical Analysis", "Banach Contraction Cobweb: xₙ₊₁ = α cos(xₙ) → x*")
+        header = self.build_exam_header("Dynamical Systems · Numerical Analysis", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -742,12 +743,12 @@ class FixedPointCobwebScene(ClipSATScene):
 
 
 class LogisticChaosCobwebScene(ClipSATScene):
-    """Nonlinear Dynamics · Chaos Theory — Explores xₙ₊₁ = r xₙ(1 − xₙ) as growth parameter r transitions from stable fixed point to 2-cycle, 4-cycle, and chaos."""
+    """Nonlinear Dynamics · Chaos Theory — """
 
     clipsat_track = "Nonlinear Dynamics · Chaos Theory"
 
     def construct(self):
-        header = self.build_exam_header("Nonlinear Dynamics · Chaos Theory", "Feigenbaum Period-Doubling Cascade: xₙ₊₁ = r xₙ(1 − xₙ)")
+        header = self.build_exam_header("Nonlinear Dynamics · Chaos Theory", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -762,12 +763,12 @@ class LogisticChaosCobwebScene(ClipSATScene):
 
 
 class MonteCarloPiScene(ClipSATScene):
-    """Stochastic Methods · Probability — Estimates π ≈ 4 × (points inside quarter circle) / N with deterministic Halton low-discrepancy sampling."""
+    """Stochastic Methods · Probability — """
 
     clipsat_track = "Stochastic Methods · Probability"
 
     def construct(self):
-        header = self.build_exam_header("Stochastic Methods · Probability", "Monte Carlo Quarter-Circle Quadrature: π ≈ 4 · (N_inside / N_total)")
+        header = self.build_exam_header("Stochastic Methods · Probability", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -782,12 +783,12 @@ class MonteCarloPiScene(ClipSATScene):
 
 
 class LissajousHarmonicScene(ClipSATScene):
-    """Parametric Curves · Trigonometry — Plots x(t) = sin(a t + δ), y(t) = sin(b t) showing rational frequency knots and phase rotation."""
+    """Parametric Curves · Trigonometry — """
 
     clipsat_track = "Parametric Curves · Trigonometry"
 
     def construct(self):
-        header = self.build_exam_header("Parametric Curves · Trigonometry", "Harmonic Superposition: x(t) = sin(a t + δ), y(t) = sin(b t)")
+        header = self.build_exam_header("Parametric Curves · Trigonometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -802,12 +803,12 @@ class LissajousHarmonicScene(ClipSATScene):
 
 
 class PolarRoseCurveScene(ClipSATScene):
-    """AP Calculus BC · Polar Coordinates — Draws polar petals r(θ) = a cos(kθ), demonstrating k petals for odd k and 2k petals for even k."""
+    """AP Calculus BC · Polar Coordinates — """
 
     clipsat_track = "AP Calculus BC · Polar Coordinates"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Polar Coordinates", "Rhodonea Polar Rose: r(θ) = a cos(kθ) & Area = ½ ∫ r² dθ")
+        header = self.build_exam_header("AP Calculus BC · Polar Coordinates", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -822,12 +823,12 @@ class PolarRoseCurveScene(ClipSATScene):
 
 
 class CardioidLimaconScene(ClipSATScene):
-    """AP Calculus BC · Polar Geometry — Morphs between convex limaçon (a > 2b), dimpled, cardioid cusp (a = b), and inner-loop limaçon (a < b)."""
+    """AP Calculus BC · Polar Geometry — """
 
     clipsat_track = "AP Calculus BC · Polar Geometry"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Polar Geometry", "Limaçon Classification: r(θ) = a + b cos(θ)")
+        header = self.build_exam_header("AP Calculus BC · Polar Geometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -842,12 +843,12 @@ class CardioidLimaconScene(ClipSATScene):
 
 
 class RollingCycloidScene(ClipSATScene):
-    """Parametric Calculus · Kinematics — Traces a rim point on a rolling circle of radius R: x = R(t − sin t), y = R(1 − cos t) with arc length 8R."""
+    """Parametric Calculus · Kinematics — """
 
     clipsat_track = "Parametric Calculus · Kinematics"
 
     def construct(self):
-        header = self.build_exam_header("Parametric Calculus · Kinematics", "Rolling Wheel Locus: x = R(t − sin t), y = R(1 − cos t)")
+        header = self.build_exam_header("Parametric Calculus · Kinematics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -862,12 +863,12 @@ class RollingCycloidScene(ClipSATScene):
 
 
 class EpicycloidCausticScene(ClipSATScene):
-    """Parametric Geometry · Envelopes — Rolls a circle of radius r outside a fixed circle of radius R = k·r, creating k sharp cusps."""
+    """Parametric Geometry · Envelopes — """
 
     clipsat_track = "Parametric Geometry · Envelopes"
 
     def construct(self):
-        header = self.build_exam_header("Parametric Geometry · Envelopes", "Epicycloid Planetary Trace (Cusp Ratio k = R / r)")
+        header = self.build_exam_header("Parametric Geometry · Envelopes", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -882,12 +883,12 @@ class EpicycloidCausticScene(ClipSATScene):
 
 
 class AstroidEnvelopeScene(ClipSATScene):
-    """Differential Geometry · Envelopes — Shows how a family of sliding segments of constant length L in the axes envelopes the four-cusped astroid."""
+    """Differential Geometry · Envelopes — """
 
     clipsat_track = "Differential Geometry · Envelopes"
 
     def construct(self):
-        header = self.build_exam_header("Differential Geometry · Envelopes", "Sliding Ladder Hypocycloid: x = L cos³θ, y = L sin³θ")
+        header = self.build_exam_header("Differential Geometry · Envelopes", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -902,12 +903,12 @@ class AstroidEnvelopeScene(ClipSATScene):
 
 
 class OsculatingCircleScene(ClipSATScene):
-    """Differential Geometry · Multivariable — Computes curvature κ = |f″|/(1+f′²)^(3/2) and draws the kissing circle of radius R = 1/κ along y = sin(x)."""
+    """Differential Geometry · Multivariable — """
 
     clipsat_track = "Differential Geometry · Multivariable"
 
     def construct(self):
-        header = self.build_exam_header("Differential Geometry · Multivariable", "Osculating Circle: κ(x) = |f″(x)| / (1 + [f′(x)]²)^(3/2)")
+        header = self.build_exam_header("Differential Geometry · Multivariable", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -922,12 +923,12 @@ class OsculatingCircleScene(ClipSATScene):
 
 
 class PolarSpiralsScene(ClipSATScene):
-    """Polar Geometry · Classical Curves — Compares constant-spacing Archimedean spiral r = aθ against self-similar logarithmic spiral r = a·e^(bθ)."""
+    """Polar Geometry · Classical Curves — """
 
     clipsat_track = "Polar Geometry · Classical Curves"
 
     def construct(self):
-        header = self.build_exam_header("Polar Geometry · Classical Curves", "Archimedean (r = aθ) vs. Bernoulli Equiangular Spiral (r = e^(bθ))")
+        header = self.build_exam_header("Polar Geometry · Classical Curves", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -942,12 +943,12 @@ class PolarSpiralsScene(ClipSATScene):
 
 
 class LemniscateBernoulliScene(ClipSATScene):
-    """Algebraic Curves · Polar Loci — Plots the locus of points where the product of distances to two foci (±c, 0) equals b²."""
+    """Algebraic Curves · Polar Loci — """
 
     clipsat_track = "Algebraic Curves · Polar Loci"
 
     def construct(self):
-        header = self.build_exam_header("Algebraic Curves · Polar Loci", "Product of Focal Distances: |PF₁| · |PF₂| = b²")
+        header = self.build_exam_header("Algebraic Curves · Polar Loci", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -962,12 +963,12 @@ class LemniscateBernoulliScene(ClipSATScene):
 
 
 class FourierSquareWaveScene(ClipSATScene):
-    """Fourier Analysis · Signal Processing — Synthesizes a square wave from odd harmonics (4/π) ∑ sin((2k−1)t)/(2k−1) using chained rotating phasors."""
+    """Fourier Analysis · Signal Processing — """
 
     clipsat_track = "Fourier Analysis · Signal Processing"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Signal Processing", "Square Wave Harmonics: (4/π) ∑ sin((2k−1)t) / (2k−1)")
+        header = self.build_exam_header("Fourier Analysis · Signal Processing", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -981,13 +982,13 @@ class FourierSquareWaveScene(ClipSATScene):
         self.wait(1.0)
 
 
-class FourierSawtoothScene(ClipSATScene):
-    """Fourier Analysis · Harmonics — Builds a linear ramp sawtooth wave from all integer harmonics (2/π) ∑ (−1)^(n+1) sin(nt)/n."""
+class NyquistAliasingScene(ClipSATScene):
+    """Signal Processing · Sampling Theorem — """
 
-    clipsat_track = "Fourier Analysis · Harmonics"
+    clipsat_track = "Signal Processing · Sampling Theorem"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Harmonics", "Sawtooth Ramp Series: (2/π) ∑ (−1)ⁿ⁺¹ sin(nt) / n")
+        header = self.build_exam_header("Signal Processing · Sampling Theorem", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1001,13 +1002,13 @@ class FourierSawtoothScene(ClipSATScene):
         self.wait(1.0)
 
 
-class FourierTriangleWaveScene(ClipSATScene):
-    """Fourier Analysis · Smoothness — Demonstrates how continuous corners yield 1/(2k−1)² coefficient decay and rapid Gibb-free convergence."""
+class HilbertAnalyticEnvelopeScene(ClipSATScene):
+    """Complex Analysis · Quadrature Signals — """
 
-    clipsat_track = "Fourier Analysis · Smoothness"
+    clipsat_track = "Complex Analysis · Quadrature Signals"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Smoothness", "Rapid 1/n² Convergence: (8/π²) ∑ (−1)ᵏ sin((2k+1)t) / (2k+1)²")
+        header = self.build_exam_header("Complex Analysis · Quadrature Signals", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1022,12 +1023,12 @@ class FourierTriangleWaveScene(ClipSATScene):
 
 
 class GibbsPhenomenonScene(ClipSATScene):
-    """Fourier Analysis · Convergence — Highlights the persistent ≈ 8.95% Wilbraham-Gibbs overshoot horn near a jump discontinuity as N → ∞."""
+    """Fourier Analysis · Convergence — """
 
     clipsat_track = "Fourier Analysis · Convergence"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Convergence", "Wilbraham-Gibbs Overshoot: ∫₀^π (sin t / t) dt ≈ 1.8519 (8.95% Horn)")
+        header = self.build_exam_header("Fourier Analysis · Convergence", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1042,12 +1043,12 @@ class GibbsPhenomenonScene(ClipSATScene):
 
 
 class AcousticBeatsScene(ClipSATScene):
-    """Wave Physics · Trigonometry — Superposes cos(ω₁t) + cos(ω₂t) = 2 cos((Δω/2)t) cos((ω̄)t) to reveal slow amplitude modulation envelopes."""
+    """Wave Physics · Trigonometry — """
 
     clipsat_track = "Wave Physics · Trigonometry"
 
     def construct(self):
-        header = self.build_exam_header("Wave Physics · Trigonometry", "Sum-to-Product Modulation: cos(ω₁t) + cos(ω₂t) = 2 cos(½Δω t) cos(ω̄ t)")
+        header = self.build_exam_header("Wave Physics · Trigonometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1062,12 +1063,12 @@ class AcousticBeatsScene(ClipSATScene):
 
 
 class AMFMModulationScene(ClipSATScene):
-    """Signal Processing · Harmonics — Visualizes carrier sidebands (1 + m cos(ωₘt))cos(ω_ct) alongside instantaneous frequency compression."""
+    """Signal Processing · Harmonics — """
 
     clipsat_track = "Signal Processing · Harmonics"
 
     def construct(self):
-        header = self.build_exam_header("Signal Processing · Harmonics", "Amplitude Modulation: y(t) = [1 + m cos(ωₘt)] cos(ω_c t)")
+        header = self.build_exam_header("Signal Processing · Harmonics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1082,12 +1083,12 @@ class AMFMModulationScene(ClipSATScene):
 
 
 class DirichletKernelScene(ClipSATScene):
-    """Fourier Analysis · Harmonic Analysis — Sums symmetric complex exponentials ∑_{k=−N}^N e^(ikx) = sin((N+½)x) / sin(x/2)."""
+    """Fourier Analysis · Harmonic Analysis — """
 
     clipsat_track = "Fourier Analysis · Harmonic Analysis"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Harmonic Analysis", "Dirichlet Kernel: D_N(x) = ∑ cos(kx) = sin((N + ½)x) / sin(x/2)")
+        header = self.build_exam_header("Fourier Analysis · Harmonic Analysis", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1101,13 +1102,13 @@ class DirichletKernelScene(ClipSATScene):
         self.wait(1.0)
 
 
-class RectifiedSineFourierScene(ClipSATScene):
-    """Fourier Analysis · Electronics — Decomposes |sin(t)| into its DC average 2/π plus even cosine harmonics −(4/π) ∑ cos(2kt)/(4k²−1)."""
+class LaplaceSPlanePolesScene(ClipSATScene):
+    """Differential Equations · Control & Systems — """
 
-    clipsat_track = "Fourier Analysis · Electronics"
+    clipsat_track = "Differential Equations · Control & Systems"
 
     def construct(self):
-        header = self.build_exam_header("Fourier Analysis · Electronics", "Rectified Sine Spectrum: |sin t| = 2/π − (4/π) ∑ cos(2kt)/(4k²−1)")
+        header = self.build_exam_header("Differential Equations · Control & Systems", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1122,12 +1123,12 @@ class RectifiedSineFourierScene(ClipSATScene):
 
 
 class LogisticSlopeFieldScene(ClipSATScene):
-    """AP Calculus BC · Differential Equations — Plots the slope field dy/dt = r y(1 − y/K) with inflection at y = K/2 and asymptotic equilibrium y → K."""
+    """AP Calculus BC · Differential Equations — """
 
     clipsat_track = "AP Calculus BC · Differential Equations"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus BC · Differential Equations", "Logistic Carrying Capacity: dy/dt = r y (1 − y / K)")
+        header = self.build_exam_header("AP Calculus BC · Differential Equations", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1142,12 +1143,12 @@ class LogisticSlopeFieldScene(ClipSATScene):
 
 
 class LotkaVolterraPhaseScene(ClipSATScene):
-    """Differential Equations · Dynamical Systems — Traces closed phase-plane orbits of prey x and predators y around the coexistence equilibrium (γ/δ, α/β)."""
+    """Differential Equations · Dynamical Systems — """
 
     clipsat_track = "Differential Equations · Dynamical Systems"
 
     def construct(self):
-        header = self.build_exam_header("Differential Equations · Dynamical Systems", "Predator-Prey Closed Phase Orbits: dx/dt = αx − βxy, dy/dt = δxy − γy")
+        header = self.build_exam_header("Differential Equations · Dynamical Systems", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1162,12 +1163,12 @@ class LotkaVolterraPhaseScene(ClipSATScene):
 
 
 class DampedOscillatorScene(ClipSATScene):
-    """Differential Equations · Mechanics — Solves x″ + 2ζω₀x′ + ω₀²x = 0 showing exponential decay envelope e^(−ζω₀t) and critical damping at ζ = 1."""
+    """Differential Equations · Mechanics — """
 
     clipsat_track = "Differential Equations · Mechanics"
 
     def construct(self):
-        header = self.build_exam_header("Differential Equations · Mechanics", "Damping Regimes: x″ + 2ζω₀x′ + ω₀²x = 0")
+        header = self.build_exam_header("Differential Equations · Mechanics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1182,12 +1183,12 @@ class DampedOscillatorScene(ClipSATScene):
 
 
 class PendulumSeparatrixScene(ClipSATScene):
-    """Classical Mechanics · Phase Space — Maps (θ, ω) phase space showing closed libration eyes inside the energy separatrix E = 2 and rotation waves outside."""
+    """Classical Mechanics · Phase Space — """
 
     clipsat_track = "Classical Mechanics · Phase Space"
 
     def construct(self):
-        header = self.build_exam_header("Classical Mechanics · Phase Space", "Nonlinear Pendulum Separatrix: ½ω² − cos θ = E")
+        header = self.build_exam_header("Classical Mechanics · Phase Space", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1202,12 +1203,12 @@ class PendulumSeparatrixScene(ClipSATScene):
 
 
 class SIREpidemicModelScene(ClipSATScene):
-    """Mathematical Biology · Coupled ODEs — Integrates Susceptible S(t), Infectious I(t), and Recovered R(t) curves showing peak infection when S/N = 1/R₀."""
+    """Mathematical Biology · Coupled ODEs — """
 
     clipsat_track = "Mathematical Biology · Coupled ODEs"
 
     def construct(self):
-        header = self.build_exam_header("Mathematical Biology · Coupled ODEs", "Kermack-McKendrick SIR Dynamics & Reproduction Number R₀ = β / γ")
+        header = self.build_exam_header("Mathematical Biology · Coupled ODEs", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1222,12 +1223,12 @@ class SIREpidemicModelScene(ClipSATScene):
 
 
 class NewtonCoolingScene(ClipSATScene):
-    """AP Calculus AB · Separable ODEs — Solves dT/dt = −k(T − T_env) showing exponential relaxation toward ambient temperature T_env."""
+    """AP Calculus AB · Separable ODEs — """
 
     clipsat_track = "AP Calculus AB · Separable ODEs"
 
     def construct(self):
-        header = self.build_exam_header("AP Calculus AB · Separable ODEs", "Exponential Thermal Relaxation: T(t) = T_env + (T₀ − T_env) e^(−kt)")
+        header = self.build_exam_header("AP Calculus AB · Separable ODEs", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1242,12 +1243,12 @@ class NewtonCoolingScene(ClipSATScene):
 
 
 class VanDerPolLimitCycleScene(ClipSATScene):
-    """Nonlinear Dynamics · Limit Cycles — Demonstrates self-sustained relaxation oscillations where small amplitudes pump energy in and large amplitudes dissipate it."""
+    """Nonlinear Dynamics · Limit Cycles — """
 
     clipsat_track = "Nonlinear Dynamics · Limit Cycles"
 
     def construct(self):
-        header = self.build_exam_header("Nonlinear Dynamics · Limit Cycles", "Self-Sustained Limit Cycle: x″ − μ(1 − x²)x′ + x = 0")
+        header = self.build_exam_header("Nonlinear Dynamics · Limit Cycles", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1262,12 +1263,12 @@ class VanDerPolLimitCycleScene(ClipSATScene):
 
 
 class PitchforkBifurcationScene(ClipSATScene):
-    """Dynamical Systems · Bifurcations — Shows how a single stable equilibrium x* = 0 for r ≤ 0 splits into two symmetric attractors ±√r for r > 0."""
+    """Dynamical Systems · Bifurcations — """
 
     clipsat_track = "Dynamical Systems · Bifurcations"
 
     def construct(self):
-        header = self.build_exam_header("Dynamical Systems · Bifurcations", "Supercritical Pitchfork: dx/dt = r x − x³ (Equilibria x* = 0, ±√r)")
+        header = self.build_exam_header("Dynamical Systems · Bifurcations", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1282,12 +1283,12 @@ class PitchforkBifurcationScene(ClipSATScene):
 
 
 class EllipseWhisperingGalleryScene(ClipSATScene):
-    """Conic Sections · Analytic Geometry — Proves that any ray emitted from focus F₁ reflects off the ellipse tangent directly through focus F₂ with constant path 2a."""
+    """Conic Sections · Analytic Geometry — """
 
     clipsat_track = "Conic Sections · Analytic Geometry"
 
     def construct(self):
-        header = self.build_exam_header("Conic Sections · Analytic Geometry", "Ellipse Focal Reflection: |PF₁| + |PF₂| = 2a & ∠₁ = ∠₂")
+        header = self.build_exam_header("Conic Sections · Analytic Geometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1302,12 +1303,12 @@ class EllipseWhisperingGalleryScene(ClipSATScene):
 
 
 class ParabolaFocusDirectrixScene(ClipSATScene):
-    """Conic Sections · Digital SAT / Precalc — Equates distance |PF| to focus (0, p) with perpendicular distance |PD| to directrix y = −p, collimating parallel rays."""
+    """Conic Sections · Digital SAT / Precalc — """
 
     clipsat_track = "Conic Sections · Digital SAT / Precalc"
 
     def construct(self):
-        header = self.build_exam_header("Conic Sections · Digital SAT / Precalc", "Parabolic Reflector: x² = 4py  (|PF| = |y + p|)")
+        header = self.build_exam_header("Conic Sections · Digital SAT / Precalc", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1322,12 +1323,12 @@ class ParabolaFocusDirectrixScene(ClipSATScene):
 
 
 class HyperbolaAsymptotesScene(ClipSATScene):
-    """Conic Sections · Precalculus — Plots x²/a² − y²/b² = 1 with fundamental box 2a × 2b, diagonal asymptotes y = ±(b/a)x, and foci ±√(a²+b²)."""
+    """Conic Sections · Precalculus — """
 
     clipsat_track = "Conic Sections · Precalculus"
 
     def construct(self):
-        header = self.build_exam_header("Conic Sections · Precalculus", "Hyperbola Branches & Asymptotes: x²/a² − y²/b² = 1")
+        header = self.build_exam_header("Conic Sections · Precalculus", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1342,12 +1343,12 @@ class HyperbolaAsymptotesScene(ClipSATScene):
 
 
 class ConicEccentricityMorphScene(ClipSATScene):
-    """Conic Sections · Celestial Mechanics — Continuously morphs a conic r(θ) = l / (1 + e cos θ) from circle (e=0) to ellipse (e<1), parabola (e=1), and hyperbola (e>1)."""
+    """Conic Sections · Celestial Mechanics — """
 
     clipsat_track = "Conic Sections · Celestial Mechanics"
 
     def construct(self):
-        header = self.build_exam_header("Conic Sections · Celestial Mechanics", "Polar Conic Unification: r(θ) = p / (1 + e cos θ)")
+        header = self.build_exam_header("Conic Sections · Celestial Mechanics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1361,13 +1362,13 @@ class ConicEccentricityMorphScene(ClipSATScene):
         self.wait(1.0)
 
 
-class KeplerSecondLawScene(ClipSATScene):
-    """Celestial Mechanics · Calculus — Demonstrates conservation of angular momentum r² dθ/dt = h: wide, fast perihelion sectors equal narrow, slow aphelion sectors."""
+class GravitationalLensingScene(ClipSATScene):
+    """Astrophysics & Conics · Hyperbolic Optics — """
 
-    clipsat_track = "Celestial Mechanics · Calculus"
+    clipsat_track = "Astrophysics & Conics · Hyperbolic Optics"
 
     def construct(self):
-        header = self.build_exam_header("Celestial Mechanics · Calculus", "Equal Areas in Equal Times: dA/dt = ½ r² (dθ/dt) = L / (2m)")
+        header = self.build_exam_header("Astrophysics & Conics · Hyperbolic Optics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1382,12 +1383,12 @@ class KeplerSecondLawScene(ClipSATScene):
 
 
 class SnellRefractionScene(ClipSATScene):
-    """Optics · Fermat Least Time Principle — Traces incident, refracted, and reflected rays across an optical interface, triggering total internal reflection past θ_c = arcsin(n₂/n₁)."""
+    """Optics · Fermat Least Time Principle — """
 
     clipsat_track = "Optics · Fermat Least Time Principle"
 
     def construct(self):
-        header = self.build_exam_header("Optics · Fermat Least Time Principle", "Fermat's Principle of Least Time: n₁ sin θ₁ = n₂ sin θ₂")
+        header = self.build_exam_header("Optics · Fermat Least Time Principle", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1402,12 +1403,12 @@ class SnellRefractionScene(ClipSATScene):
 
 
 class ApolloniusCircleScene(ClipSATScene):
-    """Euclidean & Analytic Geometry · Loci — Proves that the locus of points P with constant distance ratio |PA| / |PB| = k ≠ 1 to two fixed points is a circle."""
+    """Euclidean & Analytic Geometry · Loci — """
 
     clipsat_track = "Euclidean & Analytic Geometry · Loci"
 
     def construct(self):
-        header = self.build_exam_header("Euclidean & Analytic Geometry · Loci", "Bipolar Ratio Locus: |PA| / |PB| = k  (Circle of Apollonius)")
+        header = self.build_exam_header("Euclidean & Analytic Geometry · Loci", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1422,12 +1423,12 @@ class ApolloniusCircleScene(ClipSATScene):
 
 
 class EulerLineTriangleScene(ClipSATScene):
-    """Olympiad Geometry · Triangle Centers — Shows that Orthocenter H, Centroid G, and Circumcenter O are always collinear with exact 2:1 ratio |HG| = 2|GO|."""
+    """Olympiad Geometry · Triangle Centers — """
 
     clipsat_track = "Olympiad Geometry · Triangle Centers"
 
     def construct(self):
-        header = self.build_exam_header("Olympiad Geometry · Triangle Centers", "Collinearity of Triangle Centers: Orthocenter H, Centroid G, Circumcenter O")
+        header = self.build_exam_header("Olympiad Geometry · Triangle Centers", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1442,12 +1443,12 @@ class EulerLineTriangleScene(ClipSATScene):
 
 
 class PowerOfAPointScene(ClipSATScene):
-    """Digital SAT / Olympiad · Circle Geometry — Demonstrates that for any secant line from exterior point P cutting a circle at A and B, PA · PB = PT² = d² − R²."""
+    """Digital SAT / Olympiad · Circle Geometry — """
 
     clipsat_track = "Digital SAT / Olympiad · Circle Geometry"
 
     def construct(self):
-        header = self.build_exam_header("Digital SAT / Olympiad · Circle Geometry", "Secant-Tangent Invariant: |PA| · |PB| = |PT|² = d² − R²")
+        header = self.build_exam_header("Digital SAT / Olympiad · Circle Geometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1462,12 +1463,12 @@ class PowerOfAPointScene(ClipSATScene):
 
 
 class ExtendedLawOfSinesScene(ClipSATScene):
-    """IGCSE / Precalculus · Trigonometry — Proves a/sin A = b/sin B = c/sin C = 2R by rotating vertex A around the circumcircle until BC subtends a right triangle on diameter 2R."""
+    """IGCSE / Precalculus · Trigonometry — """
 
     clipsat_track = "IGCSE / Precalculus · Trigonometry"
 
     def construct(self):
-        header = self.build_exam_header("IGCSE / Precalculus · Trigonometry", "Circumdiameter Identity: a / sin A = b / sin B = c / sin C = 2R")
+        header = self.build_exam_header("IGCSE / Precalculus · Trigonometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1482,12 +1483,12 @@ class ExtendedLawOfSinesScene(ClipSATScene):
 
 
 class LawOfCosinesScene(ClipSATScene):
-    """Digital SAT / IGCSE · Trigonometry — Decomposes c² into a² + b² minus the altitude projection correction 2ab cos C across acute, right, and obtuse angles."""
+    """Digital SAT / IGCSE · Trigonometry — """
 
     clipsat_track = "Digital SAT / IGCSE · Trigonometry"
 
     def construct(self):
-        header = self.build_exam_header("Digital SAT / IGCSE · Trigonometry", "Al-Kashi Law of Cosines: c² = a² + b² − 2ab cos C")
+        header = self.build_exam_header("Digital SAT / IGCSE · Trigonometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1502,12 +1503,12 @@ class LawOfCosinesScene(ClipSATScene):
 
 
 class HeronIncircleScene(ClipSATScene):
-    """Olympiad / SAT · Triangle Geometry — Splits △ABC into three sub-triangles around incenter I with common altitude r (inradius), proving Area = r·s = √(s(s−a)(s−b)(s−c))."""
+    """Olympiad / SAT · Triangle Geometry — """
 
     clipsat_track = "Olympiad / SAT · Triangle Geometry"
 
     def construct(self):
-        header = self.build_exam_header("Olympiad / SAT · Triangle Geometry", "Inradius Area Partition: Area = ½ r(a + b + c) = r · s")
+        header = self.build_exam_header("Olympiad / SAT · Triangle Geometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1522,12 +1523,12 @@ class HeronIncircleScene(ClipSATScene):
 
 
 class PtolemyCyclicQuadScene(ClipSATScene):
-    """Olympiad Geometry · Cyclic Polygons — In any cyclic quadrilateral ABCD inscribed in a circle, the product of diagonals equals the sum of opposite side products: |AC|·|BD| = |AB|·|CD| + |BC|·|DA|."""
+    """Olympiad Geometry · Cyclic Polygons — """
 
     clipsat_track = "Olympiad Geometry · Cyclic Polygons"
 
     def construct(self):
-        header = self.build_exam_header("Olympiad Geometry · Cyclic Polygons", "Cyclic Quadrilateral Identity: |AC| · |BD| = |AB|·|CD| + |BC|·|DA|")
+        header = self.build_exam_header("Olympiad Geometry · Cyclic Polygons", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1541,13 +1542,13 @@ class PtolemyCyclicQuadScene(ClipSATScene):
         self.wait(1.0)
 
 
-class VivianiTheoremScene(ClipSATScene):
-    """Qudrat / Olympiad · Geometric Invariants — Proves that for ANY interior point P inside an equilateral triangle, the sum of perpendicular distances d₁ + d₂ + d₃ equals the total altitude H."""
+class FeuerbachNinePointScene(ClipSATScene):
+    """Olympiad Geometry · Triangle Centers — """
 
-    clipsat_track = "Qudrat / Olympiad · Geometric Invariants"
+    clipsat_track = "Olympiad Geometry · Triangle Centers"
 
     def construct(self):
-        header = self.build_exam_header("Qudrat / Olympiad · Geometric Invariants", "Viviani's Invariant: d₁ + d₂ + d₃ = H = (√3 / 2) s")
+        header = self.build_exam_header("Olympiad Geometry · Triangle Centers", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1562,12 +1563,12 @@ class VivianiTheoremScene(ClipSATScene):
 
 
 class PicksLatticeTheoremScene(ClipSATScene):
-    """Combinatorial Geometry · Olympiad — Computes exact polygon area on an integer lattice from interior dots I and boundary dots B via A = I + B/2 − 1."""
+    """Combinatorial Geometry · Olympiad — """
 
     clipsat_track = "Combinatorial Geometry · Olympiad"
 
     def construct(self):
-        header = self.build_exam_header("Combinatorial Geometry · Olympiad", "Pick's Lattice Polygon Formula: Area = I + B/2 − 1")
+        header = self.build_exam_header("Combinatorial Geometry · Olympiad", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1582,12 +1583,12 @@ class PicksLatticeTheoremScene(ClipSATScene):
 
 
 class CevaConcurrencyScene(ClipSATScene):
-    """Olympiad Geometry · Cevians — Three cevians AD, BE, CF concur at a single interior point P if and only if (AF/FB)·(BD/DC)·(CE/EA) = 1."""
+    """Olympiad Geometry · Cevians — """
 
     clipsat_track = "Olympiad Geometry · Cevians"
 
     def construct(self):
-        header = self.build_exam_header("Olympiad Geometry · Cevians", "Ceva's Concurrency Criterion: (AF/FB) · (BD/DC) · (CE/EA) = 1")
+        header = self.build_exam_header("Olympiad Geometry · Cevians", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1602,12 +1603,12 @@ class CevaConcurrencyScene(ClipSATScene):
 
 
 class CentralLimitGaltonScene(ClipSATScene):
-    """AP Statistics · Sampling Distributions — Overlays the discrete Binomial PMF B(n, p) and continuous Gaussian envelope N(np, np(1−p)) as trials n increase."""
+    """AP Statistics · Sampling Distributions — """
 
     clipsat_track = "AP Statistics · Sampling Distributions"
 
     def construct(self):
-        header = self.build_exam_header("AP Statistics · Sampling Distributions", "De Moivre-Laplace CLT: Binomial B(n, p) → Normal N(np, np(1−p))")
+        header = self.build_exam_header("AP Statistics · Sampling Distributions", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1622,12 +1623,12 @@ class CentralLimitGaltonScene(ClipSATScene):
 
 
 class PoissonDistributionScene(ClipSATScene):
-    """Probability & Statistics · Discrete Laws — Visualizes the Poisson PMF where mean and variance both equal λ, transitioning from skewed rare events to symmetric hump."""
+    """Probability & Statistics · Discrete Laws — """
 
     clipsat_track = "Probability & Statistics · Discrete Laws"
 
     def construct(self):
-        header = self.build_exam_header("Probability & Statistics · Discrete Laws", "Law of Rare Events: P(X = k) = λᵏ e^(−λ) / k!  (E[X] = Var(X) = λ)")
+        header = self.build_exam_header("Probability & Statistics · Discrete Laws", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1642,12 +1643,12 @@ class PoissonDistributionScene(ClipSATScene):
 
 
 class BayesAreaPartitionScene(ClipSATScene):
-    """AP Statistics / Data Science · Conditional Prob — Partitions the unit probability square into True Positives (Teal) vs. False Positives (Amber) to show P(D|+) visually."""
+    """AP Statistics / Data Science · Conditional Prob — """
 
     clipsat_track = "AP Statistics / Data Science · Conditional Prob"
 
     def construct(self):
-        header = self.build_exam_header("AP Statistics / Data Science · Conditional Prob", "Geometric Bayes Partition: P(A|B) = P(B|A)P(A) / [P(B|A)P(A) + P(B|¬A)P(¬A)]")
+        header = self.build_exam_header("AP Statistics / Data Science · Conditional Prob", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1662,12 +1663,12 @@ class BayesAreaPartitionScene(ClipSATScene):
 
 
 class OLSRegressionResidualsScene(ClipSATScene):
-    """AP Statistics / Digital SAT · Linear Regression — Draws literal geometric squares on each vertical residual eᵢ = yᵢ − (β₀ + β₁xᵢ) and minimizes their total area at β̂₁ = r(sᵧ/sₓ)."""
+    """AP Statistics / Digital SAT · Linear Regression — """
 
     clipsat_track = "AP Statistics / Digital SAT · Linear Regression"
 
     def construct(self):
-        header = self.build_exam_header("AP Statistics / Digital SAT · Linear Regression", "Minimizing Sum of Squared Residuals: SSE(m) = ∑ [yᵢ − (ȳ + m(xᵢ − x̄))]²")
+        header = self.build_exam_header("AP Statistics / Digital SAT · Linear Regression", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1682,12 +1683,12 @@ class OLSRegressionResidualsScene(ClipSATScene):
 
 
 class ConfidenceIntervalCoverageScene(ClipSATScene):
-    """AP Statistics · Statistical Inference — Displays 20 repeated sample intervals x̄ᵢ ± z* σ/√n around true population mean μ, highlighting hits (Teal) vs. misses (Rose)."""
+    """AP Statistics · Statistical Inference — """
 
     clipsat_track = "AP Statistics · Statistical Inference"
 
     def construct(self):
-        header = self.build_exam_header("AP Statistics · Statistical Inference", "Repeated Sampling Coverage: x̄ᵢ ± z* (σ / √n) Capturing True μ")
+        header = self.build_exam_header("AP Statistics · Statistical Inference", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1702,12 +1703,12 @@ class ConfidenceIntervalCoverageScene(ClipSATScene):
 
 
 class StudentTDistributionScene(ClipSATScene):
-    """AP Statistics · t-Tests & Degrees of Freedom — Compares Gosset’s heavy-tailed Student t(ν) density against N(0,1) as degrees of freedom ν = n − 1 grow from 1 (Cauchy) to 30."""
+    """AP Statistics · t-Tests & Degrees of Freedom — """
 
     clipsat_track = "AP Statistics · t-Tests & Degrees of Freedom"
 
     def construct(self):
-        header = self.build_exam_header("AP Statistics · t-Tests & Degrees of Freedom", "Heavy Tails from Estimating σ by s: t_ν Density vs. Standard Normal φ(z)")
+        header = self.build_exam_header("AP Statistics · t-Tests & Degrees of Freedom", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1722,12 +1723,12 @@ class StudentTDistributionScene(ClipSATScene):
 
 
 class BetaConjugateUpdateScene(ClipSATScene):
-    """Bayesian Statistics · Machine Learning — Updates a Beta(α, β) belief density over coin bias p ∈ [0,1] as observed successes α and failures β accumulate."""
+    """Bayesian Statistics · Machine Learning — """
 
     clipsat_track = "Bayesian Statistics · Machine Learning"
 
     def construct(self):
-        header = self.build_exam_header("Bayesian Statistics · Machine Learning", "Beta-Binomial Conjugate Update: f(p; α, β) ∝ p^(α−1) (1 − p)^(β−1)")
+        header = self.build_exam_header("Bayesian Statistics · Machine Learning", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1742,12 +1743,12 @@ class BetaConjugateUpdateScene(ClipSATScene):
 
 
 class ExponentialWaitingTimeScene(ClipSATScene):
-    """Probability & Calculus · Continuous Laws — Plots density f(t) = λe^(−λt) and survival probability P(T > t) = e^(−λt), illustrating the memoryless property."""
+    """Probability & Calculus · Continuous Laws — """
 
     clipsat_track = "Probability & Calculus · Continuous Laws"
 
     def construct(self):
-        header = self.build_exam_header("Probability & Calculus · Continuous Laws", "Memoryless Survival Law: f(t) = λ e^(−λt) & P(T ≤ t₀) = 1 − e^(−λt₀)")
+        header = self.build_exam_header("Probability & Calculus · Continuous Laws", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1762,12 +1763,12 @@ class ExponentialWaitingTimeScene(ClipSATScene):
 
 
 class MarkovStationaryScene(ClipSATScene):
-    """Stochastic Processes · Linear Algebra — Iterates state distribution pₜ₊₁ = pₜ P for a two-state transition matrix, converging exponentially to π₁ = q / (p + q)."""
+    """Stochastic Processes · Linear Algebra — """
 
     clipsat_track = "Stochastic Processes · Linear Algebra"
 
     def construct(self):
-        header = self.build_exam_header("Stochastic Processes · Linear Algebra", "Ergodic Convergence: pₜ₊₁ = pₜ P → π* = (β / (α+β), α / (α+β))")
+        header = self.build_exam_header("Stochastic Processes · Linear Algebra", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1781,13 +1782,13 @@ class MarkovStationaryScene(ClipSATScene):
         self.wait(1.0)
 
 
-class SVDDecompositionScene(ClipSATScene):
-    """Linear Algebra · Matrix Factorizations — Decomposes any 2×2 matrix A = UΣVᵀ into orthogonal rotation Vᵀ, principal stretching (σ₁, σ₂), and rotation U."""
+class GershgorinDiscsScene(ClipSATScene):
+    """Numerical Linear Algebra · Spectral Bounds — """
 
-    clipsat_track = "Linear Algebra · Matrix Factorizations"
+    clipsat_track = "Numerical Linear Algebra · Spectral Bounds"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Matrix Factorizations", "Geometric SVD: A = U Σ Vᵀ  (Unit Circle Mapped to Semi-Axes σ₁u₁, σ₂u₂)")
+        header = self.build_exam_header("Numerical Linear Algebra · Spectral Bounds", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1802,12 +1803,12 @@ class SVDDecompositionScene(ClipSATScene):
 
 
 class GramSchmidtQRScene(ClipSATScene):
-    """Linear Algebra · Orthonormal Bases — Subtracts the parallel projection proj_{u₁}(v₂) from v₂ to construct orthogonal vector u₂ ⊥ u₁ and orthonormal basis (q₁, q₂)."""
+    """Linear Algebra · Orthonormal Bases — """
 
     clipsat_track = "Linear Algebra · Orthonormal Bases"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Orthonormal Bases", "Orthogonal Rejection: u₂ = v₂ − [(v₂ · u₁) / ‖u₁‖²] u₁")
+        header = self.build_exam_header("Linear Algebra · Orthonormal Bases", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1821,13 +1822,13 @@ class GramSchmidtQRScene(ClipSATScene):
         self.wait(1.0)
 
 
-class RotationMatrixSO2Scene(ClipSATScene):
-    """Linear Algebra · Transformations — Rotates basis vectors î → (cos θ, sin θ) and ĵ → (−sin θ, cos θ) while preserving all lengths and angles (det R = +1)."""
+class TraceDeterminantPlaneScene(ClipSATScene):
+    """Linear Algebra & Dynamical Systems · Classification — """
 
-    clipsat_track = "Linear Algebra · Transformations"
+    clipsat_track = "Linear Algebra & Dynamical Systems · Classification"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Transformations", "Rigid Rotation Matrix: R(θ) = [[cos θ, −sin θ], [sin θ, cos θ]]")
+        header = self.build_exam_header("Linear Algebra & Dynamical Systems · Classification", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1842,12 +1843,12 @@ class RotationMatrixSO2Scene(ClipSATScene):
 
 
 class SubspaceProjectionScene(ClipSATScene):
-    """Linear Algebra · Subspaces & Least Squares — Projects 2D space onto a 1D line at angle θ via rank-1 idempotent matrix P = u uᵀ with eigenvalues λ = 1 and λ = 0."""
+    """Linear Algebra · Subspaces & Least Squares — """
 
     clipsat_track = "Linear Algebra · Subspaces & Least Squares"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Subspaces & Least Squares", "Rank-1 Orthogonal Projection: P = u uᵀ  (P² = P, Pᵀ = P, det P = 0)")
+        header = self.build_exam_header("Linear Algebra · Subspaces & Least Squares", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1862,12 +1863,12 @@ class SubspaceProjectionScene(ClipSATScene):
 
 
 class HouseholderReflectionScene(ClipSATScene):
-    """Linear Algebra · Numerical Linear Algebra — Reflects vectors across a mirror line at angle θ via symmetric orthogonal involution H (H² = I, det H = −1)."""
+    """Linear Algebra · Numerical Linear Algebra — """
 
     clipsat_track = "Linear Algebra · Numerical Linear Algebra"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Numerical Linear Algebra", "Mirror Reflection Operator: H = I − 2 n nᵀ  (det H = −1, H² = I)")
+        header = self.build_exam_header("Linear Algebra · Numerical Linear Algebra", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1881,13 +1882,13 @@ class HouseholderReflectionScene(ClipSATScene):
         self.wait(1.0)
 
 
-class ShearCavalieriScene(ClipSATScene):
-    """Linear Algebra · Determinants — Slides horizontal layers via S = [[1, k], [0, 1]], slanting squares into parallelograms of identical base, height, and unit area."""
+class PerronFrobeniusConeScene(ClipSATScene):
+    """Applied Linear Algebra · Spectral Theory — """
 
-    clipsat_track = "Linear Algebra · Determinants"
+    clipsat_track = "Applied Linear Algebra · Spectral Theory"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Determinants", "Equiareal Shear Transformation: S(k) = [[1, k], [0, 1]]  (det S = 1)")
+        header = self.build_exam_header("Applied Linear Algebra · Spectral Theory", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1902,12 +1903,12 @@ class ShearCavalieriScene(ClipSATScene):
 
 
 class PowerIterationEigenScene(ClipSATScene):
-    """Numerical Linear Algebra · PageRank — Repeatedly applies vₖ₊₁ = A vₖ / ‖A vₖ‖, rotating any initial seed vector toward the dominant eigenvector v₁ at rate |λ₂/λ₁|ᵏ."""
+    """Numerical Linear Algebra · PageRank — """
 
     clipsat_track = "Numerical Linear Algebra · PageRank"
 
     def construct(self):
-        header = self.build_exam_header("Numerical Linear Algebra · PageRank", "Dominant Eigenvector Convergence: vₖ = Aᵏv₀ / ‖Aᵏv₀‖ → q₁")
+        header = self.build_exam_header("Numerical Linear Algebra · PageRank", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1922,12 +1923,12 @@ class PowerIterationEigenScene(ClipSATScene):
 
 
 class CramersRuleAreaScene(ClipSATScene):
-    """Linear Algebra · Systems of Equations — Visualizes 3b1b’s geometric proof of Cramer’s Rule: replacing column a₁ with target b scales the parallelogram area by exactly x₁!"""
+    """Linear Algebra · Systems of Equations — """
 
     clipsat_track = "Linear Algebra · Systems of Equations"
 
     def construct(self):
-        header = self.build_exam_header("Linear Algebra · Systems of Equations", "Cramer's Rule via Signed Areas: x₁ = Area(b, a₂) / Area(a₁, a₂)")
+        header = self.build_exam_header("Linear Algebra · Systems of Equations", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1942,12 +1943,12 @@ class CramersRuleAreaScene(ClipSATScene):
 
 
 class ModularTimesCircleScene(ClipSATScene):
-    """Number Theory · Modular Arithmetic — Connects each residue x ∈ {0,…,N−1} on a circle to (m · x) mod N, revealing caustic cardioid (m=2) and nephroid (m=3) envelopes."""
+    """Number Theory · Modular Arithmetic — """
 
     clipsat_track = "Number Theory · Modular Arithmetic"
 
     def construct(self):
-        header = self.build_exam_header("Number Theory · Modular Arithmetic", "Residue Ring Mapping: x ↦ (m · x) mod N  (Caustic Envelope of (m−1) Cusps)")
+        header = self.build_exam_header("Number Theory · Modular Arithmetic", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1962,12 +1963,12 @@ class ModularTimesCircleScene(ClipSATScene):
 
 
 class EuclideanGCDTilingScene(ClipSATScene):
-    """Number Theory · Discrete Mathematics — Tiles an a × b rectangle with the largest possible squares at each step (a = q·b + r) until the final square side reveals gcd(a, b)."""
+    """Number Theory · Discrete Mathematics — """
 
     clipsat_track = "Number Theory · Discrete Mathematics"
 
     def construct(self):
-        header = self.build_exam_header("Number Theory · Discrete Mathematics", "Euclid's Elements Book VII: gcd(a, b) = gcd(b, a mod b) via Square Tiling")
+        header = self.build_exam_header("Number Theory · Discrete Mathematics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -1982,12 +1983,12 @@ class EuclideanGCDTilingScene(ClipSATScene):
 
 
 class FibonacciGoldenSpiralScene(ClipSATScene):
-    """Sequences & Series · Number Theory — Plots the alternating convergence of F_{n+1}/F_n above and below φ = (1+√5)/2 ≈ 1.61803 alongside golden whirling squares."""
+    """Sequences & Series · Number Theory — """
 
     clipsat_track = "Sequences & Series · Number Theory"
 
     def construct(self):
-        header = self.build_exam_header("Sequences & Series · Number Theory", "Golden Ratio Convergence: lim (Fₙ₊₁ / Fₙ) = φ = (1 + √5) / 2 ≈ 1.618034")
+        header = self.build_exam_header("Sequences & Series · Number Theory", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2002,12 +2003,12 @@ class FibonacciGoldenSpiralScene(ClipSATScene):
 
 
 class CollatzHailstoneScene(ClipSATScene):
-    """Number Theory · Unsolved Conjectures — Traces the hailstone sequence (n/2 if even, 3n+1 if odd) from seed n₀ through its peak altitude down to the 4 → 2 → 1 cycle."""
+    """Number Theory · Unsolved Conjectures — """
 
     clipsat_track = "Number Theory · Unsolved Conjectures"
 
     def construct(self):
-        header = self.build_exam_header("Number Theory · Unsolved Conjectures", "Hailstone Orbit: f(n) = n/2 (even) or 3n + 1 (odd) → 4 → 2 → 1")
+        header = self.build_exam_header("Number Theory · Unsolved Conjectures", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2022,12 +2023,12 @@ class CollatzHailstoneScene(ClipSATScene):
 
 
 class BirthdayParadoxScene(ClipSATScene):
-    """Combinatorics & Probability · Pigeonhole — Plots P(collision) = 1 − ∏_{i=0}^{k−1}(1 − i/365) ≈ 1 − e^(−k(k−1)/730), crossing 50% at just k = 23 people!"""
+    """Combinatorics & Probability · Pigeonhole — """
 
     clipsat_track = "Combinatorics & Probability · Pigeonhole"
 
     def construct(self):
-        header = self.build_exam_header("Combinatorics & Probability · Pigeonhole", "Quadratic Pair Collisions: P(match) = 1 − 365! / [(365−k)! 365ᵏ]")
+        header = self.build_exam_header("Combinatorics & Probability · Pigeonhole", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2042,12 +2043,12 @@ class BirthdayParadoxScene(ClipSATScene):
 
 
 class PascalSierpinskiScene(ClipSATScene):
-    """Combinatorics · Binomial Theorem — Highlights odd vs. even binomial coefficients C(n, k) across rows of Pascal’s triangle, unveiling the self-similar Sierpinski gasket."""
+    """Combinatorics · Binomial Theorem — """
 
     clipsat_track = "Combinatorics · Binomial Theorem"
 
     def construct(self):
-        header = self.build_exam_header("Combinatorics · Binomial Theorem", "Binomial Parity Fractal: C(n, k) = C(n−1, k−1) + C(n−1, k) (mod p)")
+        header = self.build_exam_header("Combinatorics · Binomial Theorem", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2062,12 +2063,12 @@ class PascalSierpinskiScene(ClipSATScene):
 
 
 class ProjectileBallisticsScene(ClipSATScene):
-    """AP Physics C / Mechanics · Kinematics — Compares the ideal vacuum trajectory y = x tan θ − gx²/(2v₀²cos²θ) against air-resistance asymmetry and max-range angle θ = 45°."""
+    """AP Physics C / Mechanics · Kinematics — """
 
     clipsat_track = "AP Physics C / Mechanics · Kinematics"
 
     def construct(self):
-        header = self.build_exam_header("AP Physics C / Mechanics · Kinematics", "Ballistic Parabola & Complementary Range: R = (v₀² / g) sin(2θ₀)")
+        header = self.build_exam_header("AP Physics C / Mechanics · Kinematics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2081,13 +2082,13 @@ class ProjectileBallisticsScene(ClipSATScene):
         self.wait(1.0)
 
 
-class StandingWaveHarmonicsScene(ClipSATScene):
-    """Wave Physics · PDEs & Boundary Values — Superposes right- and left-traveling waves to form stationary nodes and antinodes y(x,t) = 2A sin(nπx/L) cos(ωₙt)."""
+class DopplerMachConeScene(ClipSATScene):
+    """Wave Physics & Fluid Mechanics · Acoustics — """
 
-    clipsat_track = "Wave Physics · PDEs & Boundary Values"
+    clipsat_track = "Wave Physics & Fluid Mechanics · Acoustics"
 
     def construct(self):
-        header = self.build_exam_header("Wave Physics · PDEs & Boundary Values", "Standing Wave Eigenmodes: yₙ(x,t) = A sin(nπx / L) cos(ωₙ t)")
+        header = self.build_exam_header("Wave Physics & Fluid Mechanics · Acoustics", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2101,13 +2102,13 @@ class StandingWaveHarmonicsScene(ClipSATScene):
         self.wait(1.0)
 
 
-class DrivenResonanceScene(ClipSATScene):
-    """Differential Equations · Vibrations & Circuits — Plots steady-state amplitude A(ω) = F₀ / √((ω₀²−ω²)² + (2ζω₀ω)²) peaking near ω ≈ ω₀ where phase lag crosses 90°."""
+class MinkowskiSpacetimeScene(ClipSATScene):
+    """Modern Physics · Special Relativity & Hyperbolic Geometry — """
 
-    clipsat_track = "Differential Equations · Vibrations & Circuits"
+    clipsat_track = "Modern Physics · Special Relativity & Hyperbolic Geometry"
 
     def construct(self):
-        header = self.build_exam_header("Differential Equations · Vibrations & Circuits", "Steady-State Resonance: A(ω) = 1 / √[(1 − (ω/ω₀)²)² + (2ζ ω/ω₀)²]")
+        header = self.build_exam_header("Modern Physics · Special Relativity & Hyperbolic Geometry", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2122,12 +2123,12 @@ class DrivenResonanceScene(ClipSATScene):
 
 
 class SATVertexDiscriminantScene(ClipSATScene):
-    """Digital SAT Math · Passport to Advanced Math — Links vertex form f(x) = a(x − h)² + k directly to axis of symmetry x = h, extremum k, and discriminant Δ = b² − 4ac."""
+    """Digital SAT Math · Passport to Advanced Math — """
 
     clipsat_track = "Digital SAT Math · Passport to Advanced Math"
 
     def construct(self):
-        header = self.build_exam_header("Digital SAT Math · Passport to Advanced Math", "Vertex Form & Real Root Count: y = a(x − h)² + k  (Δ = −4ak)")
+        header = self.build_exam_header("Digital SAT Math · Passport to Advanced Math", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2142,12 +2143,12 @@ class SATVertexDiscriminantScene(ClipSATScene):
 
 
 class QudratInscribedAreaScene(ClipSATScene):
-    """Qiyas GAT Qudrat · الهندسة والمقارنات — Compares a circle circumscribed around a square (Area ratio π : 2) with an inscribed circle inside the square (Area ratio π : 4)."""
+    """Qiyas GAT Qudrat · الهندسة والمقارنات — """
 
     clipsat_track = "Qiyas GAT Qudrat · الهندسة والمقارنات"
 
     def construct(self):
-        header = self.build_exam_header("Qiyas GAT Qudrat · الهندسة والمقارنات", "Concentric Circle-Square-Circle Ratio: A_outer / A_inner = 2.000 Exactly")
+        header = self.build_exam_header("Qiyas GAT Qudrat · الهندسة والمقارنات", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2162,12 +2163,12 @@ class QudratInscribedAreaScene(ClipSATScene):
 
 
 class QudratClockAngleScene(ClipSATScene):
-    """Qiyas GAT Qudrat · مسائل الساعة والزوايا — Visualizes why the hour hand advances 0.5° per minute while the minute hand advances 6° per minute, yielding Δθ = |30H − 5.5M|."""
+    """Qiyas GAT Qudrat · مسائل الساعة والزوايا — """
 
     clipsat_track = "Qiyas GAT Qudrat · مسائل الساعة والزوايا"
 
     def construct(self):
-        header = self.build_exam_header("Qiyas GAT Qudrat · مسائل الساعة والزوايا", "Clock Hands Relative Angular Speed: θ = |30°·H − 5.5°·M|")
+        header = self.build_exam_header("Qiyas GAT Qudrat · مسائل الساعة والزوايا", "")
         self.add(header)
         axes = Axes(
             x_range=(-3.2, 3.2, 1.0),
@@ -2181,1251 +2182,1354 @@ class QudratClockAngleScene(ClipSATScene):
         self.wait(1.0)
 
 
+# ── 50 Interactive 3D Multivariable, Spatial & Topological Scenes (#101–#150) ──
+
+
 class EllipticParaboloid3DScene(ClipSATScene):
-    """MULTIVARIABLE CALCULUS · QUADRIC SURFACES — 3D bowl z = (x²/a²) + (y²/b²) sliced by horizontal plane z = c projecting elliptical floor contours."""
+    """MULTIVARIABLE CALCULUS · QUADRIC SURFACES — """
 
     clipsat_track = "MULTIVARIABLE CALCULUS · QUADRIC SURFACES"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE CALCULUS · QUADRIC SURFACES", "3D Elliptic Paraboloid & Level Curves")
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · QUADRIC SURFACES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class HyperbolicParaboloid3DScene(ClipSATScene):
-    """MULTIVARIABLE CALCULUS · SADDLE SURFACES — Minimax saddle surface z = x² − y² curving upward along x and downward along y."""
+    """MULTIVARIABLE CALCULUS · SADDLE SURFACES — """
 
     clipsat_track = "MULTIVARIABLE CALCULUS · SADDLE SURFACES"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE CALCULUS · SADDLE SURFACES", "3D Hyperbolic Paraboloid Saddle")
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · SADDLE SURFACES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class HyperboloidOneSheet3DScene(ClipSATScene):
-    """3D ANALYTIC GEOMETRY · RULED QUADRICS — Cooling-tower quadric x² + y² − z² = a² woven entirely from straight Amber and Teal ruling lines."""
+    """3D ANALYTIC GEOMETRY · RULED QUADRICS — """
 
     clipsat_track = "3D ANALYTIC GEOMETRY · RULED QUADRICS"
 
     def construct(self):
-        header = self.build_exam_header("3D ANALYTIC GEOMETRY · RULED QUADRICS", "3D Hyperboloid of One Sheet (Doubly Ruled)")
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · RULED QUADRICS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class HyperboloidTwoSheets3DScene(ClipSATScene):
-    """3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION — Upper and lower disconnected sheets z²/c² − x²/a² − y²/a² = 1 separated by vertex gap 2c."""
+    """3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION — """
 
     clipsat_track = "3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION"
 
     def construct(self):
-        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION", "3D Hyperboloid of Two Sheets")
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC CLASSIFICATION", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class TriaxialEllipsoid3DScene(ClipSATScene):
-    """3D ANALYTIC GEOMETRY · QUADRIC VOLUMES — Triaxial ellipsoid (x/a)² + (y/b)² + (z/c)² = 1 with orthogonal semi-axes a, b, c and volume 4/3 πabc."""
+    """3D ANALYTIC GEOMETRY · QUADRIC VOLUMES — """
 
     clipsat_track = "3D ANALYTIC GEOMETRY · QUADRIC VOLUMES"
 
     def construct(self):
-        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC VOLUMES", "3D Triaxial Ellipsoid & Principal Axes")
+        header = self.build_exam_header("3D ANALYTIC GEOMETRY · QUADRIC VOLUMES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class ConeConicSlice3DScene(ClipSATScene):
-    """APOLLONIUS & DANDELIN · 3D CONIC SECTIONS — Double circular cone z² = x² + y² intersected by tilted plane z = m x + h0 generating ellipse, parabola, or hyperbola."""
+    """APOLLONIUS & DANDELIN · 3D CONIC SECTIONS — """
 
     clipsat_track = "APOLLONIUS & DANDELIN · 3D CONIC SECTIONS"
 
     def construct(self):
-        header = self.build_exam_header("APOLLONIUS & DANDELIN · 3D CONIC SECTIONS", "3D Double Cone & Conic Section Slicing Plane")
+        header = self.build_exam_header("APOLLONIUS & DANDELIN · 3D CONIC SECTIONS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class MonkeySaddle3DScene(ClipSATScene):
-    """DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS — Three-fold symmetric saddle z = x³ − 3xy² = r³ cos(3θ) with three valleys and three ridges."""
+    """DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS — """
 
     clipsat_track = "DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS"
 
     def construct(self):
-        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS", "3D Monkey Saddle Surface (z = x³ − 3xy²)")
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · DEGENERATE CRITICAL POINTS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class RippleSinc3DScene(ClipSATScene):
-    """FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC — Circular diffraction wave surface z = sin(k r)/(k r) with central peak and concentric nodal zero rings."""
+    """FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC — """
 
     clipsat_track = "FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC"
 
     def construct(self):
-        header = self.build_exam_header("FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC", "3D Radial Sinc Wave Interference Surface")
+        header = self.build_exam_header("FOURIER OPTICS & MULTIVARIABLE · RADIAL SINC", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
-class BivariateNormal3DScene(ClipSATScene):
-    """MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF — 3D Gaussian bell surface with correlation ρ and 1σ elliptical covariance contour on the floor."""
+class HopfFibrationS3Scene(ClipSATScene):
+    """DIFFERENTIAL TOPOLOGY · HOPF BUNDLE S¹ → S³ → S² — """
 
-    clipsat_track = "MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF"
+    clipsat_track = "DIFFERENTIAL TOPOLOGY · HOPF BUNDLE S¹ → S³ → S²"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE STATISTICS · JOINT GAUSSIAN PDF", "3D Bivariate Normal Density & Mahalanobis Ellipse")
+        header = self.build_exam_header("DIFFERENTIAL TOPOLOGY · HOPF BUNDLE S¹ → S³ → S²", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class HelicoidCatenoid3DScene(ClipSATScene):
-    """DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0) — Isometric Associate Family morphing a ruled spiral helicoid into a rotational soap-film catenoid."""
+    """DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0) — """
 
     clipsat_track = "DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0)"
 
     def construct(self):
-        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0)", "3D Helicoid to Catenoid Minimal Surface Morph")
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · MINIMAL SURFACES (H = 0)", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class TangentPlane3DScene(ClipSATScene):
-    """AP / UNIVERSITY CALCULUS III · LINEARIZATION — Tangent plane L(x,y) = f(x₀,y₀) + f_x(x−x₀) + f_y(y−y₀) and normal vector n = (−f_x, −f_y, 1)."""
+    """AP / UNIVERSITY CALCULUS III · LINEARIZATION — """
 
     clipsat_track = "AP / UNIVERSITY CALCULUS III · LINEARIZATION"
 
     def construct(self):
-        header = self.build_exam_header("AP / UNIVERSITY CALCULUS III · LINEARIZATION", "3D Tangent Plane & Surface Normal Vector")
+        header = self.build_exam_header("AP / UNIVERSITY CALCULUS III · LINEARIZATION", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class PartialDerivatives3DScene(ClipSATScene):
-    """CALCULUS III · PARTIAL DERIVATIVES — Vertical slicing planes y = y₀ and x = x₀ cutting z = f(x,y) to reveal partial slopes ∂f/∂x and ∂f/∂y."""
+    """CALCULUS III · PARTIAL DERIVATIVES — """
 
     clipsat_track = "CALCULUS III · PARTIAL DERIVATIVES"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · PARTIAL DERIVATIVES", "3D Partial Derivatives f_x and f_y Slicing Planes")
+        header = self.build_exam_header("CALCULUS III · PARTIAL DERIVATIVES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class DirectionalDerivative3DScene(ClipSATScene):
-    """CALCULUS III · DIRECTIONAL DERIVATIVES — Vertical slicing plane along unit vector u = (cos α, sin α) comparing slope D_u f against steepest gradient ∇f."""
+    """CALCULUS III · DIRECTIONAL DERIVATIVES — """
 
     clipsat_track = "CALCULUS III · DIRECTIONAL DERIVATIVES"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · DIRECTIONAL DERIVATIVES", "3D Directional Derivative D_u f = ∇f · u")
+        header = self.build_exam_header("CALCULUS III · DIRECTIONAL DERIVATIVES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
-class GradientAscent3DScene(ClipSATScene):
-    """OPTIMIZATION & CALCULUS III · STEEPEST ASCENT — 3D trajectory climbing a mountain peak z = f(x,y) while its floor shadow crosses every contour line at 90°."""
+class SphericalGeodesicTriangleScene(ClipSATScene):
+    """RIEMANNIAN GEOMETRY · GAUSS-BONNET ON S² — """
 
-    clipsat_track = "OPTIMIZATION & CALCULUS III · STEEPEST ASCENT"
+    clipsat_track = "RIEMANNIAN GEOMETRY · GAUSS-BONNET ON S²"
 
     def construct(self):
-        header = self.build_exam_header("OPTIMIZATION & CALCULUS III · STEEPEST ASCENT", "3D Gradient Ascent & Orthogonal Contour Path")
+        header = self.build_exam_header("RIEMANNIAN GEOMETRY · GAUSS-BONNET ON S²", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class HessianClassification3DScene(ClipSATScene):
-    """MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION — Quadratic surface z = ½(f_xx x² + 2f_xy xy + f_yy y²) morphing across D > 0 (bowl/dome) and D < 0 (saddle)."""
+    """MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION — """
 
     clipsat_track = "MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION", "3D Second Derivative Hessian Discriminant Test")
+        header = self.build_exam_header("MULTIVARIABLE CALCULUS · EXTREMA CLASSIFICATION", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class LagrangeCylinder3DScene(ClipSATScene):
-    """MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA — Constraint cylinder g(x,y) = x² + y² = R² intersecting surface z = f(x,y) with constrained space curve extrema."""
+    """MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA — """
 
     clipsat_track = "MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA", "3D Lagrange Multipliers on a Constraint Cylinder")
+        header = self.build_exam_header("MULTIVARIABLE OPTIMIZATION · CONSTRAINED EXTREMA", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
-class Taylor2DSurface3DScene(ClipSATScene):
-    """MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES — Comparing cos(x)cos(y) in 3D against its osculating quadratic Taylor paraboloid T₂(x,y) = 1 − ½(x²+y²)."""
+class EnneperMinimalSurfaceScene(ClipSATScene):
+    """WEIERSTRASS-ENNEPER REPRESENTATION · H = 0 — """
 
-    clipsat_track = "MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES"
+    clipsat_track = "WEIERSTRASS-ENNEPER REPRESENTATION · H = 0"
 
     def construct(self):
-        header = self.build_exam_header("MULTIVARIABLE CALCULUS · 2D TAYLOR SERIES", "3D Quadratic Taylor Paraboloid Approximation")
+        header = self.build_exam_header("WEIERSTRASS-ENNEPER REPRESENTATION · H = 0", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
-class EnvelopePlanes3DScene(ClipSATScene):
-    """DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES — A 1-parameter family of tangent planes wrapping around a 3D paraboloid envelope along characteristic rulings."""
+class OloidDevelopableHullScene(ClipSATScene):
+    """CONVEX & KINEMATIC 3D GEOMETRY · PAUL SCHATZ OLOID — """
 
-    clipsat_track = "DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES"
+    clipsat_track = "CONVEX & KINEMATIC 3D GEOMETRY · PAUL SCHATZ OLOID"
 
     def construct(self):
-        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · ENVELOPE OF PLANES", "3D Tangent Plane Family Envelope")
+        header = self.build_exam_header("CONVEX & KINEMATIC 3D GEOMETRY · PAUL SCHATZ OLOID", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class ImplicitLevelSurface3DScene(ClipSATScene):
-    """VECTOR CALCULUS · EQUIPOTENTIAL SURFACES — Concentric 3D level surfaces F(x,y,z) = c with outward gradient normal vectors ∇F perpendicular to the shell."""
+    """VECTOR CALCULUS · EQUIPOTENTIAL SURFACES — """
 
     clipsat_track = "VECTOR CALCULUS · EQUIPOTENTIAL SURFACES"
 
     def construct(self):
-        header = self.build_exam_header("VECTOR CALCULUS · EQUIPOTENTIAL SURFACES", "3D Level Surfaces F(x,y,z) = c & Normal Field ∇F")
+        header = self.build_exam_header("VECTOR CALCULUS · EQUIPOTENTIAL SURFACES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class ChainRulePath3DScene(ClipSATScene):
-    """CALCULUS III · MULTIVARIABLE CHAIN RULE — Particle moving along spiral (x(t), y(t)) on z = f(x,y) with instantaneous rate dz/dt = f_x dx/dt + f_y dy/dt."""
+    """CALCULUS III · MULTIVARIABLE CHAIN RULE — """
 
     clipsat_track = "CALCULUS III · MULTIVARIABLE CHAIN RULE"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · MULTIVARIABLE CHAIN RULE", "3D Multivariable Chain Rule Along a Spiral Path")
+        header = self.build_exam_header("CALCULUS III · MULTIVARIABLE CHAIN RULE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class DoubleIntegralColumns3DScene(ClipSATScene):
-    """CALCULUS III · DOUBLE INTEGRALS — N×N 3D rectangular prism columns under z = f(x,y) converging to the exact volume ∬_R f(x,y) dA."""
+    """CALCULUS III · DOUBLE INTEGRALS — """
 
     clipsat_track = "CALCULUS III · DOUBLE INTEGRALS"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · DOUBLE INTEGRALS", "3D Double Integral Riemann Prism Columns")
+        header = self.build_exam_header("CALCULUS III · DOUBLE INTEGRALS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class FubiniSlices3DScene(ClipSATScene):
-    """CALCULUS III · ITERATED INTEGRALS — Sweeping vertical lamina A(x) = ∫ f(x,y) dy across x ∈ [−a, a] to integrate 3D volume by cross-sections."""
+    """CALCULUS III · ITERATED INTEGRALS — """
 
     clipsat_track = "CALCULUS III · ITERATED INTEGRALS"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · ITERATED INTEGRALS", "3D Fubini's Theorem Iterated Cross-Section Slices")
+        header = self.build_exam_header("CALCULUS III · ITERATED INTEGRALS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class CylindricalCoords3DScene(ClipSATScene):
-    """CALCULUS III · 3D COORDINATE SYSTEMS — Point P(r cos θ, r sin θ, z) on a coaxial cylinder with radial arm r, angle θ, height z, and volume wedge r dr dθ dz."""
+    """CALCULUS III · 3D COORDINATE SYSTEMS — """
 
     clipsat_track = "CALCULUS III · 3D COORDINATE SYSTEMS"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · 3D COORDINATE SYSTEMS", "3D Cylindrical Coordinates (r, θ, z) & Jacobian Wedge")
+        header = self.build_exam_header("CALCULUS III · 3D COORDINATE SYSTEMS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class SphericalCoords3DScene(ClipSATScene):
-    """CALCULUS III · SPHERICAL INTEGRALS — Spherical shell of radius ρ, polar angle φ from +Z, azimuth θ, and Jacobian patch dV = ρ² sin φ dρ dφ dθ."""
+    """CALCULUS III · SPHERICAL INTEGRALS — """
 
     clipsat_track = "CALCULUS III · SPHERICAL INTEGRALS"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · SPHERICAL INTEGRALS", "3D Spherical Coordinates (ρ, θ, φ) & Volume Element")
+        header = self.build_exam_header("CALCULUS III · SPHERICAL INTEGRALS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
-class WasherShell3DScene(ClipSATScene):
-    """AP CALCULUS BC · 3D SOLIDS OF REVOLUTION — Full 3D revolved paraboloid goblet showing an animated 3D washer ring and nested cylindrical shell."""
+class SteinmetzBicylinderScene(ClipSATScene):
+    """ARCHIMEDEAN SOLID GEOMETRY · INTERSECTING CYLINDERS — """
 
-    clipsat_track = "AP CALCULUS BC · 3D SOLIDS OF REVOLUTION"
+    clipsat_track = "ARCHIMEDEAN SOLID GEOMETRY · INTERSECTING CYLINDERS"
 
     def construct(self):
-        header = self.build_exam_header("AP CALCULUS BC · 3D SOLIDS OF REVOLUTION", "3D Solid of Revolution — Washers & Cylindrical Shells")
+        header = self.build_exam_header("ARCHIMEDEAN SOLID GEOMETRY · INTERSECTING CYLINDERS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class PappusTorus3DScene(ClipSATScene):
-    """CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM — Circular cross-section of radius r revolving at centroid distance R around the Z-axis to sweep a 3D torus."""
+    """CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM — """
 
     clipsat_track = "CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM"
 
     def construct(self):
-        header = self.build_exam_header("CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM", "3D Pappus's Centroid Theorem & Revolving Torus")
+        header = self.build_exam_header("CLASSICAL & CALCULUS GEOMETRY · PAPPUS THEOREM", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class Cavalieri3DSolidsScene(ClipSATScene):
-    """ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE — Horizontal slicing plane at height z cutting a 3D hemisphere (disk π(R²−z²)) and cylinder-minus-cone (annulus πR²−πz²)."""
+    """ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE — """
 
     clipsat_track = "ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE"
 
     def construct(self):
-        header = self.build_exam_header("ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE", "3D Cavalieri's Principle (Hemisphere vs Punctured Cylinder)")
+        header = self.build_exam_header("ARCHIMEDES & 3D GEOMETRY · CAVALIERI PRINCIPLE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class TripleIntegralTetrahedron3DScene(ClipSATScene):
-    """CALCULUS III · TRIPLE INTEGRALS — First-octant tetrahedron x/a + y/b + z/c ≤ 1 with vertical z-integration column and planar xy-projection triangle."""
+    """CALCULUS III · TRIPLE INTEGRALS — """
 
     clipsat_track = "CALCULUS III · TRIPLE INTEGRALS"
 
     def construct(self):
-        header = self.build_exam_header("CALCULUS III · TRIPLE INTEGRALS", "3D Triple Integral over a Simplex Tetrahedron")
+        header = self.build_exam_header("CALCULUS III · TRIPLE INTEGRALS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class FrenetSerretHelix3DScene(ClipSATScene):
-    """DIFFERENTIAL GEOMETRY · SPACE CURVES — Circular 3D helix r(t) = (R cos t, R sin t, c t) with moving orthonormal Tangent T, Normal N, and Binormal B triad."""
+    """DIFFERENTIAL GEOMETRY · SPACE CURVES — """
 
     clipsat_track = "DIFFERENTIAL GEOMETRY · SPACE CURVES"
 
     def construct(self):
-        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · SPACE CURVES", "3D Helix & Moving Frenet-Serret Frame (T, N, B)")
+        header = self.build_exam_header("DIFFERENTIAL GEOMETRY · SPACE CURVES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class VivianiCurve3DScene(ClipSATScene):
-    """3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS — Figure-eight 3D space curve formed where cylinder (x−a)² + y² = a² pierces sphere x² + y² + z² = 4a²."""
+    """3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS — """
 
     clipsat_track = "3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS"
 
     def construct(self):
-        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS", "3D Viviani's Curve (Sphere ∩ Tangent Cylinder)")
+        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · SPACE INTERSECTIONS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class TrefoilKnot3DScene(ClipSATScene):
-    """LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY — Non-trivial 3D torus knot winding p = 2 times meridionally and q = 3 times longitudinally with tubular neighborhood."""
+    """LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY — """
 
     clipsat_track = "LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY"
 
     def construct(self):
-        header = self.build_exam_header("LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY", "3D Trefoil Torus Knot (p = 2, q = 3)")
+        header = self.build_exam_header("LOW-DIMENSIONAL TOPOLOGY · KNOT THEORY", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class MobiusStrip3DScene(ClipSATScene):
-    """DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY — Single-sided 3D ruled strip with a 180° half-twist where a transported normal vector n reverses direction after one loop."""
+    """DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY — """
 
     clipsat_track = "DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY"
 
     def construct(self):
-        header = self.build_exam_header("DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY", "3D Möbius Strip & Non-Orientable Normal Transport")
+        header = self.build_exam_header("DIFFERENTIAL TOPOLOGY · NON-ORIENTABILITY", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class TorusVillarceau3DScene(ClipSATScene):
-    """3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES — 3D ring torus displaying four distinct circle families passing through a point: meridian, parallel, and two Villarceau circles."""
+    """3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES — """
 
     clipsat_track = "3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES"
 
     def construct(self):
-        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES", "3D Ring Torus & Villarceau Circles")
+        header = self.build_exam_header("3D DIFFERENTIAL GEOMETRY · TORUS FAMILIES", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class VectorField3DRotDivScene(ClipSATScene):
-    """VECTOR CALCULUS · 3D CURL & DIVERGENCE — 3D lattice of arrows blending rotational vortex curl (−y, x, 0) and radial source divergence (x, y, z)."""
+    """VECTOR CALCULUS · 3D CURL & DIVERGENCE — """
 
     clipsat_track = "VECTOR CALCULUS · 3D CURL & DIVERGENCE"
 
     def construct(self):
-        header = self.build_exam_header("VECTOR CALCULUS · 3D CURL & DIVERGENCE", "3D Vector Field — Swirl Curl & Radial Divergence")
+        header = self.build_exam_header("VECTOR CALCULUS · 3D CURL & DIVERGENCE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class GaussDivergenceFlux3DScene(ClipSATScene):
-    """VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM — Outward normal flux vectors F · n piercing a closed 3D sphere of radius R equal the interior volume integral of ∇·F."""
+    """VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM — """
 
     clipsat_track = "VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM"
 
     def construct(self):
-        header = self.build_exam_header("VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM", "3D Gauss's Divergence Theorem Flux Sphere")
+        header = self.build_exam_header("VECTOR CALCULUS · GAUSS DIVERGENCE THEOREM", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class StokesTheoremCap3DScene(ClipSATScene):
-    """VECTOR CALCULUS · KELVIN-STOKES THEOREM — Paraboloid cap Σ in 3D with surface curl arrows (∇×F)·n matching the boundary line integral ∮_∂Σ F·dr around the rim."""
+    """VECTOR CALCULUS · KELVIN-STOKES THEOREM — """
 
     clipsat_track = "VECTOR CALCULUS · KELVIN-STOKES THEOREM"
 
     def construct(self):
-        header = self.build_exam_header("VECTOR CALCULUS · KELVIN-STOKES THEOREM", "3D Stokes' Theorem Paraboloid Cap & Rim Circulation")
+        header = self.build_exam_header("VECTOR CALCULUS · KELVIN-STOKES THEOREM", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class CrossProduct3DScene(ClipSATScene):
-    """LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT — Vectors a and b in R³, their spanned parallelogram of area ‖a×b‖ = ‖a‖‖b‖sin θ, and perpendicular vector a × b."""
+    """LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT — """
 
     clipsat_track = "LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT"
 
     def construct(self):
-        header = self.build_exam_header("LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT", "3D Cross Product a × b & Right-Hand Orthogonal Area")
+        header = self.build_exam_header("LINEAR ALGEBRA & 3D VECTORS · CROSS PRODUCT", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class ParallelepipedVolume3DScene(ClipSATScene):
-    """LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D — 3D parallelepiped spanned by vectors a, b, c with base area vector b × c and signed volume det[a b c] = a · (b × c)."""
+    """LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D — """
 
     clipsat_track = "LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D"
 
     def construct(self):
-        header = self.build_exam_header("LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D", "3D Parallelepiped & Determinant Volume |a · (b × c)|")
+        header = self.build_exam_header("LINEAR ALGEBRA · 3×3 DETERMINANTS IN 3D", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class PlaneNormalDistance3DScene(ClipSATScene):
-    """IB MATH AA HL / 3D GEOMETRY · PLANES IN R³ — Tilted 3D plane Ax + By + Cz = D with normal vector n and shortest orthogonal projection segment from exterior point P."""
+    """IB MATH AA HL / 3D GEOMETRY · PLANES IN R³ — """
 
     clipsat_track = "IB MATH AA HL / 3D GEOMETRY · PLANES IN R³"
 
     def construct(self):
-        header = self.build_exam_header("IB MATH AA HL / 3D GEOMETRY · PLANES IN R³", "3D Plane Equation n · (r − r₀) = 0 & Point Distance")
+        header = self.build_exam_header("IB MATH AA HL / 3D GEOMETRY · PLANES IN R³", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class SkewLinesDistance3DScene(ClipSATScene):
-    """IB MATH AA HL · SKEW LINES IN 3D SPACE — Two non-parallel, non-intersecting 3D skew lines L₁(s) and L₂(t) joined by their unique common perpendicular bridge."""
+    """IB MATH AA HL · SKEW LINES IN 3D SPACE — """
 
     clipsat_track = "IB MATH AA HL · SKEW LINES IN 3D SPACE"
 
     def construct(self):
-        header = self.build_exam_header("IB MATH AA HL · SKEW LINES IN 3D SPACE", "3D Skew Lines & Common Perpendicular Distance")
+        header = self.build_exam_header("IB MATH AA HL · SKEW LINES IN 3D SPACE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class SVD3DEllipsoidScene(ClipSATScene):
-    """UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY — 3×3 matrix transformation mapping the 3D unit sphere into a rotated ellipsoid with singular semi-axes σ₁u₁, σ₂u₂, σ₃u₃."""
+    """UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY — """
 
     clipsat_track = "UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY"
 
     def construct(self):
-        header = self.build_exam_header("UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY", "3D Singular Value Decomposition (Sphere → Ellipsoid)")
+        header = self.build_exam_header("UNIVERSITY LINEAR ALGEBRA · 3D SVD GEOMETRY", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class RodriguesRotation3DScene(ClipSATScene):
-    """3D LIE GROUPS SO(3) & COMPUTER GRAPHICS — Rotating 3D vector v around unit axis k by angle θ along a circular precession cone via Rodrigues’ formula."""
+    """3D LIE GROUPS SO(3) & COMPUTER GRAPHICS — """
 
     clipsat_track = "3D LIE GROUPS SO(3) & COMPUTER GRAPHICS"
 
     def construct(self):
-        header = self.build_exam_header("3D LIE GROUPS SO(3) & COMPUTER GRAPHICS", "3D Rodrigues Rotation Formula & Axis-Angle Cone")
+        header = self.build_exam_header("3D LIE GROUPS SO(3) & COMPUTER GRAPHICS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class PlatonicSolidsEuler3DScene(ClipSATScene):
-    """3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS — Interactive 3D Tetrahedron, Cube, Octahedron, and Icosahedron verifying Euler’s polyhedral invariant V − E + F = 2."""
+    """3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS — """
 
     clipsat_track = "3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS"
 
     def construct(self):
-        header = self.build_exam_header("3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS", "3D Platonic Solids & Euler's Characteristic V − E + F = 2")
+        header = self.build_exam_header("3D COMBINATORIAL TOPOLOGY · PLATONIC SOLIDS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class StereographicProjection3DScene(ClipSATScene):
-    """COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE — Rays from North Pole N(0,0,1) through a circle on the 3D unit sphere S² projecting conformally to a circle on z = 0."""
+    """COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE — """
 
     clipsat_track = "COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE"
 
     def construct(self):
-        header = self.build_exam_header("COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE", "3D Riemann Sphere & Stereographic Projection")
+        header = self.build_exam_header("COMPLEX ANALYSIS & 3D GEOMETRY · RIEMANN SPHERE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class LorenzAttractor3DScene(ClipSATScene):
-    """NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY — Chaotic 3D phase-space trajectory orbiting the two butterfly wing equilibria of the Lorenz convection system."""
+    """NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY — """
 
     clipsat_track = "NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY"
 
     def construct(self):
-        header = self.build_exam_header("NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY", "3D Lorenz Strange Attractor Butterfly")
+        header = self.build_exam_header("NONLINEAR DYNAMICS & 3D ODEs · CHAOS THEORY", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class RosslerAttractor3DScene(ClipSATScene):
-    """NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING — 3D Rössler strange attractor spiralling outward in the xy-plane before folding vertically along the z-axis."""
+    """NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING — """
 
     clipsat_track = "NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING"
 
     def construct(self):
-        header = self.build_exam_header("NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING", "3D Rössler Chaotic Folding Band Attractor")
+        header = self.build_exam_header("NONLINEAR DYNAMICS · 3D PHASE SPACE FOLDING", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class MembraneEigenmode3DScene(ClipSATScene):
-    """PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION — 3D normal mode u(x,y,t) = sin(mπx) sin(nπy) cos(ωt) of a vibrating square membrane with Chladni nodal lines."""
+    """PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION — """
 
     clipsat_track = "PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION"
 
     def construct(self):
-        header = self.build_exam_header("PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION", "3D Vibrating Drumhead Standing Wave Mode (m, n)")
+        header = self.build_exam_header("PARTIAL DIFFERENTIAL EQUATIONS · 2D WAVE EQUATION", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class MagneticCyclotron3DScene(ClipSATScene):
-    """ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE — Charged particle spiralling along magnetic field B = B₀ k̂ with Larmor radius r_L = mv_⊥/(qB) and velocity/force vectors."""
+    """ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE — """
 
     clipsat_track = "ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE"
 
     def construct(self):
-        header = self.build_exam_header("ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE", "3D Lorentz Cyclotron Helix in a Magnetic Field B")
+        header = self.build_exam_header("ELECTRODYNAMICS & 3D ODEs · LORENTZ FORCE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class Kepler3DOrbitScene(ClipSATScene):
-    """CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS — 3D elliptical orbit tilted by inclination i from the ecliptic plane with conserved angular momentum vector L = r × p."""
+    """CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS — """
 
     clipsat_track = "CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS"
 
     def construct(self):
-        header = self.build_exam_header("CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS", "3D Inclined Keplerian Orbit & Angular Momentum L")
+        header = self.build_exam_header("CELESTIAL MECHANICS · 3D ORBITAL ELEMENTS", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)
 
 
 class BlochSphereQubit3DScene(ClipSATScene):
-    """QUANTUM COMPUTING & SU(2) · BLOCH SPHERE — Pure qubit state |ψ⟩ = cos(θ/2)|0⟩ + e^(iφ) sin(θ/2)|1⟩ on the 3D Bloch sphere with polar θ and phase φ."""
+    """QUANTUM COMPUTING & SU(2) · BLOCH SPHERE — """
 
     clipsat_track = "QUANTUM COMPUTING & SU(2) · BLOCH SPHERE"
 
     def construct(self):
-        header = self.build_exam_header("QUANTUM COMPUTING & SU(2) · BLOCH SPHERE", "3D Quantum Bloch Sphere & Qubit State Precession")
+        header = self.build_exam_header("QUANTUM COMPUTING & SU(2) · BLOCH SPHERE", "")
         self.add(header)
         axes = ThreeDAxes(
             x_range=(-3.0, 3.0, 1.0),
             y_range=(-3.0, 3.0, 1.0),
             z_range=(-2.5, 2.5, 1.0),
-        )
+            width=7.5,
+            height=7.5,
+            depth=5.5,
+        ).shift(DOWN * 0.35 + LEFT * 1.1)
         surface = ParametricSurface(
-            lambda u, v: axes.c2p(u, v, 0.25 * (u**2 - v**2)),
-            u_range=(-2.2, 2.2),
-            v_range=(-2.2, 2.2),
+            lambda u, v: axes.c2p(u, v, 0.45 * (u**2 - v**2)),
+            u_range=(-1.6, 1.6),
+            v_range=(-1.6, 1.6),
             color=self.theme.indigo,
             opacity=0.82,
         )
-        self.frame.reorient(38, 66)
-        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.2)
+        self.play(ShowCreation(axes), ShowCreation(surface), run_time=2.4)
         self.wait(1.0)

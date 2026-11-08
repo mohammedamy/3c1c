@@ -3,9 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=150.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=150.0';
-import { attach3DRenderers } from './scenes_3d.js?v=150.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=151.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=151.0';
+import { attach3DRenderers } from './scenes_3d.js?v=151.0';
 
 export const STAGE_PALETTES = {
   dark: {
