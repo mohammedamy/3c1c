@@ -1151,9 +1151,12 @@ export function attach3DRenderers(EngineClass) {
     const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
-    const cx = areaX + areaW * 0.5;
-    const cy = areaY + areaH * 0.54;
-    const unitPx = (Math.min(areaW, areaH) * 0.40) / boxScale;
+    const vz = Math.max(0.45, Math.min(3.5, Number(bounds.viewZoom || 1.0)));
+    const pxOff = Number(bounds.panX || 0);
+    const pyOff = Number(bounds.panY || 0);
+    const cx = areaX + areaW * (0.5 - pxOff * 0.35);
+    const cy = areaY + areaH * (0.54 - pyOff * 0.35);
+    const unitPx = ((Math.min(areaW, areaH) * 0.40) / boxScale) * vz;
 
     const az = (azimDeg * Math.PI) / 180;
     const el = (elevDeg * Math.PI) / 180;
@@ -1188,9 +1191,29 @@ export function attach3DRenderers(EngineClass) {
       cy,
     };
 
-    // Draw 3D Floor Grid on z = -boxScale * 0.78
+    // Draw 3D Stage Frame & Translucent Floor Pedestal on z = -boxScale * 0.78
     const zFloor = -boxScale * 0.78;
     ctx.save();
+    ctx.fillStyle = pal.bg === '#0A0D14' ? 'rgba(16, 22, 36, 0.38)' : 'rgba(255, 255, 255, 0.42)';
+    ctx.strokeStyle = pal.gridMajor;
+    ctx.lineWidth = 1.2 * scale;
+    this.roundRect(ctx, areaX, areaY, areaW, areaH, 10 * scale);
+    ctx.fill();
+    ctx.stroke();
+
+    const cFL = project(-boxScale, -boxScale, zFloor);
+    const cFR = project(boxScale, -boxScale, zFloor);
+    const cBR = project(boxScale, boxScale, zFloor);
+    const cBL = project(-boxScale, boxScale, zFloor);
+    ctx.beginPath();
+    ctx.moveTo(cFL.x, cFL.y);
+    ctx.lineTo(cFR.x, cFR.y);
+    ctx.lineTo(cBR.x, cBR.y);
+    ctx.lineTo(cBL.x, cBL.y);
+    ctx.closePath();
+    ctx.fillStyle = pal.bg === '#0A0D14' ? 'rgba(30, 41, 68, 0.24)' : 'rgba(226, 218, 203, 0.36)';
+    ctx.fill();
+
     ctx.lineWidth = 1.1 * scale;
     ctx.strokeStyle = pal.gridMajor;
     const steps = 6;
@@ -1245,6 +1268,49 @@ export function attach3DRenderers(EngineClass) {
     ctx.fillText('Y', py.x + 6 * scale, py.y + 4 * scale);
     ctx.fillStyle = pal.amber;
     ctx.fillText('Z', pz.x + 6 * scale, pz.y - 4 * scale);
+
+    // 3D Orientation Triad Gizmo & Camera Telemetry Badge in top-left of 3D stage
+    const gizX = areaX + 36 * scale;
+    const gizY = areaY + 36 * scale;
+    const gizR = 20 * scale;
+    ctx.beginPath();
+    ctx.arc(gizX, gizY, gizR + 5 * scale, 0, Math.PI * 2);
+    ctx.fillStyle = pal.panel;
+    ctx.fill();
+    ctx.strokeStyle = pal.panelBorder;
+    ctx.lineWidth = 1.2 * scale;
+    ctx.stroke();
+
+    const gProj = (vx, vy, vz3) => ({
+      x: gizX + (-vx * sinA + vy * cosA) * gizR,
+      y: gizY - (-vx * cosA * sinE - vy * sinA * sinE + vz3 * cosE) * gizR,
+    });
+    const gX = gProj(1, 0, 0);
+    const gY = gProj(0, 1, 0);
+    const gZ = gProj(0, 0, 1);
+    for (const [endPt, col] of [
+      [gX, pal.indigo],
+      [gY, pal.teal],
+      [gZ, pal.amber],
+    ]) {
+      ctx.beginPath();
+      ctx.moveTo(gizX, gizY);
+      ctx.lineTo(endPt.x, endPt.y);
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2.0 * scale;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(endPt.x, endPt.y, 2.6 * scale, 0, Math.PI * 2);
+      ctx.fillStyle = col;
+      ctx.fill();
+    }
+    ctx.font = `600 ${Math.round(12.5 * scale)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = pal.muted;
+    ctx.fillText(
+      `3D ORBIT θ=${Math.round(azimDeg)}° φ=${Math.round(elevDeg)}°`,
+      gizX + gizR + 12 * scale,
+      gizY + 4 * scale
+    );
     ctx.restore();
 
     return { project, areaX, areaY, areaW, areaH, isTall, zFloor, boxScale };
@@ -1272,9 +1338,22 @@ export function attach3DRenderers(EngineClass) {
         const p11 = project(c11.x, c11.y, c11.z);
         const p01 = project(c01.x, c01.y, c01.z);
 
+        // Directional surface normal shading (light vector L = (0.45, -0.35, 0.82))
+        const ux = c10.x - c00.x;
+        const uy = c10.y - c00.y;
+        const uz = c10.z - c00.z;
+        const vx = c01.x - c00.x;
+        const vy = c01.y - c00.y;
+        const vz = c01.z - c00.z;
+        const nx = uy * vz - uz * vy;
+        const ny = uz * vx - ux * vz;
+        const nz = ux * vy - uy * vx;
+        const nLen = Math.hypot(nx, ny, nz) || 1;
+        const lambert = Math.abs(nx * 0.45 - ny * 0.35 + nz * 0.82) / nLen;
+
         const depth = 0.25 * (p00.depth + p10.depth + p11.depth + p01.depth);
         const zAvg = 0.25 * (c00.z + c10.z + c11.z + c01.z);
-        quads.push({ p00, p10, p11, p01, depth, zAvg, i, j });
+        quads.push({ p00, p10, p11, p01, depth, zAvg, lambert, i, j });
       }
     }
 
@@ -1295,6 +1374,14 @@ export function attach3DRenderers(EngineClass) {
         ctx.fillStyle = q.zAvg >= 0 ? pal.indigoFill : pal.tealFill;
       }
       ctx.fill();
+
+      if (q.lambert > 0.62) {
+        ctx.fillStyle =
+          pal.bg === '#0A0D14'
+            ? `rgba(255, 255, 255, ${(q.lambert - 0.62) * 0.22})`
+            : `rgba(255, 255, 255, ${(q.lambert - 0.62) * 0.32})`;
+        ctx.fill();
+      }
 
       ctx.strokeStyle = style.strokeColor || (q.zAvg >= 0 ? pal.indigo : pal.teal);
       ctx.lineWidth = (style.lineWidth || 1.15) * scale;

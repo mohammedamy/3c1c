@@ -30,7 +30,7 @@
       crossorigin="anonymous"
     ></script>
 
-    <link rel="stylesheet" href="web/styles/studio.css?v=167.0" />
+    <link rel="stylesheet" href="web/styles/studio.css?v=168.0" />
   </head>
   <body class="dark">
     <div class="studio-shell">
@@ -56,7 +56,7 @@
           </div>
         </div>
 
-        <div class="toolbar-center" role="group" aria-label="Stage formatting">
+        <div class="toolbar-center" role="group" aria-label="Stage formatting and view modes">
           <div class="segmented" role="group" aria-label="Video aspect ratio">
             <button type="button" id="aspect-16-9" class="seg-btn active" data-aspect="16:9">
               16:9 Lesson
@@ -69,6 +69,15 @@
             </button>
           </div>
 
+          <button type="button" id="btn-gallery-view" class="btn btn-amber" title="Open 165-Scene Visual Atlas Grid (G)">
+            Atlas (165)
+          </button>
+          <button type="button" id="btn-theater-view" class="btn btn-toggle" title="Toggle Theater Focus Mode (T)">
+            Theater View
+          </button>
+          <button type="button" id="btn-hud-formula" class="btn btn-toggle is-on" title="Toggle Live KaTeX Formula Overlay on Stage">
+            Formula HUD
+          </button>
           <button type="button" id="btn-stage-theme" class="btn btn-toggle">
             Stage: Dark
           </button>
@@ -134,15 +143,38 @@
         </aside>
 
         <!-- Center Stage & Timeline Scrubber -->
-        <section class="stage-column" aria-label="Animation stage and timeline">
+        <section class="stage-column" id="stage-column" aria-label="Animation stage and timeline">
           <div class="stage-viewport">
-            <div class="canvas-frame">
+            <div class="canvas-frame" id="canvas-frame">
               <canvas
                 id="stage-canvas"
                 width="1920"
                 height="1080"
                 aria-label="3c1c interactive mathematical animation canvas"
               ></canvas>
+
+              <!-- Floating Stage View & Camera HUD -->
+              <div class="stage-view-hud" role="toolbar" aria-label="Stage navigation and zoom controls">
+                <button type="button" id="btn-prev-scene" class="hud-btn" title="Previous scene ([)">‹ Prev</button>
+                <span id="scene-counter-pill" class="hud-pill">#001 / 165</span>
+                <button type="button" id="btn-next-scene" class="hud-btn" title="Next scene (])">Next ›</button>
+                <span class="hud-sep"></span>
+                <button type="button" id="btn-zoom-out" class="hud-btn" title="Zoom out (−)">−</button>
+                <button type="button" id="btn-zoom-reset" class="hud-btn hud-zoom-readout" title="Reset camera zoom &amp; pan">100%</button>
+                <button type="button" id="btn-zoom-in" class="hud-btn" title="Zoom in (+)">+</button>
+                <span class="hud-sep"></span>
+                <button type="button" id="btn-fullscreen-stage" class="hud-btn" title="Toggle Fullscreen Stage (F)">⛶ Full</button>
+              </div>
+
+              <!-- Floating KaTeX Theorem Overlay Pill -->
+              <div id="stage-katex-overlay" class="stage-katex-overlay" aria-live="polite">
+                <div class="stage-katex-top">
+                  <span id="stage-katex-badge" class="stage-katex-badge">THEOREM</span>
+                  <span id="stage-katex-heading" class="stage-katex-heading">Instantaneous Rate of Change</span>
+                </div>
+                <div id="stage-katex-math" class="stage-katex-math"></div>
+              </div>
+
               <div id="stage-drag-hint" class="stage-hint-pill">
                 Drag point a directly on the curve or scrub the limit h → 0
               </div>
@@ -278,8 +310,33 @@
       </main>
     </div>
 
+    <!-- 165-Scene Visual Atlas Grid Modal -->
+    <div id="scene-atlas-modal" class="atlas-modal" role="dialog" aria-modal="true" aria-labelledby="atlas-modal-title" hidden>
+      <div class="atlas-backdrop" id="atlas-backdrop"></div>
+      <div class="atlas-dialog">
+        <header class="atlas-header">
+          <div>
+            <div id="atlas-count-eyebrow" class="rail-eyebrow">Visual Curriculum Atlas · 165 Interactive Scenes</div>
+            <h2 id="atlas-modal-title" class="atlas-title">Explore All 165 Mathematical Scenes</h2>
+          </div>
+          <div class="atlas-header-actions">
+            <input
+              id="atlas-search"
+              class="input-text atlas-search-input"
+              type="search"
+              placeholder="Filter scenes by topic, theorem, 3D, or construction…"
+              aria-label="Filter scenes in Atlas"
+            />
+            <button type="button" id="btn-close-atlas" class="btn">Close (Esc)</button>
+          </div>
+        </header>
+        <div id="atlas-category-bar" class="atlas-category-bar" role="group" aria-label="Atlas category filter"></div>
+        <div id="atlas-grid" class="atlas-grid"></div>
+      </div>
+    </div>
+
     <div id="studio-toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script type="module" src="web/js/app.js?v=167.0"></script>
+    <script type="module" src="web/js/app.js?v=168.0"></script>
   </body>
 </html>

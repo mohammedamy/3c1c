@@ -2,8 +2,8 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=167.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=167.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=168.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=168.0';
 
 const SCENE_CATEGORIES = [
   'All',
@@ -39,6 +39,14 @@ const state = {
   codeDirty: false,
   searchQuery: '',
   activeCategory: 'All',
+  viewZoom: 1.0,
+  panX: 0.0,
+  panY: 0.0,
+  theaterMode: false,
+  formulaHud: true,
+  atlasOpen: false,
+  atlasQuery: '',
+  atlasCategory: 'All',
 };
 
 const canvas = document.getElementById('stage-canvas');
@@ -59,12 +67,34 @@ const els = {
   btnStepFwd: document.getElementById('btn-step-fwd'),
   btnLoop: document.getElementById('btn-loop'),
   selectSpeed: document.getElementById('select-speed'),
+  btnGalleryView: document.getElementById('btn-gallery-view'),
+  btnTheaterView: document.getElementById('btn-theater-view'),
+  btnHudFormula: document.getElementById('btn-hud-formula'),
   btnStageTheme: document.getElementById('btn-stage-theme'),
   btnWatermark: document.getElementById('btn-watermark'),
   btnUiTheme: document.getElementById('btn-ui-theme'),
   btnExportPng: document.getElementById('btn-export-png'),
   btnRecordWebm: document.getElementById('btn-record-webm'),
   btnRenderMp4: document.getElementById('btn-render-mp4'),
+  btnPrevScene: document.getElementById('btn-prev-scene'),
+  btnNextScene: document.getElementById('btn-next-scene'),
+  sceneCounterPill: document.getElementById('scene-counter-pill'),
+  btnZoomOut: document.getElementById('btn-zoom-out'),
+  btnZoomReset: document.getElementById('btn-zoom-reset'),
+  btnZoomIn: document.getElementById('btn-zoom-in'),
+  btnFullscreenStage: document.getElementById('btn-fullscreen-stage'),
+  stageColumn: document.getElementById('stage-column'),
+  stageKatexOverlay: document.getElementById('stage-katex-overlay'),
+  stageKatexBadge: document.getElementById('stage-katex-badge'),
+  stageKatexHeading: document.getElementById('stage-katex-heading'),
+  stageKatexMath: document.getElementById('stage-katex-math'),
+  atlasModal: document.getElementById('scene-atlas-modal'),
+  atlasBackdrop: document.getElementById('atlas-backdrop'),
+  btnCloseAtlas: document.getElementById('btn-close-atlas'),
+  atlasSearch: document.getElementById('atlas-search'),
+  atlasCategoryBar: document.getElementById('atlas-category-bar'),
+  atlasGrid: document.getElementById('atlas-grid'),
+  atlasCountEyebrow: document.getElementById('atlas-count-eyebrow'),
   engineStatus: document.getElementById('engine-status'),
   engineStatusText: document.getElementById('engine-status-text'),
   controlsContainer: document.getElementById('dynamic-controls'),
@@ -112,11 +142,25 @@ function applyStageToolbar() {
   els.btnStageTheme.classList.toggle('is-on', state.stageTheme === 'paper');
   els.btnWatermark.classList.toggle('is-on', state.watermark);
   els.btnLoop.classList.toggle('is-on', state.loop);
+  if (els.btnTheaterView) {
+    els.btnTheaterView.classList.toggle('is-on', state.theaterMode);
+    document.body.classList.toggle('theater-mode', state.theaterMode);
+  }
+  if (els.btnHudFormula && els.stageKatexOverlay) {
+    els.btnHudFormula.classList.toggle('is-on', state.formulaHud);
+    els.stageKatexOverlay.classList.toggle('is-hidden', !state.formulaHud);
+  }
   localStorage.setItem('3c1c-stage-theme', state.stageTheme);
 
   document.querySelectorAll('[data-aspect]').forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.aspect === state.aspect);
   });
+}
+
+function updateZoomHud() {
+  if (els.btnZoomReset) {
+    els.btnZoomReset.textContent = `${Math.round(state.viewZoom * 100)}%`;
+  }
 }
 
 function renderCategoryBar() {
@@ -191,18 +235,108 @@ function renderSceneLibrary() {
   }
 }
 
+function renderAtlasModal() {
+  if (!els.atlasModal || !els.atlasGrid || !els.atlasCategoryBar) return;
+  els.atlasCategoryBar.innerHTML = '';
+  SCENE_CATEGORIES.forEach((cat) => {
+    const count =
+      cat === 'All'
+        ? SCENE_PRESETS.length
+        : SCENE_PRESETS.filter((p) => p.category === cat).length;
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = `cat-pill${state.atlasCategory === cat ? ' active' : ''}`;
+    pill.textContent = `${cat} (${count})`;
+    pill.addEventListener('click', () => {
+      state.atlasCategory = cat;
+      renderAtlasModal();
+    });
+    els.atlasCategoryBar.appendChild(pill);
+  });
+
+  els.atlasGrid.innerHTML = '';
+  const q = state.atlasQuery.trim().toLowerCase();
+  let visibleCount = 0;
+
+  SCENE_PRESETS.forEach((preset, idx) => {
+    if (state.atlasCategory !== 'All' && preset.category !== state.atlasCategory) return;
+    const numTag = `#${String(idx + 1).padStart(3, '0')}`;
+    if (q) {
+      const hay = `${numTag} ${preset.id} ${preset.name} ${preset.track} ${preset.summary} ${preset.category || ''} ${preset.rigor?.heading || ''}`.toLowerCase();
+      if (!hay.includes(q)) return;
+    }
+    visibleCount++;
+
+    const is3d = preset.archetype === 'scene_3d';
+    const isConst = preset.archetype === 'construction';
+    const badgeType = is3d
+      ? '<span class="scene-3d-badge">3D</span>'
+      : isConst
+      ? '<span class="scene-const-badge">CONST</span>'
+      : '';
+
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = `atlas-card${idx === state.presetIndex ? ' active' : ''}`;
+    card.innerHTML = `
+      <div class="scene-card-top">
+        <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badgeType}${preset.track}</span>
+        <span class="scene-glyph">${preset.glyph}</span>
+      </div>
+      <div class="scene-name">${preset.name}</div>
+      <div class="scene-desc">${preset.summary}</div>
+      <div class="atlas-card-formula">${escapeAttr(preset.rigor?.heading || '')}</div>
+    `;
+    card.addEventListener('click', () => {
+      selectPreset(idx);
+      closeAtlasModal();
+    });
+    els.atlasGrid.appendChild(card);
+  });
+
+  if (els.atlasCountEyebrow) {
+    els.atlasCountEyebrow.textContent = `Visual Curriculum Atlas · Showing ${visibleCount} of ${SCENE_PRESETS.length} Interactive Scenes`;
+  }
+}
+
+function openAtlasModal() {
+  if (!els.atlasModal) return;
+  state.atlasOpen = true;
+  els.atlasModal.hidden = false;
+  renderAtlasModal();
+  if (els.atlasSearch) els.atlasSearch.focus();
+}
+
+function closeAtlasModal() {
+  if (!els.atlasModal) return;
+  state.atlasOpen = false;
+  els.atlasModal.hidden = true;
+}
+
 function selectPreset(index) {
-  state.presetIndex = index;
+  const count = SCENE_PRESETS.length;
+  state.presetIndex = ((index % count) + count) % count;
   const preset = activePreset();
   state.params = structuredClone(preset.defaults);
   state.duration = preset.duration;
   state.time = 0.0;
   state.playing = true;
   state.codeDirty = false;
+  state.viewZoom = 1.0;
+  state.panX = 0.0;
+  state.panY = 0.0;
+  updateZoomHud();
   els.btnPlay.textContent = 'Pause';
   els.dragHint.textContent = preset.dragHint;
+  if (els.sceneCounterPill) {
+    els.sceneCounterPill.textContent = `#${String(state.presetIndex + 1).padStart(3, '0')} / ${count}`;
+  }
 
   renderSceneLibrary();
+  const activeCard = document.getElementById(`scene-preset-${preset.id}`);
+  if (activeCard && activeCard.scrollIntoView) {
+    activeCard.scrollIntoView({ block: 'nearest' });
+  }
   renderBeatChips();
   renderDynamicControls();
   renderRigorCard();
@@ -246,6 +380,8 @@ function renderRigorCard() {
   els.rigorBadge.textContent = rigor.badge;
   els.rigorHeading.textContent = rigor.heading;
   els.rigorProse.textContent = rigor.prose;
+  if (els.stageKatexBadge) els.stageKatexBadge.textContent = rigor.badge;
+  if (els.stageKatexHeading) els.stageKatexHeading.textContent = rigor.heading;
 
   if (window.katex) {
     try {
@@ -253,12 +389,19 @@ function renderRigorCard() {
         displayMode: true,
         throwOnError: false,
       });
+      if (els.stageKatexMath) {
+        window.katex.render(rigor.latex, els.stageKatexMath, {
+          displayMode: false,
+          throwOnError: false,
+        });
+      }
       return;
     } catch {
       // Fallback to plain formula
     }
   }
   els.rigorMath.textContent = rigor.latex;
+  if (els.stageKatexMath) els.stageKatexMath.textContent = rigor.latex;
 }
 
 function renderDynamicControls() {
@@ -474,6 +617,9 @@ function drawImmediate() {
     stageTheme: state.stageTheme,
     aspect: state.aspect,
     watermark: state.watermark,
+    viewZoom: state.viewZoom,
+    panX: state.panX,
+    panY: state.panY,
   });
 
   els.scrubber.value = String(clamp01(state.time / state.duration) * 1000);
@@ -509,9 +655,10 @@ function tick(now) {
   requestAnimationFrame(tick);
 }
 
-/* ── Direct Interactive Canvas Manipulation ── */
+/* ── Direct Interactive Canvas Manipulation (Drag Parameters, Orbit 3D, Wheel Zoom & Shift-Pan) ── */
 function setupCanvasDragging() {
   let dragging = false;
+  let panning = false;
   let lastClientX = 0;
   let lastClientY = 0;
 
@@ -522,6 +669,22 @@ function setupCanvasDragging() {
     const preset = activePreset();
     const mapper = engine.lastPlotMapper;
     if (!mapper) return;
+
+    if (panning) {
+      if (isStart) {
+        lastClientX = clientX;
+        lastClientY = clientY;
+        return;
+      }
+      const dx = (clientX - lastClientX) / Math.max(120, rect.width);
+      const dy = (clientY - lastClientY) / Math.max(120, rect.height);
+      lastClientX = clientX;
+      lastClientY = clientY;
+      state.panX = Math.max(-1.2, Math.min(1.2, state.panX + dx * 1.4));
+      state.panY = Math.max(-1.2, Math.min(1.2, state.panY + dy * 1.4));
+      drawImmediate();
+      return;
+    }
 
     if (mapper.is3D) {
       if (isStart) {
@@ -678,6 +841,7 @@ function setupCanvasDragging() {
 
   canvas.addEventListener('pointerdown', (ev) => {
     dragging = true;
+    panning = ev.shiftKey || ev.button === 1;
     canvas.setPointerCapture(ev.pointerId);
     updateFromPointer(ev.clientX, ev.clientY, true);
   });
@@ -689,7 +853,20 @@ function setupCanvasDragging() {
 
   canvas.addEventListener('pointerup', () => {
     dragging = false;
+    panning = false;
   });
+
+  canvas.addEventListener(
+    'wheel',
+    (ev) => {
+      ev.preventDefault();
+      const factor = ev.deltaY < 0 ? 1.12 : 1 / 1.12;
+      state.viewZoom = Math.max(0.55, Math.min(2.8, Number((state.viewZoom * factor).toFixed(2))));
+      updateZoomHud();
+      drawImmediate();
+    },
+    { passive: false }
+  );
 }
 
 /* ── Export & Hybrid Server Actions ── */
@@ -871,6 +1048,15 @@ function escapeAttr(str) {
     .replace(/>/g, '&gt;');
 }
 
+function toggleFullscreenStage() {
+  const target = els.stageColumn || document.documentElement;
+  if (!document.fullscreenElement) {
+    if (target.requestFullscreen) target.requestFullscreen().catch(() => {});
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
 /* ── Event Wiring ── */
 function initEvents() {
   if (els.sceneSearch) {
@@ -878,6 +1064,79 @@ function initEvents() {
       state.searchQuery = els.sceneSearch.value || '';
       renderSceneLibrary();
     });
+  }
+
+  if (els.btnGalleryView) {
+    els.btnGalleryView.addEventListener('click', () => {
+      if (state.atlasOpen) closeAtlasModal();
+      else openAtlasModal();
+    });
+  }
+
+  if (els.btnCloseAtlas) {
+    els.btnCloseAtlas.addEventListener('click', closeAtlasModal);
+  }
+  if (els.atlasBackdrop) {
+    els.atlasBackdrop.addEventListener('click', closeAtlasModal);
+  }
+  if (els.atlasSearch) {
+    els.atlasSearch.addEventListener('input', () => {
+      state.atlasQuery = els.atlasSearch.value || '';
+      renderAtlasModal();
+    });
+  }
+
+  if (els.btnTheaterView) {
+    els.btnTheaterView.addEventListener('click', () => {
+      state.theaterMode = !state.theaterMode;
+      applyStageToolbar();
+      drawImmediate();
+    });
+  }
+
+  if (els.btnHudFormula) {
+    els.btnHudFormula.addEventListener('click', () => {
+      state.formulaHud = !state.formulaHud;
+      applyStageToolbar();
+    });
+  }
+
+  if (els.btnPrevScene) {
+    els.btnPrevScene.addEventListener('click', () => {
+      selectPreset(state.presetIndex - 1);
+    });
+  }
+  if (els.btnNextScene) {
+    els.btnNextScene.addEventListener('click', () => {
+      selectPreset(state.presetIndex + 1);
+    });
+  }
+
+  if (els.btnZoomIn) {
+    els.btnZoomIn.addEventListener('click', () => {
+      state.viewZoom = Math.min(2.8, Number((state.viewZoom * 1.18).toFixed(2)));
+      updateZoomHud();
+      drawImmediate();
+    });
+  }
+  if (els.btnZoomOut) {
+    els.btnZoomOut.addEventListener('click', () => {
+      state.viewZoom = Math.max(0.55, Number((state.viewZoom / 1.18).toFixed(2)));
+      updateZoomHud();
+      drawImmediate();
+    });
+  }
+  if (els.btnZoomReset) {
+    els.btnZoomReset.addEventListener('click', () => {
+      state.viewZoom = 1.0;
+      state.panX = 0.0;
+      state.panY = 0.0;
+      updateZoomHud();
+      drawImmediate();
+    });
+  }
+  if (els.btnFullscreenStage) {
+    els.btnFullscreenStage.addEventListener('click', toggleFullscreenStage);
   }
 
   els.btnPlay.addEventListener('click', () => {
@@ -986,8 +1245,13 @@ function initEvents() {
     showToast(`Downloaded ${preset.sceneClass}.py`);
   });
 
-  // Keyboard shortcuts (Space = Play/Pause, Arrows = Step)
+  // Keyboard shortcuts (Space = Play/Pause, Arrows = Step, [ / ] = Prev/Next Scene, T = Theater, G = Atlas, F = Fullscreen)
   window.addEventListener('keydown', (ev) => {
+    if (ev.code === 'Escape' && state.atlasOpen) {
+      ev.preventDefault();
+      closeAtlasModal();
+      return;
+    }
     const tag = (ev.target && ev.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
     if (ev.code === 'Space') {
@@ -999,6 +1263,30 @@ function initEvents() {
     } else if (ev.code === 'ArrowRight') {
       ev.preventDefault();
       els.btnStepFwd.click();
+    } else if (ev.key === '[') {
+      ev.preventDefault();
+      selectPreset(state.presetIndex - 1);
+    } else if (ev.key === ']') {
+      ev.preventDefault();
+      selectPreset(state.presetIndex + 1);
+    } else if (ev.key === 't' || ev.key === 'T') {
+      ev.preventDefault();
+      if (els.btnTheaterView) els.btnTheaterView.click();
+    } else if (ev.key === 'g' || ev.key === 'G') {
+      ev.preventDefault();
+      if (els.btnGalleryView) els.btnGalleryView.click();
+    } else if (ev.key === 'f' || ev.key === 'F') {
+      ev.preventDefault();
+      toggleFullscreenStage();
+    } else if (ev.key === '=' || ev.key === '+') {
+      ev.preventDefault();
+      if (els.btnZoomIn) els.btnZoomIn.click();
+    } else if (ev.key === '-') {
+      ev.preventDefault();
+      if (els.btnZoomOut) els.btnZoomOut.click();
+    } else if (ev.key === '0') {
+      ev.preventDefault();
+      if (els.btnZoomReset) els.btnZoomReset.click();
     }
   });
 }

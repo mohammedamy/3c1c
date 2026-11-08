@@ -4679,7 +4679,7 @@ export function attachExtendedRenderers(EngineClass) {
     const b3 = spanEase(time, 2.5, 4.1);
     const b4 = spanEase(time, 3.8, 5.4);
 
-    // Euclidean compass arc in math coordinates (with optional compass needle arm)
+    // Euclidean compass arc in math coordinates (with visual hinged compass calliper & scribing nib)
     const drawCompassArc = (cx, cy, r, a0, a1, color, width = 2.6, dashed = true, prog = 1, showArm = false) => {
       const p = clamp01(prog);
       if (p <= 0.01 || r <= 0) return;
@@ -4698,14 +4698,47 @@ export function attachExtendedRenderers(EngineClass) {
       }
       ctx.stroke();
       if (showArm && p < 0.99) {
-        ctx.setLineDash([3 * scale, 3 * scale]);
-        ctx.lineWidth = 1.6 * scale;
         const pc = toPx(cx, cy);
         const pTip = toPx(cx + r * Math.cos(aEnd), cy + r * Math.sin(aEnd));
+        ctx.setLineDash([3 * scale, 3 * scale]);
+        ctx.lineWidth = 1.6 * scale;
         ctx.beginPath();
         ctx.moveTo(pc.x, pc.y);
         ctx.lineTo(pTip.x, pTip.y);
         ctx.stroke();
+
+        // Hinged Euclidean Compass Legs & Crown Pivot
+        const mx = 0.5 * (pc.x + pTip.x);
+        const my = 0.5 * (pc.y + pTip.y);
+        const dx = pTip.x - pc.x;
+        const dy = pTip.y - pc.y;
+        const dLen = Math.hypot(dx, dy) || 1;
+        const nx = -dy / dLen;
+        const ny = dx / dLen;
+        const lift = Math.min(48 * scale, dLen * 0.42);
+        const hingeX = mx + nx * lift * (ny < 0 ? 1 : -1);
+        const hingeY = my + ny * lift * (ny < 0 ? 1 : -1);
+
+        ctx.setLineDash([]);
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = 0.72;
+        ctx.lineWidth = 2.0 * scale;
+        ctx.beginPath();
+        ctx.moveTo(pc.x, pc.y);
+        ctx.lineTo(hingeX, hingeY);
+        ctx.lineTo(pTip.x, pTip.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(hingeX, hingeY, 3.8 * scale, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(pTip.x, pTip.y, 4.5 * scale, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
       }
       ctx.restore();
     };
@@ -4723,6 +4756,13 @@ export function attachExtendedRenderers(EngineClass) {
       ctx.moveTo(p0.x, p0.y);
       ctx.lineTo(p1.x, p1.y);
       ctx.stroke();
+      if (p > 0.02 && p < 0.98) {
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(p1.x, p1.y, 4.2 * scale, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
       ctx.restore();
     };
 

@@ -3,9 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=167.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=167.0';
-import { attach3DRenderers } from './scenes_3d.js?v=167.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=168.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=168.0';
+import { attach3DRenderers } from './scenes_3d.js?v=168.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -154,7 +154,10 @@ export class Engine3c1c {
     ctx.restore();
 
     // 4. Dispatch Scene-Specific Mobjects
-    const bounds = { padX, plotTop, plotW, plotH, width, height, scale };
+    const viewZoom = Number(state.viewZoom || 1.0);
+    const panX = Number(state.panX || 0.0);
+    const panY = Number(state.panY || 0.0);
+    const bounds = { padX, plotTop, plotW, plotH, width, height, scale, viewZoom, panX, panY };
     let telemetry = { readouts: [], tableHeaders: [], tableRows: [] };
 
     if (presetId === 'derivative') {
@@ -224,6 +227,20 @@ export class Engine3c1c {
       }
     }
 
+    const vz = Math.max(0.45, Math.min(3.5, Number(bounds.viewZoom || 1.0)));
+    const pxOff = Number(bounds.panX || 0);
+    const pyOff = Number(bounds.panY || 0);
+    if (vz !== 1 || pxOff !== 0 || pyOff !== 0) {
+      const xSpanZ = (xMax - xMin) / vz;
+      const ySpanZ = (yMax - yMin) / vz;
+      const xCenter = 0.5 * (xMin + xMax) - pxOff * xSpanZ;
+      const yCenter = 0.5 * (yMin + yMax) + pyOff * ySpanZ;
+      xMin = xCenter - 0.5 * xSpanZ;
+      xMax = xCenter + 0.5 * xSpanZ;
+      yMin = yCenter - 0.5 * ySpanZ;
+      yMax = yCenter + 0.5 * ySpanZ;
+    }
+
     const toPx = (x, y) => ({
       x: areaX + ((x - xMin) / (xMax - xMin)) * areaW,
       y: areaY + (1 - (y - yMin) / (yMax - yMin)) * areaH,
@@ -239,11 +256,20 @@ export class Engine3c1c {
     ctx.save();
     ctx.globalAlpha = axisAlpha;
 
+    // Subtle Plot Viewport Backdrop & Border
+    ctx.fillStyle = pal.bg === '#0A0D14' ? 'rgba(16, 22, 36, 0.38)' : 'rgba(255, 255, 255, 0.42)';
+    ctx.strokeStyle = pal.gridMajor;
+    ctx.lineWidth = 1.2 * scale;
+    this.roundRect(ctx, areaX, areaY, areaW, areaH, 10 * scale);
+    ctx.fill();
+    ctx.stroke();
+
     // Grid lines
     ctx.lineWidth = 1 * scale;
     ctx.strokeStyle = pal.gridMajor;
     for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
       const p = toPx(gx, 0);
+      if (p.x < areaX || p.x > areaX + areaW) continue;
       ctx.beginPath();
       ctx.moveTo(p.x, areaY);
       ctx.lineTo(p.x, areaY + areaH);
@@ -252,6 +278,7 @@ export class Engine3c1c {
     const yStep = yMax - yMin > 12 ? 4 : 2;
     for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= Math.floor(yMax); gy += yStep) {
       const p = toPx(0, gy);
+      if (p.y < areaY || p.y > areaY + areaH) continue;
       ctx.beginPath();
       ctx.moveTo(areaX, p.y);
       ctx.lineTo(areaX + areaW, p.y);
@@ -263,17 +290,30 @@ export class Engine3c1c {
     ctx.lineWidth = 2.2 * scale;
     const x0 = toPx(xMin, 0);
     const x1 = toPx(xMax, 0);
-    ctx.beginPath();
-    ctx.moveTo(x0.x, x0.y);
-    ctx.lineTo(x1.x, x1.y);
-    ctx.stroke();
+    if (x0.y >= areaY && x0.y <= areaY + areaH) {
+      ctx.beginPath();
+      ctx.moveTo(areaX, x0.y);
+      ctx.lineTo(areaX + areaW, x1.y);
+      ctx.stroke();
+    }
 
     const y0 = toPx(0, yMin);
     const y1 = toPx(0, yMax);
-    ctx.beginPath();
-    ctx.moveTo(y0.x, y0.y);
-    ctx.lineTo(y1.x, y1.y);
-    ctx.stroke();
+    if (y0.x >= areaX && y0.x <= areaX + areaW) {
+      ctx.beginPath();
+      ctx.moveTo(y0.x, areaY);
+      ctx.lineTo(y1.x, areaY + areaH);
+      ctx.stroke();
+    }
+
+    // Origin Ring Marker
+    const orig = toPx(0, 0);
+    if (orig.x >= areaX && orig.x <= areaX + areaW && orig.y >= areaY && orig.y <= areaY + areaH) {
+      ctx.beginPath();
+      ctx.arc(orig.x, orig.y, 3.8 * scale, 0, Math.PI * 2);
+      ctx.fillStyle = pal.axis;
+      ctx.fill();
+    }
 
     // Tick labels
     ctx.fillStyle = pal.muted;
@@ -281,12 +321,14 @@ export class Engine3c1c {
     for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
       if (gx === 0) continue;
       const p = toPx(gx, 0);
+      if (p.x < areaX + 14 * scale || p.x > areaX + areaW - 14 * scale) continue;
       const ty = Math.min(areaY + areaH - 6 * scale, Math.max(areaY + 18 * scale, p.y + 20 * scale));
       ctx.fillText(String(gx), p.x - 6 * scale, ty);
     }
     for (let gy = Math.ceil(yMin / yStep) * yStep; gy <= Math.floor(yMax); gy += yStep) {
       if (gy === 0) continue;
       const p = toPx(0, gy);
+      if (p.y < areaY + 14 * scale || p.y > areaY + areaH - 14 * scale) continue;
       const tx = Math.min(areaX + areaW - 30 * scale, Math.max(areaX + 6 * scale, p.x + 8 * scale));
       ctx.fillText(String(gy), tx, p.y + 5 * scale);
     }
@@ -299,11 +341,11 @@ export class Engine3c1c {
     ctx.save();
     const canvasH = (ctx.canvas && ctx.canvas.height) || 1080;
     const maxAvailH = Math.max(150 * scale, canvasH - y - 56 * scale);
-    let totalNeededH = 26 * scale;
+    let totalNeededH = 28 * scale;
     for (const item of lines) {
       totalNeededH += item.gap || 32 * scale;
     }
-    const rawCardH = Math.max(h, totalNeededH + 10 * scale);
+    const rawCardH = Math.max(h, totalNeededH + 12 * scale);
     const vCompress = rawCardH > maxAvailH ? maxAvailH / rawCardH : 1;
     const cardH = Math.min(rawCardH, maxAvailH);
     ctx.fillStyle = pal.panel;
@@ -313,19 +355,29 @@ export class Engine3c1c {
     ctx.fill();
     ctx.stroke();
 
-    // Accent top-left stripe
+    // Accent left stripe
     ctx.fillStyle = accentColor || pal.indigo;
-    this.roundRect(ctx, x, y, 5 * scale, cardH, 3 * scale);
+    this.roundRect(ctx, x, y, 5.5 * scale, cardH, 3 * scale);
     ctx.fill();
 
-    const maxTextW = Math.max(110 * scale, w - 40 * scale);
+    const maxTextW = Math.max(110 * scale, w - 42 * scale);
     let curY = y + 30 * scale * vCompress;
-    for (const item of lines) {
+    lines.forEach((item, idx) => {
       ctx.font = item.font || `500 ${Math.round(20 * scale * Math.max(0.84, vCompress))}px "JetBrains Mono", monospace`;
       ctx.fillStyle = item.color || pal.ink;
       ctx.fillText(item.text, x + 22 * scale, curY, maxTextW);
+      if (idx === 0 && lines.length > 1) {
+        ctx.save();
+        ctx.strokeStyle = pal.gridMajor;
+        ctx.lineWidth = 1 * scale;
+        ctx.beginPath();
+        ctx.moveTo(x + 22 * scale, curY + 9 * scale * vCompress);
+        ctx.lineTo(x + w - 18 * scale, curY + 9 * scale * vCompress);
+        ctx.stroke();
+        ctx.restore();
+      }
       curY += (item.gap || 32 * scale) * vCompress;
-    }
+    });
     ctx.restore();
   }
 
