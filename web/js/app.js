@@ -2,8 +2,14 @@
    3c1c · ClipSAT Mathematical Animation Studio — Main Controller
    ========================================================================== */
 
-import { Engine3c1c, clamp01 } from './engine.js?v=170.0';
-import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=170.0';
+import { Engine3c1c, clamp01 } from './engine.js?v=171.0';
+import { FUNCTIONS, SCENE_PRESETS, generatePythonSceneCode } from './presets.js?v=171.0';
+import {
+  exprToLatex,
+  renderGlyphKatex,
+  renderLatexToHtml,
+  renderMixedMathHtml,
+} from './math_tex.js?v=171.0';
 
 const SCENE_CATEGORIES = [
   'All',
@@ -88,6 +94,8 @@ const els = {
   stageKatexBadge: document.getElementById('stage-katex-badge'),
   stageKatexHeading: document.getElementById('stage-katex-heading'),
   stageKatexMath: document.getElementById('stage-katex-math'),
+  stageHeaderKatex: document.getElementById('stage-header-katex'),
+  stageCalloutKatex: document.getElementById('stage-callout-katex'),
   atlasModal: document.getElementById('scene-atlas-modal'),
   atlasBackdrop: document.getElementById('atlas-backdrop'),
   btnCloseAtlas: document.getElementById('btn-close-atlas'),
@@ -116,6 +124,9 @@ const els = {
 
 let lastFrameTs = performance.now();
 let lastTelemetryUpdate = 0;
+let lastStageOverlayUpdate = 0;
+let lastHeaderSig = '';
+let lastCalloutSig = '';
 let toastTimer = null;
 
 function activePreset() {
@@ -218,10 +229,11 @@ function renderSceneLibrary() {
     btn.innerHTML = `
       <div class="scene-card-top">
         <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badgeType}${preset.track}</span>
-        <span class="scene-glyph">${preset.glyph}</span>
+        <span class="scene-glyph">${renderGlyphKatex(preset.glyph)}</span>
       </div>
-      <div class="scene-name">${preset.name}</div>
-      <div class="scene-desc">${preset.summary}</div>
+      <div class="scene-name">${renderMixedMathHtml(preset.name)}</div>
+      <div class="scene-desc">${renderMixedMathHtml(preset.summary)}</div>
+      <div class="scene-card-katex">${renderLatexToHtml(preset.rigor?.latex || '', false)}</div>
     `;
     btn.addEventListener('click', () => selectPreset(idx));
     els.sceneList.appendChild(btn);
@@ -281,11 +293,11 @@ function renderAtlasModal() {
     card.innerHTML = `
       <div class="scene-card-top">
         <span class="scene-track-tag"><span class="scene-num-badge">${numTag}</span>${badgeType}${preset.track}</span>
-        <span class="scene-glyph">${preset.glyph}</span>
+        <span class="scene-glyph">${renderGlyphKatex(preset.glyph)}</span>
       </div>
-      <div class="scene-name">${preset.name}</div>
-      <div class="scene-desc">${preset.summary}</div>
-      <div class="atlas-card-formula">${escapeAttr(preset.rigor?.heading || '')}</div>
+      <div class="scene-name">${renderMixedMathHtml(preset.name)}</div>
+      <div class="scene-desc">${renderMixedMathHtml(preset.summary)}</div>
+      <div class="atlas-card-formula">${renderLatexToHtml(preset.rigor?.latex || '', false)}</div>
     `;
     card.addEventListener('click', () => {
       selectPreset(idx);
@@ -325,9 +337,11 @@ function selectPreset(index) {
   state.viewZoom = 1.0;
   state.panX = 0.0;
   state.panY = 0.0;
+  lastHeaderSig = '';
+  lastCalloutSig = '';
   updateZoomHud();
   els.btnPlay.textContent = 'Pause';
-  els.dragHint.textContent = preset.dragHint;
+  els.dragHint.innerHTML = renderMixedMathHtml(preset.dragHint);
   if (els.sceneCounterPill) {
     els.sceneCounterPill.textContent = `#${String(state.presetIndex + 1).padStart(3, '0')} / ${count}`;
   }
@@ -353,7 +367,7 @@ function renderBeatChips() {
     chip.id = `beat-chip-${idx}`;
     chip.className = 'beat-chip';
     chip.dataset.time = String(beat.time);
-    chip.textContent = beat.label;
+    chip.innerHTML = renderMixedMathHtml(beat.label);
     chip.addEventListener('click', () => {
       state.time = beat.time;
       state.playing = true;
@@ -378,30 +392,15 @@ function updateActiveBeatChip() {
 function renderRigorCard() {
   const { rigor } = activePreset();
   els.rigorBadge.textContent = rigor.badge;
-  els.rigorHeading.textContent = rigor.heading;
-  els.rigorProse.textContent = rigor.prose;
+  els.rigorHeading.innerHTML = renderMixedMathHtml(rigor.heading);
+  els.rigorProse.innerHTML = renderMixedMathHtml(rigor.prose);
   if (els.stageKatexBadge) els.stageKatexBadge.textContent = rigor.badge;
-  if (els.stageKatexHeading) els.stageKatexHeading.textContent = rigor.heading;
+  if (els.stageKatexHeading) els.stageKatexHeading.innerHTML = renderMixedMathHtml(rigor.heading);
 
-  if (window.katex) {
-    try {
-      window.katex.render(rigor.latex, els.rigorMath, {
-        displayMode: true,
-        throwOnError: false,
-      });
-      if (els.stageKatexMath) {
-        window.katex.render(rigor.latex, els.stageKatexMath, {
-          displayMode: false,
-          throwOnError: false,
-        });
-      }
-      return;
-    } catch {
-      // Fallback to plain formula
-    }
+  els.rigorMath.innerHTML = renderLatexToHtml(rigor.latex, true);
+  if (els.stageKatexMath) {
+    els.stageKatexMath.innerHTML = renderLatexToHtml(rigor.latex, false);
   }
-  els.rigorMath.textContent = rigor.latex;
-  if (els.stageKatexMath) els.stageKatexMath.textContent = rigor.latex;
 }
 
 function renderDynamicControls() {
@@ -421,6 +420,7 @@ function renderDynamicControls() {
   `);
 
   if (preset.id === 'derivative' || preset.id === 'riemann') {
+    const fnObj = FUNCTIONS[p.fn] || FUNCTIONS.quad;
     const fnOptions = Object.values(FUNCTIONS)
       .map(
         (fn) =>
@@ -429,7 +429,10 @@ function renderDynamicControls() {
       .join('');
     parts.push(`
       <div class="control-field">
-        <div class="control-label-row"><label for="ctrl-fn">Function f(x)</label></div>
+        <div class="control-label-row">
+          <label for="ctrl-fn">${renderMixedMathHtml('Function f(x)')}</label>
+          <span class="control-val" id="ctrl-fn-katex">${renderLatexToHtml(exprToLatex(fnObj.label), false)}</span>
+        </div>
         <select id="ctrl-fn" class="input-select">${fnOptions}</select>
       </div>
     `);
@@ -466,7 +469,7 @@ function renderDynamicControls() {
   } else if (preset.id === 'linalg') {
     parts.push(`
       <div class="control-field">
-        <div class="control-label-row"><span>2×2 Matrix Entries A</span></div>
+        <div class="control-label-row"><span>${renderMixedMathHtml('2×2 Matrix Entries A')}</span></div>
         <div class="matrix-grid">
           <input id="ctrl-m11" class="input-text" type="number" step="0.1" value="${p.m11}" aria-label="m11" />
           <input id="ctrl-m12" class="input-text" type="number" step="0.1" value="${p.m12}" aria-label="m12" />
@@ -515,7 +518,7 @@ function sliderField(id, label, value, min, max, step) {
   return `
     <div class="control-field">
       <div class="control-label-row">
-        <label for="${id}">${label}</label>
+        <label for="${id}">${renderMixedMathHtml(label)}</label>
         <span class="control-val" id="${id}-val">${Number(value).toFixed(step >= 1 ? 0 : 2)}</span>
       </div>
       <input id="${id}" class="range-input" type="range" min="${min}" max="${max}" step="${step}" value="${value}" />
@@ -533,6 +536,11 @@ function bindControlListeners() {
       if (valSpan) {
         const stepAttr = Number(el.step || 0.05);
         valSpan.textContent = Number(el.value).toFixed(stepAttr >= 1 ? 0 : 2);
+      }
+      if (id === 'ctrl-fn') {
+        const fnKatex = document.getElementById('ctrl-fn-katex');
+        const fnObj = FUNCTIONS[state.params.fn] || FUNCTIONS.quad;
+        if (fnKatex) fnKatex.innerHTML = renderLatexToHtml(exprToLatex(fnObj.label), false);
       }
       if (!state.codeDirty) syncPythonEditor();
       drawImmediate();
@@ -594,17 +602,82 @@ function updateTelemetryDom(telemetry) {
     .map(
       (r) => `
       <div class="readout-tile">
-        <div class="readout-key">${r.key}</div>
-        <div class="readout-num">${r.val}</div>
+        <div class="readout-key">${renderMixedMathHtml(r.key)}</div>
+        <div class="readout-num">${renderMixedMathHtml(r.val)}</div>
       </div>
     `
     )
     .join('');
 
-  els.dataHead.innerHTML = `<tr>${telemetry.tableHeaders.map((h) => `<th>${h}</th>`).join('')}</tr>`;
+  els.dataHead.innerHTML = `<tr>${telemetry.tableHeaders.map((h) => `<th>${renderMixedMathHtml(h)}</th>`).join('')}</tr>`;
   els.dataBody.innerHTML = telemetry.tableRows
-    .map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`)
+    .map((row) => `<tr>${row.map((cell) => `<td>${renderMixedMathHtml(cell)}</td>`).join('')}</tr>`)
     .join('');
+}
+
+function syncStageKatexOverlays(force = false) {
+  const hSpec = engine.lastHeaderSpec;
+  const cSpec = engine.lastCalloutSpec;
+  const clientW = canvas.clientWidth || (hSpec ? hSpec.canvasW * 0.5 : 960);
+
+  if (els.stageHeaderKatex && hSpec) {
+    const cssScale = clientW / hSpec.canvasW;
+    const hSig = `${hSpec.x},${hSpec.y},${hSpec.w},${hSpec.h},${Math.round(clientW)},${state.stageTheme},${hSpec.track},${hSpec.title}`;
+    if (force || hSig !== lastHeaderSig) {
+      lastHeaderSig = hSig;
+      const scale = Math.min(hSpec.canvasW, hSpec.canvasH) / 1080;
+      const trackPx = Math.max(8, Math.round(16 * scale * cssScale));
+      const titlePx = Math.max(11, Math.round(29 * scale * cssScale));
+      Object.assign(els.stageHeaderKatex.style, {
+        left: `${((hSpec.x / hSpec.canvasW) * 100).toFixed(3)}%`,
+        top: `${((hSpec.y / hSpec.canvasH) * 100).toFixed(3)}%`,
+        width: `${((hSpec.w / hSpec.canvasW) * 100).toFixed(3)}%`,
+        height: `${((hSpec.h / hSpec.canvasH) * 100).toFixed(3)}%`,
+        background: hSpec.pal.bg,
+      });
+      els.stageHeaderKatex.innerHTML = `
+        <div class="stage-header-track" style="color:${hSpec.pal.amber};font-size:${trackPx}px">${escapeAttr(hSpec.track)}</div>
+        <div class="stage-header-title" style="color:${hSpec.pal.ink};font-size:${titlePx}px">${renderMixedMathHtml(hSpec.title)}</div>
+      `;
+    }
+  }
+
+  if (els.stageCalloutKatex) {
+    if (!cSpec || !cSpec.lines || !cSpec.lines.length) {
+      els.stageCalloutKatex.style.display = 'none';
+      return;
+    }
+    const cssScale = clientW / cSpec.canvasW;
+    const linesKey = cSpec.lines.map((l) => `${l.text}|${l.color || ''}`).join(';;');
+    const cSig = `${cSpec.x},${cSpec.y},${cSpec.w},${cSpec.h},${Math.round(clientW)},${state.stageTheme},${cSpec.accentColor},${linesKey}`;
+    if (force || cSig !== lastCalloutSig) {
+      lastCalloutSig = cSig;
+      const sc = cSpec.scale * cssScale;
+      const vComp = Math.max(0.78, cSpec.vCompress || 1);
+      const bgCol = state.stageTheme === 'paper' ? '#FFFFFF' : '#111726';
+      Object.assign(els.stageCalloutKatex.style, {
+        display: 'flex',
+        left: `${((cSpec.x / cSpec.canvasW) * 100).toFixed(3)}%`,
+        top: `${((cSpec.y / cSpec.canvasH) * 100).toFixed(3)}%`,
+        width: `${((cSpec.w / cSpec.canvasW) * 100).toFixed(3)}%`,
+        height: `${((cSpec.h / cSpec.canvasH) * 100).toFixed(3)}%`,
+        background: bgCol,
+        border: `${Math.max(1, Math.round(2 * sc))}px solid ${cSpec.accentColor}`,
+        borderLeft: `${Math.max(3, Math.round(5.5 * sc))}px solid ${cSpec.stripeColor}`,
+        borderRadius: `${Math.max(5, Math.round(14 * sc))}px`,
+        padding: `${Math.max(3, Math.round(8 * sc))}px ${Math.max(7, Math.round(16 * sc))}px`,
+      });
+      els.stageCalloutKatex.innerHTML = cSpec.lines
+        .map((item, idx) => {
+          const isHeader = idx === 0 && cSpec.lines.length > 1;
+          const baseFont = isHeader ? 14.5 : 18.5;
+          const px = Math.max(isHeader ? 8 : 9, Math.round(baseFont * sc * vComp));
+          const col = item.color || (isHeader ? cSpec.pal.amber : cSpec.pal.ink);
+          return `<div class="stage-callout-line${isHeader ? ' is-header' : ''}" style="color:${col};font-size:${px}px">${renderMixedMathHtml(item.text)}</div>`;
+        })
+        .join('');
+    }
+  }
 }
 
 function drawImmediate() {
@@ -628,6 +701,10 @@ function drawImmediate() {
   updateActiveBeatChip();
 
   const now = performance.now();
+  if (now - lastStageOverlayUpdate > 45 || !state.playing) {
+    syncStageKatexOverlays(false);
+    lastStageOverlayUpdate = now;
+  }
   if (now - lastTelemetryUpdate > 90 || !state.playing) {
     updateTelemetryDom(telemetry);
     lastTelemetryUpdate = now;
@@ -1300,9 +1377,17 @@ setupCanvasDragging();
 selectPreset(0);
 checkBackendHealth();
 
+window.addEventListener('resize', () => {
+  syncStageKatexOverlays(true);
+});
+
 window.addEventListener('load', () => {
+  renderSceneLibrary();
+  renderBeatChips();
+  renderDynamicControls();
   renderRigorCard();
   drawImmediate();
+  syncStageKatexOverlays(true);
 });
 
 requestAnimationFrame((ts) => {

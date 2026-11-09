@@ -1265,12 +1265,125 @@ body.theater-mode #stage-canvas {
   margin-top: auto;
   padding-top: 6px;
   border-top: 1px dashed var(--line);
-  font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   color: var(--indigo);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.scene-card-katex {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.72rem;
+  color: var(--indigo);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scene-glyph .katex {
+  font-size: 0.86em;
+}
+
+.mixed-prose-text {
+  font-family: inherit;
+}
+
+.katex-pipe-sep,
+.katex-dot-sep {
+  opacity: 0.55;
+  padding: 0 3px;
+  font-family: var(--mono);
+}
+
+/* ── Live Synchronized KaTeX Stage Header & Symbolic Callout Card Overlays ── */
+.stage-header-katex {
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 2;
+}
+
+.stage-header-track {
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.15;
+}
+
+.stage-header-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.22;
+}
+
+.stage-header-title .katex {
+  font-size: 0.96em;
+}
+
+.stage-callout-katex {
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  z-index: 2;
+  backdrop-filter: blur(6px);
+}
+
+.stage-callout-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.24;
+  display: flex;
+  align-items: center;
+  gap: 0.28em;
+}
+
+.stage-callout-line.is-header {
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.stage-callout-line .katex {
+  font-size: 1.02em;
+}
+
+.stage-callout-line .katex-display {
+  margin: 0;
+}
+
+.readout-key .katex,
+.readout-num .katex,
+.beat-chip .katex,
+.stage-hint-pill .katex,
+.control-label-row .katex,
+#data-table-head .katex,
+#data-table-body .katex {
+  font-size: 0.98em;
+}
+
+#rigor-prose .katex {
+  font-size: 1.02em;
 }
 
 #stage-canvas {

@@ -3,9 +3,10 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=170.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=170.0';
-import { attach3DRenderers } from './scenes_3d.js?v=170.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=171.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=171.0';
+import { attach3DRenderers } from './scenes_3d.js?v=171.0';
+import { drawCanvasMathText } from './math_tex.js?v=171.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -100,8 +101,11 @@ export class Engine3c1c {
     const { presetId, params, time, duration, stageTheme, aspect, watermark } = state;
     const { width, height } = this.syncCanvasSize(aspect);
     const ctx = this.ctx;
+    const rawFillText = ctx.fillText;
+    ctx.fillText = (text, x, y, maxW) => drawCanvasMathText(ctx, rawFillText, text, x, y, maxW);
     const pal = STAGE_PALETTES[stageTheme] || STAGE_PALETTES.dark;
     const scale = Math.min(width, height) / 1080;
+    this.lastCalloutSpec = null;
 
     ctx.save();
     // 1. Editorial Stage Background
@@ -264,12 +268,25 @@ export class Engine3c1c {
     ctx.stroke();
     ctx.restore();
 
+    this.lastHeaderSpec = {
+      x: padX,
+      y: headerTop - Math.round(16 * scale),
+      w: plotW,
+      h: headerRuleY - headerTop + Math.round(18 * scale),
+      canvasW: width,
+      canvasH: height,
+      track: (params.track || 'CLIPSAT MATHEMATICS').toUpperCase(),
+      title: params.title || '',
+      pal,
+    };
+
     // 6. Prominent Streaming-Safe ClipSAT · 3c1c Brand Badge (Center-Screen Safe Dock)
     if (watermark) {
       this.drawWatermark(ctx, pal, width, height, padX, plotW, scale, safeBotY);
     }
 
     ctx.restore();
+    ctx.fillText = rawFillText;
     return telemetry;
   }
 
@@ -448,6 +465,20 @@ export class Engine3c1c {
     const cardH = Math.min(rawCardH, maxAvailH);
 
     this.lastCalloutRect = { x, y, w, h: cardH, safeTopY, safeBotY, safeLeftX, safeRightX };
+    this.lastCalloutSpec = {
+      x,
+      y,
+      w,
+      h: cardH,
+      canvasW,
+      canvasH,
+      scale,
+      vCompress,
+      lines,
+      accentColor: accentColor || pal.panelBorder,
+      stripeColor: accentColor || pal.indigo,
+      pal,
+    };
 
     // Opaque canvas under-fill so curves/axes never bleed through card text
     ctx.fillStyle = pal.bg;
