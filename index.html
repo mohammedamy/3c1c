@@ -30,7 +30,7 @@
       crossorigin="anonymous"
     ></script>
 
-    <link rel="stylesheet" href="web/styles/studio.css?v=168.0" />
+    <link rel="stylesheet" href="web/styles/studio.css?v=169.0" />
   </head>
   <body class="dark">
     <div class="studio-shell">
@@ -144,6 +144,29 @@
 
         <!-- Center Stage & Timeline Scrubber -->
         <section class="stage-column" id="stage-column" aria-label="Animation stage and timeline">
+          <!-- Non-Overlapping Top Stage Bar: Live KaTeX Formula & View/Zoom HUD -->
+          <div class="stage-overlay-bar">
+            <div id="stage-katex-overlay" class="stage-katex-overlay" aria-live="polite">
+              <div class="stage-katex-top">
+                <span id="stage-katex-badge" class="stage-katex-badge">THEOREM</span>
+                <span id="stage-katex-heading" class="stage-katex-heading">Instantaneous Rate of Change</span>
+              </div>
+              <div id="stage-katex-math" class="stage-katex-math"></div>
+            </div>
+
+            <div class="stage-view-hud" role="toolbar" aria-label="Stage navigation and zoom controls">
+              <button type="button" id="btn-prev-scene" class="hud-btn" title="Previous scene ([)">‹ Prev</button>
+              <span id="scene-counter-pill" class="hud-pill">#001 / 165</span>
+              <button type="button" id="btn-next-scene" class="hud-btn" title="Next scene (])">Next ›</button>
+              <span class="hud-sep"></span>
+              <button type="button" id="btn-zoom-out" class="hud-btn" title="Zoom out (−)">−</button>
+              <button type="button" id="btn-zoom-reset" class="hud-btn hud-zoom-readout" title="Reset camera zoom &amp; pan">100%</button>
+              <button type="button" id="btn-zoom-in" class="hud-btn" title="Zoom in (+)">+</button>
+              <span class="hud-sep"></span>
+              <button type="button" id="btn-fullscreen-stage" class="hud-btn" title="Toggle Fullscreen Stage (F)">⛶ Full</button>
+            </div>
+          </div>
+
           <div class="stage-viewport">
             <div class="canvas-frame" id="canvas-frame">
               <canvas
@@ -152,32 +175,13 @@
                 height="1080"
                 aria-label="3c1c interactive mathematical animation canvas"
               ></canvas>
+            </div>
+          </div>
 
-              <!-- Floating Stage View & Camera HUD -->
-              <div class="stage-view-hud" role="toolbar" aria-label="Stage navigation and zoom controls">
-                <button type="button" id="btn-prev-scene" class="hud-btn" title="Previous scene ([)">‹ Prev</button>
-                <span id="scene-counter-pill" class="hud-pill">#001 / 165</span>
-                <button type="button" id="btn-next-scene" class="hud-btn" title="Next scene (])">Next ›</button>
-                <span class="hud-sep"></span>
-                <button type="button" id="btn-zoom-out" class="hud-btn" title="Zoom out (−)">−</button>
-                <button type="button" id="btn-zoom-reset" class="hud-btn hud-zoom-readout" title="Reset camera zoom &amp; pan">100%</button>
-                <button type="button" id="btn-zoom-in" class="hud-btn" title="Zoom in (+)">+</button>
-                <span class="hud-sep"></span>
-                <button type="button" id="btn-fullscreen-stage" class="hud-btn" title="Toggle Fullscreen Stage (F)">⛶ Full</button>
-              </div>
-
-              <!-- Floating KaTeX Theorem Overlay Pill -->
-              <div id="stage-katex-overlay" class="stage-katex-overlay" aria-live="polite">
-                <div class="stage-katex-top">
-                  <span id="stage-katex-badge" class="stage-katex-badge">THEOREM</span>
-                  <span id="stage-katex-heading" class="stage-katex-heading">Instantaneous Rate of Change</span>
-                </div>
-                <div id="stage-katex-math" class="stage-katex-math"></div>
-              </div>
-
-              <div id="stage-drag-hint" class="stage-hint-pill">
-                Drag point a directly on the curve or scrub the limit h → 0
-              </div>
+          <!-- Non-Overlapping Bottom Stage Hint Strip -->
+          <div class="stage-footer-bar">
+            <div id="stage-drag-hint" class="stage-hint-pill">
+              Drag point a directly on the curve or scrub the limit h → 0
             </div>
           </div>
 
@@ -337,6 +341,6 @@
 
     <div id="studio-toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script type="module" src="web/js/app.js?v=168.0"></script>
+    <script type="module" src="web/js/app.js?v=169.0"></script>
   </body>
 </html>

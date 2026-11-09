@@ -554,13 +554,24 @@ body.dark .cat-pill.active {
   min-width: 0;
 }
 
+.stage-overlay-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
 .stage-viewport {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 24px;
-  min-height: 360px;
+  padding: 14px 20px;
+  min-height: 340px;
   position: relative;
 }
 
@@ -581,7 +592,7 @@ body.dark .cat-pill.active {
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: calc(100vh - 235px);
+  max-height: calc(100vh - 295px);
   cursor: grab;
   touch-action: none;
 }
@@ -590,18 +601,22 @@ body.dark .cat-pill.active {
   cursor: grabbing;
 }
 
+.stage-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 20px;
+  background: var(--paper-2);
+  border-top: 1px solid var(--line);
+}
+
 .stage-hint-pill {
-  position: absolute;
-  bottom: 10px;
-  left: 12px;
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: var(--r-xs);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-family: var(--sans);
-  background: rgba(17, 22, 34, 0.72);
-  color: #EEF2F6;
-  pointer-events: none;
-  opacity: 0.86;
+  color: var(--muted);
+  font-weight: 500;
 }
 
 /* ── Timeline Transport Dock ── */
@@ -1021,23 +1036,20 @@ body.theater-mode .rail-right {
 }
 
 body.theater-mode #stage-canvas {
-  max-height: calc(100vh - 185px);
+  max-height: calc(100vh - 245px);
 }
 
-/* ── Floating Stage View & Camera HUD ── */
+/* ── Top Stage Bar: View & Camera HUD ── */
 .stage-view-hud {
-  position: absolute;
-  top: 10px;
-  right: 12px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 4px 6px;
   border-radius: var(--r-sm);
-  background: rgba(15, 20, 32, 0.78);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 20, 32, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  z-index: 12;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .hud-btn {
@@ -1081,33 +1093,31 @@ body.theater-mode #stage-canvas {
   margin: 0 2px;
 }
 
-/* ── Live KaTeX Theorem Overlay Pill on Stage ── */
+/* ── Top Stage Bar: Live KaTeX Theorem Pill ── */
 .stage-katex-overlay {
-  position: absolute;
-  bottom: 38px;
-  left: 12px;
-  max-width: min(460px, calc(100% - 24px));
-  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  flex: 1;
+  padding: 5px 11px;
   border-radius: var(--r-sm);
-  background: rgba(15, 20, 32, 0.80);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(125, 164, 232, 0.30);
+  background: rgba(15, 20, 32, 0.86);
+  border: 1px solid rgba(125, 164, 232, 0.28);
   color: #EEF2F6;
-  pointer-events: none;
-  z-index: 10;
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition: opacity 160ms ease;
 }
 
 .stage-katex-overlay.is-hidden {
-  opacity: 0;
-  transform: translateY(6px);
+  display: none;
 }
 
 .stage-katex-top {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
 .stage-katex-badge {
@@ -1133,13 +1143,13 @@ body.theater-mode #stage-canvas {
 }
 
 .stage-katex-math {
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   color: #CBD5E1;
   overflow-x: auto;
 }
 
 .stage-katex-math .katex-display {
-  margin: 2px 0;
+  margin: 0;
 }
 
 /* ── 165-Scene Visual Atlas Grid Modal ── */

@@ -3,9 +3,9 @@
    Renders high-DPI Manim-style mathematical animations in Dark & Paper modes
    ========================================================================== */
 
-import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=168.0';
-import { attachExtendedRenderers } from './scenes_renderers.js?v=168.0';
-import { attach3DRenderers } from './scenes_3d.js?v=168.0';
+import { FUNCTIONS, SCENE_PRESETS } from './presets.js?v=169.0';
+import { attachExtendedRenderers } from './scenes_renderers.js?v=169.0';
+import { attach3DRenderers } from './scenes_3d.js?v=169.0';
 
 export const STAGE_PALETTES = {
   dark: {
@@ -126,39 +126,44 @@ export class Engine3c1c {
     }
     ctx.stroke();
 
-    // 3. Stage Safe Margins & Header Banner
+    // 3. Stage Safe Margins & Non-Overlapping Header / Footer Zones
     const padX = Math.round(width * 0.062);
-    const headerTop = Math.round(height * 0.052);
-    const plotTop = Math.round(height * 0.165);
-    const plotBot = Math.round(height * 0.105);
+    const headerTop = Math.min(Math.round(68 * scale), Math.round(height * 0.048));
+    const headerRuleY = headerTop + Math.round(56 * scale);
+    const safeTopY = headerRuleY + Math.round(10 * scale);
+    const footerH = Math.max(Math.round(58 * scale), Math.round(height * 0.058));
+    const safeBotY = watermark ? height - footerH : height - Math.round(18 * scale);
+    const plotTop = safeTopY + Math.round(10 * scale);
     const plotW = width - padX * 2;
-    const plotH = height - plotTop - plotBot;
+    const plotH = safeBotY - plotTop - Math.round(10 * scale);
 
-    const headerAlpha = spanEase(time, 0, 0.55);
-    ctx.save();
-    ctx.globalAlpha = Math.max(0.25, headerAlpha);
-    ctx.font = `700 ${Math.round(18 * scale)}px "JetBrains Mono", monospace`;
-    ctx.fillStyle = pal.amber;
-    ctx.fillText((params.track || 'CLIPSAT MATHEMATICS').toUpperCase(), padX, headerTop, plotW);
+    this.currentSafeTopY = safeTopY;
+    this.currentSafeBotY = safeBotY;
 
-    ctx.font = `600 ${Math.round(35 * scale)}px "Newsreader", Georgia, serif`;
-    ctx.fillStyle = pal.ink;
-    ctx.fillText(params.title || '', padX, headerTop + Math.round(41 * scale), plotW);
-
-    ctx.strokeStyle = pal.panelBorder;
-    ctx.lineWidth = Math.max(1.5, 2 * scale);
-    ctx.beginPath();
-    ctx.moveTo(padX, headerTop + Math.round(62 * scale));
-    ctx.lineTo(padX + plotW * clamp01(time / 0.8 + 0.15), headerTop + Math.round(62 * scale));
-    ctx.stroke();
-    ctx.restore();
-
-    // 4. Dispatch Scene-Specific Mobjects
+    // 4. Dispatch Scene-Specific Mobjects (Hardware-Clipped to Safe Stage Zone)
     const viewZoom = Number(state.viewZoom || 1.0);
     const panX = Number(state.panX || 0.0);
     const panY = Number(state.panY || 0.0);
-    const bounds = { padX, plotTop, plotW, plotH, width, height, scale, viewZoom, panX, panY };
+    const bounds = {
+      padX,
+      plotTop,
+      plotW,
+      plotH,
+      width,
+      height,
+      scale,
+      viewZoom,
+      panX,
+      panY,
+      safeTopY,
+      safeBotY,
+    };
     let telemetry = { readouts: [], tableHeaders: [], tableRows: [] };
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, safeTopY, width, Math.max(10, safeBotY - safeTopY));
+    ctx.clip();
 
     if (presetId === 'derivative') {
       telemetry = this.drawDerivativeScene(ctx, pal, bounds, params, time, duration);
@@ -191,9 +196,33 @@ export class Engine3c1c {
       }
     }
 
-    // 5. ClipSAT · 3c1c Corner Watermark
+    ctx.restore();
+
+    // 5. Protected Top Header Banner (CLIPSAT Track & Scene Title)
+    const headerAlpha = spanEase(time, 0, 0.55);
+    ctx.save();
+    ctx.fillStyle = pal.bg;
+    ctx.fillRect(0, 0, width, safeTopY - Math.round(2 * scale));
+    ctx.globalAlpha = Math.max(0.25, headerAlpha);
+    ctx.font = `700 ${Math.round(17 * scale)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = pal.amber;
+    ctx.fillText((params.track || 'CLIPSAT MATHEMATICS').toUpperCase(), padX, headerTop, plotW);
+
+    ctx.font = `600 ${Math.round(33 * scale)}px "Newsreader", Georgia, serif`;
+    ctx.fillStyle = pal.ink;
+    ctx.fillText(params.title || '', padX, headerTop + Math.round(38 * scale), plotW);
+
+    ctx.strokeStyle = pal.panelBorder;
+    ctx.lineWidth = Math.max(1.5, 2 * scale);
+    ctx.beginPath();
+    ctx.moveTo(padX, headerRuleY);
+    ctx.lineTo(padX + plotW * clamp01(time / 0.8 + 0.15), headerRuleY);
+    ctx.stroke();
+    ctx.restore();
+
+    // 6. Protected ClipSAT · 3c1c Footer Watermark Band
     if (watermark) {
-      this.drawWatermark(ctx, pal, width, height, padX, scale);
+      this.drawWatermark(ctx, pal, width, height, padX, scale, safeBotY);
     }
 
     ctx.restore();
@@ -205,7 +234,7 @@ export class Engine3c1c {
     const isTall = bounds.height >= bounds.width * 0.95;
     const isSquare = Math.abs(bounds.height - bounds.width) < bounds.width * 0.1;
     const areaW = isTall ? plotW : Math.round(plotW * widthFrac);
-    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
+    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.50 : 0.54)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
 
@@ -339,15 +368,41 @@ export class Engine3c1c {
 
   drawCalloutCard(ctx, pal, x, y, w, h, scale, lines, accentColor) {
     ctx.save();
+    const canvasW = (ctx.canvas && ctx.canvas.width) || 1920;
     const canvasH = (ctx.canvas && ctx.canvas.height) || 1080;
-    const maxAvailH = Math.max(150 * scale, canvasH - y - 56 * scale);
+    const safeTopY = this.currentSafeTopY || Math.round(120 * scale);
+    const safeBotY =
+      this.currentSafeBotY || (canvasH - Math.max(Math.round(58 * scale), Math.round(canvasH * 0.058)));
+
     let totalNeededH = 28 * scale;
     for (const item of lines) {
       totalNeededH += item.gap || 32 * scale;
     }
     const rawCardH = Math.max(h, totalNeededH + 12 * scale);
+
+    // Clamp horizontal bounds inside canvas margins
+    const minPadX = Math.round(16 * scale);
+    w = Math.max(Math.round(180 * scale), Math.min(w, canvasW - minPadX * 2));
+    x = Math.max(minPadX, Math.min(x, canvasW - w - minPadX));
+
+    // Clamp vertical bounds strictly inside [safeTopY + 6*scale, safeBotY - 8*scale]
+    const topLimit = safeTopY + Math.round(6 * scale);
+    const botLimit = safeBotY - Math.round(8 * scale);
+    if (y < topLimit) y = topLimit;
+    if (botLimit - y < Math.round(145 * scale)) {
+      y = Math.max(topLimit, botLimit - Math.min(rawCardH, Math.round(220 * scale)));
+    }
+    const maxAvailH = Math.max(Math.round(110 * scale), botLimit - y);
     const vCompress = rawCardH > maxAvailH ? maxAvailH / rawCardH : 1;
     const cardH = Math.min(rawCardH, maxAvailH);
+
+    this.lastCalloutRect = { x, y, w, h: cardH, safeTopY, safeBotY };
+
+    // Opaque canvas under-fill so curves/axes never bleed through card text
+    ctx.fillStyle = pal.bg;
+    this.roundRect(ctx, x, y, w, cardH, 14 * scale);
+    ctx.fill();
+
     ctx.fillStyle = pal.panel;
     ctx.strokeStyle = accentColor || pal.panelBorder;
     ctx.lineWidth = 2 * scale;
@@ -363,7 +418,7 @@ export class Engine3c1c {
     const maxTextW = Math.max(110 * scale, w - 42 * scale);
     let curY = y + 30 * scale * vCompress;
     lines.forEach((item, idx) => {
-      ctx.font = item.font || `500 ${Math.round(20 * scale * Math.max(0.84, vCompress))}px "JetBrains Mono", monospace`;
+      ctx.font = item.font || `500 ${Math.round(20 * scale * Math.max(0.82, vCompress))}px "JetBrains Mono", monospace`;
       ctx.fillStyle = item.color || pal.ink;
       ctx.fillText(item.text, x + 22 * scale, curY, maxTextW);
       if (idx === 0 && lines.length > 1) {
@@ -735,11 +790,12 @@ export class Engine3c1c {
   drawSquareScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
     const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const xVal = Number(params.xVal ?? 2.2);
     const bVal = Number(params.bVal ?? 1.6);
     const bHalf = bVal / 2;
 
-    const unitPx = Math.min(plotW * (isTall ? 0.65 : 0.42), plotH * (isTall ? 0.45 : 0.68)) / (xVal + bHalf + 0.8);
+    const unitPx = Math.min(plotW * (isTall ? 0.60 : 0.42), plotH * (isTall ? (isSquare ? 0.39 : 0.43) : 0.68)) / (xVal + bHalf + 0.8);
     const xPx = xVal * unitPx;
     const bHalfPx = bHalf * unitPx;
 
@@ -747,8 +803,8 @@ export class Engine3c1c {
     const gapPx = (1 - splitProg) * 28 * scale + (6 + 2.2 * Math.sin(time * 2.1)) * scale;
     const cornerProg = spanEase(time, 2.6, 5.4);
 
-    const originX = padX + Math.round(plotW * (isTall ? 0.18 : 0.08));
-    const originY = plotTop + Math.round(plotH * 0.14);
+    const originX = padX + Math.round(plotW * (isTall ? 0.20 : 0.08));
+    const originY = plotTop + Math.round(plotH * (isTall ? 0.06 : 0.14));
 
     // 1. x^2 Indigo Square
     const x2Alpha = spanEase(time, 0, 1.0);
@@ -825,7 +881,7 @@ export class Engine3c1c {
 
     const totalSquare = Math.pow(xVal + bHalf, 2);
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.62) : originY;
+    const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.55 : 0.60)) : originY;
     const cardW = isTall ? plotW : Math.round(plotW * 0.46);
     const cardH = Math.round(285 * scale);
 
@@ -899,6 +955,7 @@ export class Engine3c1c {
   drawUnitCircleScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
     const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const baseDeg = Number(params.thetaDeg ?? 60);
     const sweepProg = spanEase(time, 0.8, 5.8);
     const degNow = baseDeg + sweepProg * 120 + 6 * Math.sin(time * 2.0);
@@ -907,8 +964,8 @@ export class Engine3c1c {
     const sinV = Math.sin(rad);
 
     const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.25));
-    const cy = plotTop + Math.round(plotH * (isTall ? 0.29 : 0.50));
-    const radius = Math.round(Math.min(plotW * 0.22, plotH * (isTall ? 0.24 : 0.38)));
+    const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.27 : 0.29) : 0.50));
+    const radius = Math.round(Math.min(plotW * (isTall ? 0.30 : 0.22), plotH * (isTall ? (isSquare ? 0.20 : 0.23) : 0.38)));
 
     this.lastPlotMapper = {
       unitCircle: { cx, cy, radius },
@@ -968,7 +1025,7 @@ export class Engine3c1c {
     ctx.restore();
 
     const cardX = isTall ? padX : padX + Math.round(plotW * 0.54);
-    const cardY = isTall ? plotTop + Math.round(plotH * 0.57) : plotTop + Math.round(24 * scale);
+    const cardY = isTall ? plotTop + Math.round(plotH * (isSquare ? 0.55 : 0.58)) : plotTop + Math.round(24 * scale);
     const cardW = isTall ? plotW : Math.round(plotW * 0.46);
     const cardH = Math.round(285 * scale);
 
@@ -1047,6 +1104,7 @@ export class Engine3c1c {
   drawLinAlgScene(ctx, pal, bounds, params, time, duration) {
     const { padX, plotTop, plotW, plotH, scale } = bounds;
     const isTall = bounds.height >= bounds.width * 0.95;
+    const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const warpProg = clamp01(spanEase(time, 0.6, 5.4) - 0.03 * Math.sin(time * 2.1));
 
     const m11 = 1 + warpProg * (Number(params.m11 ?? 1.8) - 1);
@@ -1056,8 +1114,8 @@ export class Engine3c1c {
     const det = m11 * m22 - m12 * m21;
 
     const cx = padX + Math.round(plotW * (isTall ? 0.50 : 0.30));
-    const cy = plotTop + Math.round(plotH * (isTall ? 0.29 : 0.52));
-    const unit = Math.min(plotW, plotH) * (isTall ? 0.08 : 0.105);
+    const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.27 : 0.29) : 0.52));
+    const unit = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.068 : 0.076) : 0.105);
 
     const mapVec = (x, y) => ({
       x: cx + (m11 * x + m12 * y) * unit,
@@ -2163,24 +2221,52 @@ export class Engine3c1c {
     };
   }
 
-  drawWatermark(ctx, pal, width, height, padX, scale) {
+  drawWatermark(ctx, pal, width, height, padX, scale, safeBotY) {
     ctx.save();
-    const wmY = height - Math.round(height * 0.042);
+    const botTop = safeBotY || (height - Math.max(Math.round(58 * scale), Math.round(height * 0.058)));
+
+    // Clear and separate the dedicated footer band so zero scene pixels can ever touch the brand mark
+    ctx.fillStyle = pal.bg;
+    ctx.fillRect(0, botTop, width, height - botTop);
+
+    ctx.strokeStyle = pal.gridMajor;
+    ctx.lineWidth = Math.max(1, 1.2 * scale);
+    ctx.beginPath();
+    ctx.moveTo(padX, botTop + Math.round(2 * scale));
+    ctx.lineTo(width - padX, botTop + Math.round(2 * scale));
+    ctx.stroke();
+
     const text = 'ClipSAT · 3c1c   |   clipsat.org';
-    ctx.font = `600 ${Math.round(17 * scale)}px "Plus Jakarta Sans", sans-serif`;
+    ctx.font = `600 ${Math.round(16 * scale)}px "Plus Jakarta Sans", sans-serif`;
     const metrics = ctx.measureText(text);
-    const textX = width - padX - metrics.width;
+    const iconSize = Math.round(22 * scale);
+    const pillPadX = Math.round(14 * scale);
+    const pillH = Math.round(34 * scale);
+    const pillW = Math.round(metrics.width + iconSize + 10 * scale + pillPadX * 2);
+    const pillX = width - padX - pillW;
+    const footerCenterY = Math.round((botTop + height) * 0.5) + Math.round(2 * scale);
+    const pillY = footerCenterY - Math.round(pillH * 0.5);
+
+    ctx.fillStyle = pal.panel;
+    ctx.strokeStyle = pal.panelBorder;
+    ctx.lineWidth = 1.2 * scale;
+    this.roundRect(ctx, pillX, pillY, pillW, pillH, Math.round(pillH * 0.5));
+    ctx.fill();
+    ctx.stroke();
+
+    const iconX = pillX + pillPadX;
+    const textX = iconX + iconSize + Math.round(9 * scale);
+    const textY = footerCenterY + Math.round(5.5 * scale);
 
     if (this.markLoaded) {
-      const iconSize = Math.round(26 * scale);
-      ctx.drawImage(this.markImg, textX - iconSize - 10 * scale, wmY - iconSize + 5 * scale, iconSize, iconSize);
+      ctx.drawImage(this.markImg, iconX, footerCenterY - Math.round(iconSize * 0.5), iconSize, iconSize);
     } else {
-      this.drawDot(ctx, textX - 22 * scale, wmY - 6 * scale, 5 * scale, pal.indigo, pal.bg);
-      this.drawDot(ctx, textX - 10 * scale, wmY - 6 * scale, 5 * scale, pal.amber, pal.bg);
+      this.drawDot(ctx, iconX + 6 * scale, footerCenterY, 4.5 * scale, pal.indigo, pal.bg);
+      this.drawDot(ctx, iconX + 16 * scale, footerCenterY, 4.5 * scale, pal.amber, pal.bg);
     }
 
     ctx.fillStyle = pal.muted;
-    ctx.fillText(text, textX, wmY);
+    ctx.fillText(text, textX, textY);
     ctx.restore();
   }
 
@@ -2219,7 +2305,11 @@ export class Engine3c1c {
 
   roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
-    ctx.roundRect(x, y, w, h, r);
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(x, y, w, h, r);
+    } else {
+      ctx.rect(x, y, w, h);
+    }
   }
 }
 

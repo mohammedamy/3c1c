@@ -1148,7 +1148,7 @@ export function attach3DRenderers(EngineClass) {
     const isTall = bounds.height >= bounds.width * 0.95;
     const isSquare = isTall && bounds.height < bounds.width * 1.15;
     const areaW = isTall ? plotW : Math.round(plotW * 0.60);
-    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.52 : 0.56)) : plotH;
+    const areaH = isTall ? Math.round(plotH * (isSquare ? 0.50 : 0.54)) : plotH;
     const areaX = padX;
     const areaY = plotTop;
     const vz = Math.max(0.45, Math.min(3.5, Number(bounds.viewZoom || 1.0)));
