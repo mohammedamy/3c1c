@@ -1068,8 +1068,8 @@ export function attachExtendedRenderers(EngineClass) {
       const freq = Number(params.freq ?? 1.0);
       const omegaT = time * freq * 1.8;
       const cx = padX + Math.round(plotW * 0.18);
-      const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.25 : 0.28) : 0.46));
-      const baseR = Math.min(plotW * 0.13, plotH * (isTall ? (isSquare ? 0.18 : 0.22) : 0.26));
+      const cy = plotTop + Math.round(plotH * (isTall ? 0.22 : 0.46));
+      const baseR = Math.min(plotW * 0.13, plotH * (isTall ? 0.155 : 0.26));
       this.lastPlotMapper = { unitCircle: { cx, cy, radius: baseR } };
 
       let ex = cx;
@@ -3836,8 +3836,8 @@ export function attachExtendedRenderers(EngineClass) {
     // 1. Modular Arithmetic Multiplication Circle Caustic (#083)
     if (sub === 'mod_circle') {
       const cx = padX + Math.round(plotW * (isTall ? 0.5 : 0.28));
-      const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.27 : 0.32) : 0.5));
-      const radius = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.22 : 0.26) : 0.36);
+      const cy = plotTop + Math.round(plotH * (isTall ? 0.22 : 0.5));
+      const radius = Math.min(plotW, plotH) * (isTall ? 0.185 : 0.36);
       this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
       const N = Math.max(12, Math.round(Number(params.modN ?? 72)));
@@ -4444,8 +4444,8 @@ export function attachExtendedRenderers(EngineClass) {
 
     if (sub === 'qudrat_clock' || sub === 'qudrat_geometry') {
       const cx = padX + Math.round(plotW * (isTall ? 0.5 : 0.28));
-      const cy = plotTop + Math.round(plotH * (isTall ? (isSquare ? 0.30 : 0.34) : 0.5));
-      const radius = Math.min(plotW, plotH) * (isTall ? (isSquare ? 0.24 : 0.27) : 0.36);
+      const cy = plotTop + Math.round(plotH * (isTall ? 0.22 : 0.5));
+      const radius = Math.min(plotW, plotH) * (isTall ? 0.185 : 0.36);
       this.lastPlotMapper = { unitCircle: { cx, cy, radius } };
 
       ctx.save();
